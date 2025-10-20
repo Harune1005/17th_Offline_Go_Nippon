@@ -5,7 +5,7 @@
 @section('content')
 <style>
     .uniform-img {
-        height: 600px; /* adjust as needed */
+        height: 600px; 
         object-fit: cover;
         width: 100%;
     }
@@ -62,19 +62,27 @@
     }
 
     body {
-            font-family: 'Source Serif Pro', serif;
+        font-family: 'Source Serif Pro', serif;
+    }
+
+    .comment-section-wrapper {
+        display: flex;
+        flex-direction: column;
+        height: 100%; 
     }
 
     .comment-list {
-        max-height: 300px; 
-        overflow-y: auto; 
-        padding-right: 6px; 
+        flex: 1;
+        overflow-y: auto;
+        padding-right: 6px;
+        min-height: 150px;
     }
-    </style>
 
-    <div class="container my-3">
+</style>
+
+    <div class="container mt-5">
         <div class="justify-content-center">
-            <a href="#" class="text-decoration-none text-brown mb-3 d-inline-block">
+            <a href="#" class="text-decoration-none text-brown mb-2 d-inline-block">
                 <i class="fa-solid fa-angles-left"></i> back
             </a>
 
@@ -84,7 +92,7 @@
                         <div class="col-auto d-flex align-items-center">
                             <a href="">
                                 {{-- @if () --}}
-                                    <img src="https://placehold.co/60x60" alt="user" class="rounded-circle me-3">
+                                    <img src="https://placehold.co/40x40" alt="user" class="rounded-circle me-3">
                                 {{-- @else --}}
                                     {{-- <i class="fa-solid fa-circle-user text-secondary me-3"></i> --}}
                                 {{-- @endif --}}
@@ -163,7 +171,7 @@
                         </div>
 
                         <div class="col-md-5 border-start border-brown">
-                            <div class="p-4 bg-white h-100" style="max-height: 600px;">
+                            <div class="p-4 bg-white h-100 comment-section-wrapper" style="max-height: 600px;">
                                 <h4 class="fw-bold text-brown mb-2 text-center">Arakurayamasengen Park</h4>
 
                                 <div class="row align-items-center mb-3">
