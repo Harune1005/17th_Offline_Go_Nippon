@@ -1,6 +1,7 @@
 body {
     font-family: 'Source Serif Pro', serif; 
     background-color: #fffffe;
+    padding-top: 70px;
 }
 
 .btn-outline {
@@ -10,6 +11,7 @@ body {
 
 .btn-outline:hover {
     background-color: #F1BDB2;
+    color: #fff;
 }
 
 h5, span, label {

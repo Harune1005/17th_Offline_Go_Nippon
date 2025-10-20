@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-3">
+<div class="container">
 
     <form action="#" method="get">
         <div class="row align-items-end">
-            <div class="col-12 col-md-4 mb-md-0m">
+            <div class="col-12 col-md-4 mb-3 mb-md-0">
                 <input type="text" name="search" class="form-control" placeholder="Search...">
             </div>
 
             <div class="col-12 col-md-8">
                 <div class="row g-2  align-items-end">
-                    <div class="col-6 col-md-5">
+                    <div class="col-6 col-md-5 mb-3 mb-md-0">
                         <label for="" class="form-label">Prefecture</label>
                         <select name="prefecture" class="form-select text-muted">
                             <option value="" selected disabled hidden>Select</option>
@@ -20,7 +20,7 @@
                             <option value="3">3</option>
                         </select>
                     </div>
-                    <div class="col-6 col-md-5">
+                    <div class="col-6 col-md-5 mb-3 mb-md-0">
                         <label for="" class="form-label">Category</label>
                         <select name="category" class="form-select text-muted">
                             <option value="" selected disabled hidden>Select</option>
@@ -197,14 +197,14 @@
                     {{-- sort --}}
                     <div class="sort mb-4">
                         <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#">Recommended</a>
+                            <li class="nav-item text-center border topround custom-tab">
+                                <button class="btn m-0">Recommend</button>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Most liked</a>
+                            <li class="nav-item text-center border topround custom-tab">
+                                <button class="btn m-0">Most liked</button>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Newest</a>
+                            <li class="nav-item text-center border topround custom-tab">
+                                <button class="btn m-0">Newest</button>
                             </li>
                         </ul>
                     </div>
