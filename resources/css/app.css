@@ -132,3 +132,53 @@ body {
     height: 545px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
+
+.following-btn{
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #F1BDB2;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    transition: all 0.2s ease;
+}
+
+.following-btn:hover{
+    font-size: 16px;
+    color: #F1BDB2;
+    background-color: #ffffff;
+    border-color: #F1BDB2;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    transition: all 0.2s ease;
+}
+
+
+
+.follow-tab button{
+    color: #F1BDB2;
+    border-color: #F1BDB2;
+    transition: all 0.2s ease;
+
+}
+
+.follow-tab:hover button{
+    color: #ffffff;
+    background-color: #F1BDB2;
+}
+
+.follow-btn{
+    color: #F1BDB2;
+    background-color: #ffffff;
+    border-color: #F1BDB2;
+    transition: all 0.2s ease;
+}
+
+.follow-btn:hover{
+    color: #ffffff;
+    background-color: #F1BDB2;
+    
+}
