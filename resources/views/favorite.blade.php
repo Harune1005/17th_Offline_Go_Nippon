@@ -1,51 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Favorite</title>
-    <link rel="stylesheet" href="">
-    <!-- bootstrap cdn -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- fontawesome cdn -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js']) 
-</head>
-<body>
-    <div class="container w-75 mb-5 mt-2">
-        <form action="" method="">
-            <div class="d-flex flex-wrap align-items-end">
-                <div class="d-flex flex-column">
-                    <input type="text" name="" id="" class="form-control me-3" placeholder="Search..." style="width: 523px;">
+@extends('layouts.app')
+
+
+@section('content')
+ 
+ @vite(['resources/css/app.css', 'resources/js/app.js']) 
+
+    {{-- search bar --}}
+    <div class="container mb-5">
+        <form action="#" method="get">
+            <div class="row align-items-end">
+                <div class="col-12 col-md-4 mb-3 mb-md-0">
+                    <input type="text" name="search" class="form-control" placeholder="Search...">
                 </div>
-                <div class="d-flex flex-column">
-                    <label for="prefecture" class="form-label">Prefecture</label>
-                    <select name="prefecture" id="prefecture" class="form-control me-3" style="width: 192px;">
-                        <option value="">Prefecture</option>
-                    </select>
-                </div>
-                <div class="d-flex flex-column">
-                    <label for="category" class="form-label">Category</label>
-                    <select name="category" id="category" class="form-control me-3" style="width: 192px;">
-                        <option value="">Category</option>
-                    </select>
-                </div>
-                <div class="d-flex flex-column">
-                    <button class="btn custom-btn ms-auto"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+
+                <div class="col-12 col-md-8">
+                    <div class="row g-2  align-items-end">
+                        <div class="col-6 col-md-5 mb-3 mb-md-0">
+                            <label for="" class="form-label">Prefecture</label>
+                            <select name="prefecture" class="form-select text-muted">
+                                <option value="" selected disabled hidden>Select</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-md-5 mb-3 mb-md-0">
+                            <label for="" class="form-label">Category</label>
+                            <select name="category" class="form-select text-muted">
+                                <option value="" selected disabled hidden>Select</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-2 d-grid">
+                            <button type="submit" class="btn btn-outline w-100">Search</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
     </div>
 
-    <br>
-
+    {{-- order tabs --}}
     <div class="container mx-auto mb-2">
-        <ul class="nav nav-tabs">
-            <li class="nav-item text-center border topround custom-tab"><button class="btn m-0">Recommend</button></li>
-            <li class="nav-item text-center border topround custom-tab"><button class="btn m-0">Most liked</button></li>
-            <li class="nav-item text-center border topround custom-tab"><button class="btn m-0">Newest</button></li>
+        <ul class="nav nav-tabs justify-content-start flex-md-nowrap flex-wrap" style="width:100%; height:100%">
+            <li class="nav-item text-center border tab-topround custom-tab col-4 col-md-auto px-0"><button class="btn m-0 w-100">Recommend</button></li>
+            <li class="nav-item text-center border tab-topround custom-tab col-4 col-md-auto px-0"><button class="btn m-0 w-100">Most liked</button></li>
+            <li class="nav-item text-center border tab-topround custom-tab col-4 col-md-auto px-0"><button class="btn m-0 w-100">Newest</button></li>
         </ul>
     </div>
 
@@ -199,7 +201,6 @@
         </ul>
     </div>
 
-</body>
-</html>
+@endsection
 
 
