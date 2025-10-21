@@ -33,7 +33,7 @@ body {
 
 @media (max-width: 768px) {
   .custom-tab {
-    flex: 1 1 0; /* 均等幅に */
+    flex: 1 1 0; 
   }
 
   .custom-tab:hover {
@@ -46,8 +46,6 @@ body {
     color: #9F6B46;
     white-space: nowrap;
 }
-
-
 
 .custom-tab:hover button{
     color: #ffffff;
@@ -142,7 +140,7 @@ body {
 
 .message-board{
     background-color: #FFFBEB;
-    width: 800px;
+    width: 100%;
     height: 545px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
