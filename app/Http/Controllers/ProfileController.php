@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Rinvex\Country\CountryLoader;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,32 +18,37 @@ class ProfileController extends Controller
 
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $user = $this->user->findOrFail($id);
+
         return view('users.profile.show')->with('user', $user);
     }
 
-    public function edit(){
+    public function edit()
+    {
         $user = $this->user->findOrFail(Auth::user()->id);
         $countries = countries();
         $categories = Category::all();
+
         return view('users.profile.edit')
-                ->with('user', $user)
-                ->with('countries', $countries)
-                ->with('categories', $categories);
+            ->with('user', $user)
+            ->with('countries', $countries)
+            ->with('categories', $categories);
     }
-    
-    public function update(Request $request, $id){
+
+    public function update(Request $request, $id)
+    {
         $request->validate([
-            'name'          => 'required|max:100',
-            'email'         => 'required|max:100',
-            'country'       => 'required|max:100',
-            'introduction'  => 'max:100',
-            'avatar'        => 'mimes:jpg,jpeg,png,gif|max:1048',
-            'category'      => 'nullable|array|max:3',
-            'category.*'    => 'exists:categories,id', // ← 実在するIDのみ
+            'name' => 'required|max:100',
+            'email' => 'required|max:100',
+            'country' => 'required|max:100',
+            'introduction' => 'max:100',
+            'avatar' => 'mimes:jpg,jpeg,png,gif|max:1048',
+            'category' => 'nullable|array|max:3',
+            'category.*' => 'exists:categories,id', // ← 実在するIDのみ
             'current_password' => 'nullable|required_with:password|string',
-            'password'      => 'nullable|min:8|confirmed'
+            'password' => 'nullable|min:8|confirmed',
         ]);
 
         $user = $this->user->findOrFail($id);
@@ -61,11 +65,11 @@ class ProfileController extends Controller
 
             $path = $request->file('avatar')->store('avatars', 'public');
 
-            $user->avatar = '/storage/' . $path;
+            $user->avatar = '/storage/'.$path;
         }
 
         if ($request->filled('password')) {
-            if (!Hash::check($request->current_password, $user->password)) {
+            if (! Hash::check($request->current_password, $user->password)) {
                 return back()->withErrors(['current_password' => 'Current password is incorrect'])->withInput();
             }
             $user->password = Hash::make($request->password);
@@ -75,5 +79,5 @@ class ProfileController extends Controller
 
         return redirect()->route('profile.show', $id);
 
-    }   
+    }
 }
