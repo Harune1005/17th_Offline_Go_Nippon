@@ -18,7 +18,7 @@ class AnalyticsController extends Controller
 {
     public function index()
     {
-        $user =  Auth::user() ?? User::first(); //Auth::user();
+        $user = Auth::user() ?? User::first(); // Auth::user();
         $since = Carbon::now()->subDays(30);
 
         $postIds = $user->posts()->pluck('id');
@@ -31,7 +31,7 @@ class AnalyticsController extends Controller
         $viewsNonFollowers = $viewsTotal - $viewsFollowers;
 
         $topViewedPosts = Post::whereIn('id', $postIds)
-            ->withCount(['views' => function ($q) use ($since) {
+            ->withCount(['views' => function ($q) {
                 $q->where('created_at', '>=', now()->subDays(30));
             }])
             ->orderByDesc('views_count')
@@ -70,7 +70,7 @@ class AnalyticsController extends Controller
         $profileVisitsLast = ProfileVisit::where('profile_user_id', $user->id)
             ->whereBetween('created_at', [
                 Carbon::now()->subDays(60),
-                Carbon::now()->subDays(30)
+                Carbon::now()->subDays(30),
             ])
             ->count();
 

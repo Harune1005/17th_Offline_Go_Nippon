@@ -12,7 +12,7 @@ class PostView extends Model
     protected $fillable = [
         'post_id',
         'user_id',
-        'is_follower'
+        'is_follower',
     ];
 
     public function post()

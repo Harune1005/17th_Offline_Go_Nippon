@@ -6,19 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    public function views() {
+    public function views()
+    {
         return $this->hasMany(PostView::class);
     }
 
-    public function likes() {
+    public function likes()
+    {
         return $this->hasMany(Like::class);
     }
-    
-    public function comments() {
+
+    public function comments()
+    {
         return $this->hasMany(Comment::class);
     }
 
-    public function saves() {
+    public function saves()
+    {
         return $this->hasMany(Save::class);
     }
 }
