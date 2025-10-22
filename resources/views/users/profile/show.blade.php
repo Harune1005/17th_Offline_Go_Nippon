@@ -183,116 +183,183 @@
 
     {{-- Profile area --}}
 <div class="container">
-<div class="row mt-4 profile-row p-0">
-    <div class="col-md-4">
-        <div class="row ps-2 profile-row">
-            <div class="col-auto">
-                <i class="fa-solid fa-circle-user text-secondary" style="font-size: 80px; border: 5px solid #9F6B46; border-radius: 50%; 
-                     padding:0;" ></i>
-            </div>
-            <div class="col-auto">
-                
-                <div class="row name">
-                    <h3 >John</h3>
+    <div class="row mt-4 profile-row p-0">
+        <div class="col-md-4">
+            <div class="row ps-2 profile-row">
+                <div class="col-auto">
+                    @if ($user->avatar)
+                        <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="rounded-circle shadow-sm mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #9F6B46;">
+                    @else
+                        <i class="fa-solid fa-circle-user text-secondary mb-3" style="font-size: 110px; border: 5px solid #9F6B46; border-radius: 50%; 
+                        padding:0;" ></i>
+                    @endif
                 </div>
-                <div class="row">
-                    <div class="row text-center mt-3 mb-2 number">
-                        <div class="col-4">
-                            <div class="fs-5 fw-bold" >10</div>
-                            <div class="small" >Posts</div>
-                        </div>
-                        <div class="col-4">
-                            <div class="fs-5 fw-bold" >10</div>
-                            <div class="small">Followers</div>
-                        </div>
-                        <div class="col-4">
-                            <div class="fs-5 fw-bold" >10</div>
-                            <div class="small" >Followings</div>
-                        </div>
+                <div class="col-auto">
+                    
+                    <div class="row name">
+                        <h3 >{{ $user->name }}</h3>
                     </div>
-                                   
+                    <div class="row">
+                        <div class="row text-center mt-3 mb-2 number">
+                            <div class="col-4">
+                                <a href="{{ route('profile.show', $user->id) }}" class="text-decoration-none fw-semibold">
+                                    {{-- <div class="fs-5 fw-bold" >{{ $user->posts->count() }}</div> --}}
+                                    <div class="small" >Posts</div>
+                                </a>
+                            </div>
+                            <div class="col-4">
+                                <a href="{{ route('profile.followers', $user->id) }}" class="text-decoration-none fw-semibold">
+                                    <div class="fs-5 fw-bold" >{{ $user->followers->count() }}</div>
+                                    <div class="small">{{ $user->followers->count() == 1 ? 'follower' : 'followers' }}</div>
+                                </a>
+                            </div>
+                            <div class="col-4">
+                                <a href="{{ route('profile.followers', $user->id) }}" class="text-decoration-none fw-semibold">
+                                    <div class="fs-5 fw-bold" >{{ $user->following->count() }}</div>
+                                    <div class="small" >Following</div>
+                                </a>
+                            </div>
+                        </div>          
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row profile-row">
-            <h5><span> country:</span>USA</h5>
-        </div>
-        <div class="row profile-row" >
-            <p>Hi. I'm John. <br> I love travering, meeting new people, and exploring different cultures. I'm always currious to learn new things and share experiences...</p>
-        </div>
-        <div class="row mb-2 profile-row">
-            <div class="col-auto px-2 ">
-                <button type="submit" class="btn p-auto" style=" background-color: #F1BDB2; color:#FFFF; width:150px;">Edit Pofile</button>
+            <div class="row profile-row">
+                <h5><span> country:</span> {{ $user->country }}</h5>
             </div>
-            <div class="col-auto">
-                <button type="submit" class="btn p-auto" style=" border-color: #F1BDB2; color:#F1BDB2; width:150px;">Favorites</button>
+            <div class="row profile-row" >
+                @if ($user->introduction)
+                    <p class="fw-semibold mb-3" style="color:#9F6B46;">
+                        {{ $user->introduction }}
+                    </p>
+                @endif
             </div>
-        </div>
+            <div class="row mb-2 profile-row">
+                @if (Auth::user()->id === $user->id)
+                    <div class="col-auto px-2 ">
+                        <a href="{{ route('profile.edit') }}" 
+                            class="btn editbtn shadow-sm"
+                            style="background-color:#F1BDB2; color:white; font-weight:bold; width:170px; border:2px solid #F1BDB2; transition:0.3s;"
+                            onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
+                            onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
+                            Edit profile
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="#" 
+                            class="btn editbtn shadow-sm"
+                            style="background-color:white; color:#F1BDB2; font-weight:bold; width:170px; border:2px solid #F1BDB2; transition:0.3s;"
+                            onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
+                            onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
+                            Favorite
+                        </a>
+                    </div>
+                @else
+                    <div class="col-auto px-2">
+                        {{-- @if ($user->isFollowed())
+                            <form action="{{ route('follow.destroy', $user->id) }}" method="post" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                        class="btn editbtn shadow-sm"
+                                        style="background-color:transparent; color:#B0B0B0; font-weight:bold; width:170px; border:2px solid #B0B0B0; transition:0.3s;"
+                                        onmouseover="this.style.backgroundColor='#B0B0B0'; this.style.color='white';"
+                                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#B0B0B0';">
+                                    <i class="fa-regular fa-circle-check"></i>Following
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('follow.store', $user->id) }}" method="post" class="d-inline">
+                                @csrf
+                                <button type="submit" 
+                                        class="btn editbtn shadow-sm"
+                                        style="background-color:#F1BDB2; color:white; font-weight:bold; width:170px; border:2px solid #F1BDB2; transition:0.3s;"
+                                        onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
+                                        onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
+                                    Follow
+                                </button>
+                            </form>
+                        @endif --}}
+                    </div>
 
-      {{-- Map --}}
-        <div class="row">
-            <p class="fw-bold h5 click-map">Click map <span>to view full map</span></p>
+                    <div class="col-auto">
+                        {{-- <a href="{{ route('dm.show', $user->id) }}" 
+                            class="btn editbtn shadow-sm"
+                            style="background-color:white; color:#F1BDB2; font-weight:bold; width:170px; border:2px solid #F1BDB2; transition:0.3s;"
+                            onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
+                            onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
+                            DM
+                        </a> --}}
+                    </div>
+                @endif
+            </div>
 
-                <div class="map-container">
-                    <a href="profile/trip-map" class="trip-map-a"> 
-                   <div id="map" style="width: 100%; height: 350px;"></div>
-                   </a>
-                    <div class="spinner-wrapper">
-                        <div class="spinner-outer">
-                            <div class="spinner-text">
-                                <p class="label">Completed</p>
-                                <p class="count">5 <span style="font-size: 20px">/47</span></p>
+        {{-- Map --}}
+            <div class="row">
+                <p class="fw-bold h5 click-map">Click map <span>to view full map</span></p>
+                    <div class="map-container">
+                        <a href="profile/trip-map" class="trip-map-a"> 
+                    <div id="map" style="width: 100%; height: 350px;"></div>
+                    </a>
+                        <div class="spinner-wrapper">
+                            <div class="spinner-outer">
+                                <div class="spinner-text">
+                                    <p class="label">Completed</p>
+                                    <p class="count">5 <span style="font-size: 20px">/47</span></p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-             
+            </div>
         </div>
-    </div>
 
-    {{-- Post area --}}
-    <div class="col-md-8 ">
-        <div class="row align-items-center  mt-3 mb-2">
-            <div class="col-4 ps-2 pe-0">
-                <a href="#1">
-                    <div class="card border-0 p-0">
-                        <div class="card-header border-0 p-0 ">
-                        <a href="#">
-                            <img src="{{ asset('images/japan-map.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class="post-image p-0">  
-                        </a> 
-                        </div>                  
-                    </div>
-                </a>
-            </div>
-            <div class="col-4 ps-2 pe-0">
-                <a href="#2">
-                    <div class="card border-0 p-0">
-                        <div class="card-header border-0 p-0">
-                        <a href="#">
-                            <img src="{{ asset('images/japan-map.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class=" post-image p-0">  
-                        </a> 
-                        </div>                  
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-4 ps-2 pe-0">
-                <a href="#3">
-                    <div class="card border-0 p-0">
-                        <div class="card-header border-0 p-0">
-                        <a href="#">
-                            <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class="post-image p-0">  
-                        </a> 
+        {{-- Post area --}}
+        <div class="col-md-8 ">
+            <div class="row align-items-center  mt-3 mb-2">
+                <div class="col-4 ps-2 pe-0">
+                    {{-- @if ($user->posts->isNotEmpty())
+                        
+                    @else
+                        <div class="text-center mt-5">
+                            <i class="fa-regular fa-image mb-3" style="font-size: 4rem; color:#9F6B46;"></i>
+                            <h5 class="fw-semibold" style="color:#9F6B46;">No Posts Yet</h5>
                         </div>
-                    </div>
-                </a>
-            </div>    
+                    @endif --}}
+                    <a href="#1">
+                        <div class="card border-0 p-0">
+                            <div class="card-header border-0 p-0 ">
+                            <a href="#">
+                                <img src="{{ asset('images/japan-map.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class="post-image p-0">  
+                            </a> 
+                            </div>                  
+                        </div>
+                    </a>
+                </div>
+                <div class="col-4 ps-2 pe-0">
+                    <a href="#2">
+                        <div class="card border-0 p-0">
+                            <div class="card-header border-0 p-0">
+                            <a href="#">
+                                <img src="{{ asset('images/japan-map.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class=" post-image p-0">  
+                            </a> 
+                            </div>                  
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-4 ps-2 pe-0">
+                    <a href="#3">
+                        <div class="card border-0 p-0">
+                            <div class="card-header border-0 p-0">
+                            <a href="#">
+                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class="post-image p-0">  
+                            </a> 
+                            </div>
+                        </div>
+                    </a>
+                </div>    
+            </div>
         </div>
-
-
-
     </div>
-</div>
 </div>
 @endsection
 
@@ -337,5 +404,5 @@
 
       
     });
-    </script>
+</script>
     
