@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -22,9 +23,7 @@ Route::get('admin/categories', function () {
 });
 
 // Analytics
-Route::get('users/analytics', function () {
-    return view('users.analytics.index');
-});
+Route::get('/users/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 
 route::get('/message', function () {
     return view('messages.message');
