@@ -54,9 +54,9 @@ class AnalyticsController extends Controller
 
         $commentsFromFollowers = $followerIds
             ? Comment::whereIn('post_id', $postIds)
-                    ->where('created_at', '>=', $since)
-                    ->whereIn('user_id', $followerIds)
-                    ->count()
+                ->where('created_at', '>=', $since)
+                ->whereIn('user_id', $followerIds)
+                ->count()
             : 0;
 
         $savesFromFollowers = $followerIds

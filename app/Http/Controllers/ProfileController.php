@@ -37,7 +37,7 @@ class ProfileController extends Controller
                     'visitor_user_id' => $visitor->id,
                 ]);
             }
-        } elseif (!Auth::check()) {
+        } elseif (! Auth::check()) {
             ProfileVisit::create([
                 'profile_user_id' => $user->id,
                 'visitor_user_id' => null,
