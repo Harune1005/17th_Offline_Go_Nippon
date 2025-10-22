@@ -11,6 +11,7 @@ body {
 
 .btn-outline:hover {
     background-color: #F1BDB2;
+    color: #fff;
 }
 
 h5, span, label {

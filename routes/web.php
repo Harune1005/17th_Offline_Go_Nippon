@@ -27,7 +27,11 @@ Route::get('users/analytics', function () {
 });
 
 route::get('/message', function () {
-    return view('message');
+    return view('messages.message');
+});
+
+route::get('/message/board', function () {
+    return view('messages.chat');
 });
 
 route::get('/favorites', function () {

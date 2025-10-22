@@ -8,7 +8,7 @@
 .trip-map-page main.py-4 {
     display: flex;
   flex-direction: row;
-  height: calc(100vh - 70px); /* ← ナビバーの高さ分を引く（約70px） */
+  height: calc(100vh - 70px);
   width: 100vw;
   padding: 0 !important;
   margin: 0 !important;
@@ -16,18 +16,18 @@
   overflow: hidden;
 }
 
-/* bodyとhtmlも100%にする（高さの基準） */
+
 html, body {
 height: 100%;
   margin: 0;
   padding: 0;
   background-color: #E6F4FA;
-  overflow-x: hidden;  /* ← 横だけ隠す */
+  overflow-x: hidden; 
   overflow-y: auto; 
   
 }
 p span {
-  margin-left: 0.5em; /* ← 半角1文字分くらい */
+  margin-left: 0.5em;
 }
 
 .col{
@@ -46,6 +46,20 @@ div{
    background-color:#ECF9FF;
    color:#9F6B46;
  }
+
+ .post-image{
+    width: 100%; 
+    height:320px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+ }
+.post-col-12{
+    padding:0.5rem;
+}
+
+.col-md-6{
+    padding:0.5rem;
+}
+
 
 .map-container {
     width: 100%;       /* 親幅いっぱい */
@@ -187,23 +201,8 @@ div{
     .col-auto{
         padding: 0;
     }
-  .phone {
-    font-size: 12px;
-    padding: 0;
-  }
-  .fa-heart.fa-star{
-    font-size: 12px;
-    padding: 0;
-  }
-  .badge{
-    font-size: 8px;
-  }
-  .date{
-    font-size: 9px;
-  }
-  .name{
-    padding-left:0.5rem;
-  }
+
+
 
 
 .big-card-body {
@@ -242,9 +241,7 @@ div{
   .map{
     display:block;
     width: 100%;
-    height: auto;
-    object-fit: contain;
-    margin:0 auto;
+    height: 80vh;
   }
 
   .spinner-outer {
@@ -293,8 +290,8 @@ div{
     {{-- Map  --}}
   <div class="row">
     <div class="col" style="width: 50vh; height: 50vh;">
-        <p class="fw-bold h2 mt-3  d-flex justify-content-center ">Click map <span>  to view full map</span></p>
-            <div class="map-container ">
+        <p class="fw-bold h2 mt-4 text-center  d-flex justify-content-center flex-wrap-nowrap" style="white-space: nowrap;">Click prefecture <span>&nbsp;to view your posts</span></p>
+            <div class="map-container">
                  <div id="map" class="map"></div>
                     <div class="spinner-wrapper">
                         <div class="spinner-outer">
@@ -311,199 +308,71 @@ div{
     <div class="col mt-1">
         <div class="card mt-4 big-card">
             <div class="card-header border-0">
-                <h1 class="fw-bold  d-flex justify-content-center " style="color:#9F6B46;">HOKKAIDO</h3>
+                <h1 class="fw-bold  d-flex justify-content-center " style="color:#9F6B46;">HOKKAIDO</h1>
             </div>
             <div class="card-body big-card-body" >
-                <div class="row align-items-center mb-2">
-                    <div class="col ps-2 pe-0">
-                        <div class="card border-0 post-card">
-                            <div class="card-header border-0 p-0">
-                               <a href="#">
-                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class="p-0">  
-                               </a> 
-                            </div>
-                           
-                            <div class="card-body">
-                                    <div class="row d-flex justify-content-between align-items-center">
-                                        <div class="col-auto">
-                                            <p class=" phone fw-bold">Title</p>
-                                        </div>
-                                        <div class="col-auto">
-                                            <p class="phone"><i class="fa-solid fa-heart"></i>100 <i class="fa-solid fa-star"></i></p>
-                                        </div>
-                                    </div>
-                               
-                                    <div class="row d-flex justify-content-between align-items-center">
-                                        <div class="col-auto">
-                                            <p class=" date fw-bold m-0">Aug 20, 2025</p>
-                                        </div>
-                                        <div class="col-auto ">
-                                        <div class="badge bg-opacity-50">Category</div>  
-                                        </div>
-                                    </div>
-                            </div>
-                        </div>
-            
-                    </div>
-                    <div class="col ps-2 pe-2">
+                <div class="row align-items-center">
+                    <div class="col-12 col-md-6 post-col-12">
                         <div class="card border-0 post-card">
                             <div class="card-header p-0 border-0 ">
                                <a href="#">
-                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class="p-0">  
+                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map"  class="p-0 post-image">  
                                </a> 
                             </div>
-                           
-                            <div class="card-body">
-                                    <div class="row d-flex justify-content-between align-items-center">
-                                        <div class="col-auto">
-                                            <p class=" phone fw-bold">Title</p>
-                                        </div>
-                                        <div class="col-auto">
-                                            <p class="phone"><i class="fa-solid fa-heart"></i>100 <i class="fa-solid fa-star"></i></p>
-                                        </div>
-                                    </div>
-                               
-                                    <div class="row d-flex justify-content-between align-items-center">
-                                        <div class="col-auto">
-                                            <p class=" date fw-bold m-0">Aug 20, 2025</p>
-                                        </div>
-                                        <div class="col-auto ">
-                                        <div class="badge bg-opacity-50">Category</div>  
-                                        </div>
-                                    </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 post-col-12">
+                        <div class="card border-0 post-card">
+                            <div class="card-header p-0 border-0 ">
+                               <a href="#">
+                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map"  class="p-0 post-image">  
+                               </a> 
                             </div>
                         </div>
-            
                     </div>
-        
-                </div>
 
-                <div class="row align-items-center mb-2">
-                    <div class="col ps-2 pe-0">
-                        <div class="card border-0 post-card">
-                            <div class="card-header border-0 p-0">
-                               <a href="#">
-                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class="p-0">  
-                               </a> 
-                            </div>
-                           
-                            <div class="card-body">
-                                    <div class="row d-flex justify-content-between align-items-center">
-                                        <div class="col-auto">
-                                            <p class=" phone fw-bold">Title</p>
-                                        </div>
-                                        <div class="col-auto">
-                                            <p class="phone"><i class="fa-solid fa-heart"></i>100 <i class="fa-solid fa-star"></i></p>
-                                        </div>
-                                    </div>
-                               
-                                    <div class="row d-flex justify-content-between align-items-center">
-                                        <div class="col-auto">
-                                            <p class=" date fw-bold m-0">Aug 20, 2025</p>
-                                        </div>
-                                        <div class="col-auto ">
-                                        <div class="badge bg-opacity-50">Category</div>  
-                                        </div>
-                                    </div>
-                            </div>
-                        </div>
-            
-                    </div>
-                    <div class="col ps-2 pe-2">
-                        <div class="card border-0 post-card">
-                            <div class="card-header border-0 p-0">
-                               <a href="#">
-                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class="p-0">  
-                               </a> 
-                            </div>
-                           
-                            <div class="card-body">
-                                    <div class="row d-flex justify-content-between align-items-center">
-                                        <div class="col-auto">
-                                            <p class=" phone fw-bold">Title</p>
-                                        </div>
-                                        <div class="col-auto">
-                                            <p class="phone"><i class="fa-solid fa-heart"></i>100 <i class="fa-solid fa-star"></i></p>
-                                        </div>
-                                    </div>
-                               
-                                    <div class="row d-flex justify-content-between align-items-center">
-                                        <div class="col-auto">
-                                            <p class=" date fw-bold m-0">Aug 20, 2025</p>
-                                        </div>
-                                        <div class="col-auto ">
-                                        <div class="badge bg-opacity-50">Category</div>  
-                                        </div>
-                                    </div>
-                            </div>
-                        </div>
-            
-                    </div>
-        
                 </div>
+                <div class="row align-items-center">
+                    <div class="col-12 col-md-6 post-col-12">
+                        <div class="card border-0 post-card">
+                            <div class="card-header p-0 border-0 ">
+                               <a href="#">
+                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map"  class="p-0 post-image">  
+                               </a> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 post-col-12">
+                        <div class="card border-0 post-card">
+                            <div class="card-header p-0 border-0 ">
+                               <a href="#">
+                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map"  class="p-0 post-image">  
+                               </a> 
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="row align-items-center mb-2">
-                    <div class="col ps-2 pe-0">
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-12 col-md-6 post-col-12">
                         <div class="card border-0 post-card">
-                            <div class="card-header border-0 p-0">
+                            <div class="card-header p-0 border-0 ">
                                <a href="#">
-                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class="p-0">  
+                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map"  class="p-0 post-image">  
                                </a> 
                             </div>
-                           
-                            <div class="card-body">
-                                    <div class="row d-flex justify-content-between align-items-center">
-                                        <div class="col-auto">
-                                            <p class=" phone fw-bold">Title</p>
-                                        </div>
-                                        <div class="col-auto">
-                                            <p class="phone"><i class="fa-solid fa-heart"></i>100 <i class="fa-solid fa-star"></i></p>
-                                        </div>
-                                    </div>
-                               
-                                    <div class="row d-flex justify-content-between align-items-center">
-                                        <div class="col-auto">
-                                            <p class=" date fw-bold m-0">Aug 20, 2025</p>
-                                        </div>
-                                        <div class="col-auto ">
-                                        <div class="badge bg-opacity-50">Category</div>  
-                                        </div>
-                                    </div>
-                            </div>
                         </div>
-            
                     </div>
-                    <div class="col ps-2 pe-2">
+                    <div class="col-12 col-md-6 post-col-12">
                         <div class="card border-0 post-card">
-                            <div class="card-header border-0 p-0">
+                            <div class="card-header p-0 border-0 ">
                                <a href="#">
-                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class="p-0">  
+                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map"  class="p-0 post-image">  
                                </a> 
                             </div>
-                           
-                            <div class="card-body">
-                                    <div class="row d-flex justify-content-between align-items-center">
-                                        <div class="col-auto">
-                                            <p class=" phone fw-bold">Title</p>
-                                        </div>
-                                        <div class="col-auto">
-                                            <p class="phone"><i class="fa-solid fa-heart"></i>100 <i class="fa-solid fa-star"></i></p>
-                                        </div>
-                                    </div>
-                               
-                                    <div class="row d-flex justify-content-between align-items-center">
-                                        <div class="col-auto">
-                                            <p class=" date fw-bold m-0">Aug 20, 2025</p>
-                                        </div>
-                                        <div class="col-auto ">
-                                        <div class="badge bg-opacity-50">Category</div>  
-                                        </div>
-                                    </div>
-                            </div>
                         </div>
-            
                     </div>
-        
+
                 </div>
 
             </div>
@@ -512,64 +381,72 @@ div{
   </div>
  </div>
 @endsection
-
-
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    window.onload = function() {
       const baseWidth = 675;
       const baseHeight = 670;
-      const container = document.getElementById('map');
+      let svg;
     
-      // 既存SVGを削除（リロード対策）
-      d3.select('#map').selectAll('*').remove();
-    
-      // SVGを作成
-      const svg = d3.select("#map")
-        .append("svg")
-        .attr("viewBox", `0 0 ${baseWidth} ${baseHeight}`)
-        .attr("preserveAspectRatio", "xMidYMid meet")
-        .style("width", "100%")
-        .style("height", "100%");
-    
-      // プロジェクション定義（scaleはあとで自動調整）
       const projection = d3.geoMercator()
-        .center([137, 38])
+        .center([137, 38]) // 日本の中心
         .translate([baseWidth / 2, baseHeight / 2]);
     
       const path = d3.geoPath().projection(projection);
     
-      // 📍コンテナに合わせてスケール調整
-      function adjustForContainer() {
-        const cw = document.querySelector(".map-container").clientWidth;
-        const scaleFactor = cw / baseWidth;
-        projection.scale(1800 * scaleFactor);
-        svg.selectAll("path").attr("d", path);
+      // ✅ 画面サイズに応じて動的にスケール・中心補正
+      function adjustProjectionScale() {
+        const container = document.querySelector(".map-container");
+        const cw = container.clientWidth;
+        const ch = container.clientHeight;
+    
+        // 横と縦の比率の小さい方に合わせる
+        const scaleFactor = Math.min(cw / baseWidth, ch / baseHeight);
+        let baseScale = 1800 * scaleFactor;
+    
+        if (window.innerWidth < 600) {
+    // スマホ時のオフセット（幅/高さの割合で決める）
+    // xOffset: 画面幅の約12%〜15%分だけ右に動かす
+    // yOffset: コンテナ高さの約12%〜18%分だけ下に動かす
+    const xOffset = Math.round(Math.max(40, cw * 0.3)); // 最低40pxは動かす
+    const yOffset = Math.round(Math.max(40, ch * 0.4)); // 最低40pxは動かす
+
+    // 必要ならここで更に拡大（スマホで見やすく）
+    baseScale *= 2;
+
+    // 右下に寄せる（+が右／下）
+    projection
+      .scale(baseScale)
+      .translate([cw / 2 + xOffset, ch / 2 + yOffset]);
+  } else {
+    projection
+      .scale(baseScale)
+      .translate([cw / 2, ch / 2]);
+  }
+
       }
     
-      // GeoJSON読み込み
-      d3.json("{{ asset('geojson/japan.geojson') }}").then(function(data) {
-        svg.selectAll("path")
-          .data(data.features)
+      function renderMap(data) {
+        // ===== 本州など（沖縄以外） =====
+        svg.selectAll(".prefecture")
+          .data(data.features.filter(d => d.properties.nam_ja !== "沖縄県"))
           .enter()
           .append("path")
+          .attr("class", "prefecture")
           .attr("d", path)
           .attr("fill", "#dcdcdc")
           .attr("stroke", "#333")
-          .on("mouseover", function(event, d) {
-            d3.select(this).attr("fill", "#ff7f50");
-          })
-          .on("mouseout", function(event, d) {
-            d3.select(this).attr("fill", "#dcdcdc");
-          })
+          .on("mouseover", function() { d3.select(this).attr("fill", "#ff7f50"); })
+          .on("mouseout", function() { d3.select(this).attr("fill", "#dcdcdc"); })
           .on("click", function(event, d) {
             alert(d.properties.nam_ja + " がクリックされました");
           });
     
-        // ✅ 沖縄を別描画
+        // ===== 沖縄を左上に別枠表示 =====
         const okinawaProjection = d3.geoMercator()
           .center([127.6, 26.2])
-          .scale(4000)
-          .translate([120, 120]);
+          .scale(4500)
+          .translate([130, 130]); // ← 左上枠の位置調整
+    
         const okinawaPath = d3.geoPath().projection(okinawaProjection);
         const okinawa = data.features.filter(d => d.properties.nam_ja === "沖縄県");
     
@@ -582,20 +459,56 @@ div{
           .attr("fill", "#ffdcb2")
           .attr("stroke", "#666")
           .attr("stroke-width", 0.5)
-          .on("mouseover", function(event, d) { d3.select(this).attr("fill", "#ffb37f"); })
-          .on("mouseout", function(event, d) { d3.select(this).attr("fill", "#ffdcb2"); });
+          .on("mouseover", function() { d3.select(this).attr("fill", "#ffb37f"); })
+          .on("mouseout", function() { d3.select(this).attr("fill", "#ffdcb2"); })
+          .on("click", function(event, d) {
+            alert(d.properties.nam_ja + " がクリックされました");
+          });
     
-        // 沖縄囲い線
-        svg.append("line").attr("class", "okinawa-line").attr("x1", 210).attr("y1", 30).attr("x2", 210).attr("y2", 170);
-        svg.append("line").attr("class", "okinawa-line").attr("x1", 30).attr("y1", 170).attr("x2", 210).attr("y2", 170);
+        // 沖縄囲い線（左上）
+        svg.append("line")
+        .attr("x1", 240)
+        .attr("y1", 20)
+        .attr("x2", 240)
+        .attr("y2", 240)
+        .attr("stroke", "#666")
+        .attr("stroke-width", 1);
+
+        svg.append("line")
+        .attr("x1", 20)
+        .attr("y1", 240)
+        .attr("x2", 240)
+        .attr("y2", 240)
+        .attr("stroke", "#666")
+        .attr("stroke-width", 1);
+      }
     
-        // 🌍 初回描画後にスケール調整
-        adjustForContainer();
-      });
+      function drawMap() {
+        // 一旦削除
+        d3.select("#map").selectAll("*").remove();
+        svg = d3.select("#map")
+          .append("svg")
+          .attr("viewBox", `0 0 ${baseWidth} ${baseHeight}`)
+          .attr("preserveAspectRatio", "xMidYMid meet")
+          .style("width", "100%")
+          .style("height", "100%");
     
-      // 📱 リサイズ時も再調整
-      window.addEventListener("resize", adjustForContainer);
-    });
-    </script>
+        adjustProjectionScale();
     
+        // GeoJSON読み込み
+        d3.json("{{ asset('geojson/japan.geojson') }}").then(renderMap);
+      }
+    
+      drawMap();
+    
+// ✅ リサイズ対応（デバウンス付き）
+let resizeTimeout;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      drawMap();
+    }, 400);
+  });
+};
+</script>
     
