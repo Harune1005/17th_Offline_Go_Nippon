@@ -208,5 +208,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         </main>
     </div>
     @yield('scripts')
+
+    @stack('scripts')
 </body>
 </html>

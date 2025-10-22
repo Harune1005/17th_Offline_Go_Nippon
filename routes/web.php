@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+
+Auth::routes();
 // Admin
 Route::get('admin/users', function () {
     return view('admin.users.index');
@@ -35,14 +39,6 @@ route::get('/followers', function () {
     return view('followers_followings');
 });
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::get('/profile', function () {
-    return view('users.profile.show');
-});
-
 Route::get('/show2', function () {
     return view('users.profile.show2');
 });
@@ -59,6 +55,13 @@ Route::get('/post/{id}/show', [PostController::class, 'show'])->name('post.show'
 Route::get('/post/{id}/edit', [PostController::class, 'edit'])->name('post.edit');
 Route::patch('/post/{id}/update', [PostController::class, 'update'])->name('post.update');
 Route::delete('/post/{id}/destroy', [PostController::class, 'destroy'])->name('post.destroy');
-Route::get('/users/profile', function () {
-    return view('users.profile.edit');
+
+Route::group(['middleware' => 'auth'],function(){
+
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+
+    // PROFILE
+    Route::get('/profile/{id}/show', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile/{id}/update', [ProfileController::class, 'update'])->name('profile.update');
 });
