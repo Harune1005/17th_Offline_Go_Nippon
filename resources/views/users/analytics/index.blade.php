@@ -26,7 +26,7 @@
       <!-- カード① Views -->
       <div class="card">
         <h2>Views</h2>
-        <div class="main-value">64,285</div>
+        <div class="main-value">{{ number_format($viewsTotal) }}</div>
         <div class="chart"><div class="donut"></div></div>
         <div class="legend">
           <span class="followers">Followers 86%</span>

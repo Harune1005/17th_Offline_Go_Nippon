@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -19,9 +20,7 @@ Route::get('admin/categories', function () {
 });
 
 // Analytics
-Route::get('users/analytics', function () {
-    return view('users.analytics.index');
-});
+Route::get('/users/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 
 route::get('/message', function () {
     return view('messages.message');
