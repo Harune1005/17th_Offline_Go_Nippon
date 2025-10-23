@@ -110,11 +110,11 @@
                                     </button>
                                     
                                     <div class="dropdown-menu dropdown-menu-end shadow-sm">
-                                        <a href="#" class="dropdown-item text-brown">
+                                        <a href=# class="dropdown-item text-brown">
                                             <i class="fa-regular fa-pen-to-square me-2"></i>Edit
                                         </a>
                                         <button class="dropdown-item text-danger" data-bs-toggle="modal"
-                                                data-bs-target="#delete-post-{{}}">
+                                                data-bs-target="#delete-post">
                                                 <i class="fa-regular fa-trash-can me-2"></i> Delete
                                         </button>
                                     </div>
@@ -142,18 +142,18 @@
 
                 <div class="card-body bg-white p-0">
                     <div class="row g-0">
-                        <div class="col-md-7">
-                            {{-- @if () --}}
+                       <div class="col-md-7">
+                            @if ($post->images->count() > 1)
+                                {{-- ★複数画像 → カルーセル表示 --}}
                                 <div id="postCarousel" class="carousel slide" data-bs-ride="carousel">
                                     <div class="carousel-inner">
-                                        <div class="carousel-item active">
-                                            <img src="https://static.retrip.jp/article/112968/images/112968a9d27826-a3ad-4652-8b27-e6fcd1c19087_m.jpg" 
-                                                class="d-block uniform-img" alt="image 1">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="https://cdn.camp-fire.jp/jbimages/8616928d-a240-4573-b2ec-6f23614558f9.jpg" 
-                                                class="d-block uniform-img" alt="image 2">
-                                        </div>
+                                        @foreach ($post->images as $index => $img)
+                                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                                <img src="{{ $img->image }}" 
+                                                    class="d-block uniform-img" 
+                                                    alt="Post image {{ $index + 1 }}">
+                                            </div>
+                                        @endforeach
                                     </div>
                                     <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
                                         <span class="carousel-control-prev-icon"></span>
@@ -162,12 +162,25 @@
                                         <span class="carousel-control-next-icon"></span>
                                     </button>
                                 </div>
-                            {{-- @else --}}
-                                {{-- Single Image --}}
-                                {{-- <img src="" 
-                                    alt="Post image {{  }}" 
-                                    class="uniform-img"> --}} 
-                            {{-- @endif --}}           
+
+                            @elseif ($post->images->count() === 1)
+                                {{-- ★1枚だけ → 通常表示 --}}
+                                <img src="{{ $post->images->first()->image }}" 
+                                    alt="Post image" 
+                                    class="uniform-img">
+
+                            @else
+                                {{-- ★画像なし → デフォルト画像 --}}
+                                <img src="{{ asset('images/no-image.png') }}" 
+                                    alt="No image" 
+                                    class="uniform-img">
+                            @endif
+
+
+                        @error('image')
+                            <div class="text-danger small">{{ $message }}</div>
+                        @enderror
+
                         </div>
 
                         <div class="col-md-5 border-start border-brown">

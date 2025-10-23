@@ -14,7 +14,8 @@ Route::get('admin/users', function () {
 });
 Route::get('/', function () {
     return view('home');
-});
+})->name('home');
+
 Route::get('admin/posts', function () {
     return view('admin.posts.index');
 });
@@ -49,8 +50,6 @@ Route::get('profile/trip-map', function () {
     return view('users.profile.trip-map');
 });
 
-// ★★★ 修正不要、このルート定義で 'post.store' が有効です ★★★
-// ルート名は post. で統一されているため、Blade側を post.store に合わせましょう。
 Route::get('/post/create', [PostController::class, 'create'])->name('post.create');
 Route::post('/post/store', [PostController::class, 'store'])->name('post.store');
 Route::get('/post/{id}/show', [PostController::class, 'show'])->name('post.show');
