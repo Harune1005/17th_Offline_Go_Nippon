@@ -63,7 +63,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     // PROFILE
-    Route::controller(ProfileController::class)->group( function() {
+    Route::controller(ProfileController::class)->group(function () {
         Route::get('/profile/{id}/show', 'show')->name('profile.show');
         Route::get('profile/edit', 'edit')->name('profile.edit');
         Route::patch('/profile/{id}/update', 'update')->name('profile.update');
