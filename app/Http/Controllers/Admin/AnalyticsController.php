@@ -26,8 +26,15 @@ class AnalyticsController extends Controller
         $views = PostView::whereIn('post_id', $postIds)
             ->where('created_at', '>=', $since);
 
-        $viewsTotal = $views->count();
-        $viewsFollowers = $views->where('is_follower', true)->count();
+        $viewsTotal = PostView::whereIn('post_id', $postIds)
+            ->where('created_at', '>=', $since)
+            ->count();
+
+        $viewsFollowers = PostView::whereIn('post_id', $postIds)
+            ->where('created_at', '>=', $since)
+            ->where('is_follower', true)
+            ->count();
+
         $viewsNonFollowers = $viewsTotal - $viewsFollowers;
 
         $topViewedPosts = Post::whereIn('id', $postIds)

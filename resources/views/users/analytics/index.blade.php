@@ -22,7 +22,6 @@
 
     <!-- ここから3カード（縦並びver） -->
     <div class="card-container">
-
       <!-- カード① Views -->
       <div class="card">
         <h2>Views</h2>
@@ -46,7 +45,7 @@
           <div class="thumbs">
             @foreach($topViewedPosts as $post)
               <div class="content-item">
-                <img src="{{ $post->image_url ?? 'https://via.placeholder.com/200' }}">
+                <img src="{{ asset('storage/' . $post->image) }}" alt="">
                 <span class="views">{{ number_format($post->views_count) }} views</span>
               </div>
             @endforeach
@@ -87,7 +86,7 @@
           <div class="thumbs">
             @foreach($topInteractionPosts as $post)
             <div class="content-item">
-              <img src="{{ $post->image_url ?? 'https://via.placeholder.com/200' }}">
+              <img src="{{ asset('storage/' . $post->image) }}" alt="">
               <span class="views">{{ $post->created_at->format('M j') }}</span>
             </div>
             @endforeach

@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'title',
+        'prefecture_id',
+        'visited_at',
+        'cost',
+        'image',
+        'content',
+    ];
+
     public function views()
     {
         return $this->hasMany(PostView::class);
