@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
+    public function index()
+    {
+        $posts = Post::with('categories', 'user')->latest()->get();
+        return view('users.posts.show', compact('posts'));
+    }
+
     public function create()
     {
         $all_categories = Category::all();
@@ -19,8 +25,82 @@ class PostController extends Controller
         return view('users.posts.create', compact('all_categories', 'prefectures'));
     }
 
-    public function store(Request $request)
+  public function store(Request $request)
+{
+    
+    $validated = $request->validate([
+        'title' => 'string|max:255',
+        'content' => 'string',
+        'date' => 'required|date',
+        'time_hour' => 'required|min:0|max:23',
+        'time_min' => 'required|min:0|max:59',
+        'category' => 'required|array|max:3',
+        'category.*' => 'nullable|integer|exists:categories,id',
+        'prefecture_id' => 'required|integer|exists:prefectures,id',
+        'cost' => 'nullable|integer|min:0|max:10000',
+        'image' => 'nullable',
+        'image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    $visitedAt = $validated['date'] . ' ' .
+        str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT) . ':' .
+        str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT) . ':00';
+
+         if ($request->hasFile('image')) {
+    $base64Images = [];
+        foreach ($request->file('image') as $image) {
+            $base64Images[] = base64_encode(file_get_contents($image));
+        }
+    }
+
+
+    $post = new Post([
+        'user_id' => Auth::id(),
+        'title' => $validated['title'],
+        'content' => $validated['content'],
+        'prefecture_id' => $validated['prefecture_id'],
+        'visited_at' => $visitedAt,
+        'cost' => $validated['cost'] ?? 0,
+        'image' =>$base64Images
+    ]);
+
+    $post->save();
+    
+    return redirect()->route('home')->with('success');
+}
+
+
+    public function show($id)
     {
+        $post = Post::with('categories', 'user', 'comments.user')->findOrFail($id);
+        return view('posts.show', compact('post')); 
+    }
+
+    public function edit($id)
+    {
+        $post = Post::findOrFail($id);
+
+        if (Auth::id() != $post->user_id) {
+            return redirect()->route('posts.index')->with('error');
+        }
+
+        $all_categories = Category::all();
+        $prefectures = Prefecture::all();
+        $selected_categories = $post->categories->pluck('id')->toArray();
+
+        return view('users.posts.edit', compact('post', 'all_categories', 'selected_categories', 'prefectures'));
+
+        
+    }
+
+    public function update(Request $request, $id)
+    {
+        $post = Post::findOrFail($id);
+
+        if (Auth::id() != $post->user_id) {
+            return redirect()->route('posts.index')->with('error');
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -34,7 +114,8 @@ class PostController extends Controller
             'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $imagePaths = [];
+        $imagePaths = json_decode($post->image, true) ?? [];
+
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $file) {
                 if ($file->isValid()) {
@@ -42,75 +123,42 @@ class PostController extends Controller
                     $imagePaths[] = $path;
                 }
             }
+            $imagePaths = array_slice($imagePaths, 0, 3);
         }
-        
-         $visitedAt = $validated['date'] . ' ' . str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT) . ':00';
 
-        $post = new Post();
+        $visitedAt = $validated['date'] . ' ' . str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT) . ':00';
+
         $post->title = $validated['title'];
         $post->content = $validated['content'];
         $post->prefecture_id = $validated['prefecture_id'];
         $post->visited_at = $visitedAt;
         $post->cost = $validated['cost'] ?? 0;
-        $post->user_id = Auth::id();
         $post->image = json_encode($imagePaths);
         $post->save();
 
         if (!empty($validated['category'])) {
-        $post->categories()->sync(array_filter($validated['category']));
-    }
-
-
-        return redirect()->route('posts.index')->with('success', '投稿を作成しました！');
-    }
-
-    public function update(Request $request, $id)
-    {
-        $post = Post::findOrFail($id);
-
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        $imagePaths = json_decode($post->images, true) ?? [];
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $file) {
-                if ($file->isValid()) {
-                    $path = $file->store('images', 'public');
-                    $imagePaths[] = $path;
-                }
-            }
-
-            $imagePaths = array_slice($imagePaths, 0, 3);
+            $post->categories()->sync(array_filter($validated['category']));
         }
 
-        $post->title = $validated['title'];
-        $post->images = json_encode($imagePaths);
-        $post->save();
-
-        return redirect()->route('posts.show', $post->id)->with('success', '投稿を更新しました！');
+        return redirect()->route('posts.show', $post->id)->with('success');
     }
 
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
 
-        if ($post->images) {
-            foreach (json_decode($post->images, true) as $path) {
+        if (Auth::id() != $post->user_id) {
+            return redirect()->route('posts.index')->with('error');
+        }
+
+        if ($post->image) {
+            foreach (json_decode($post->image, true) as $path) {
                 Storage::disk('public')->delete($path);
             }
         }
 
         $post->delete();
 
-        return redirect()->route('posts.show')->with('success', '投稿を削除しました！');
-    }
-
-    public function index()
-    {
-        $posts = Post::with('categories', 'user')->latest()->get();
-        return view('users.posts.show', compact('posts'));
+        return redirect()->route('posts.index')->with('success');
     }
 }

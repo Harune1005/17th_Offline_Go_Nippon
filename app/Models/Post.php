@@ -22,6 +22,15 @@ class Post extends Model
         'image',
     ];
 
+    protected $casts = [
+    'image' => 'array',
+    ];
+
+    public function images()
+{
+    return $this->hasMany(Image::class);
+}
+
     public function user()
     {
         return $this->belongsTo(User::class);

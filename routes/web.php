@@ -11,7 +11,8 @@ Route::get('admin/users', function () {
 });
 Route::get('/', function () {
     return view('home');
-});
+})->name('home');
+
 Route::get('admin/posts', function () {
     return view('admin.posts.index');
 });
@@ -44,11 +45,6 @@ Route::get('profile/trip-map', function () {
     return view('users.profile.trip-map');
 });
 
-
-
-Route::middleware(['auth'])->group(function () {
-    Route::resource('posts', PostController::class);
-});
 
 Route::get('/post/create', [PostController::class, 'create'])->name('post.create');
 Route::post('/post/store', [PostController::class, 'store'])->name('post.store');

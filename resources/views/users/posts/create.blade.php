@@ -45,7 +45,7 @@
         font-weight: 700;
         margin-bottom: 2rem;
         padding-bottom: 15px;
-        border-bottom: 1px solid #F8C7B3; 
+        border-bottom: 1px solid  #9F6B46; 
     }
     .post-header i {
         font-size: 1.5em;
@@ -214,7 +214,7 @@
     }
     .btn-post {
         background-color: #F8C7B3;
-        color: #9F6B46;
+        color: white;
         border: 1px solid #F8C7B3;
         padding: 8px 25px;
         font-weight: 600;
@@ -252,9 +252,10 @@
                     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                 @enderror
             </div>
-            
+
+            {{--Date & Time--}}  
             <div class="row mb-3">
-                <div class="col-md-6 mb-3 mb-md-0">
+                <div class="col-md-6">
                     <label for="date" class="form-label post-label">Date</label>
                     <input id="date" type="date" class="form-control post-input @error('date') is-invalid @enderror" name="date" value="{{ old('date', date('Y-m-d')) }}">
                     @error('visited_at')
@@ -279,26 +280,31 @@
                 </div>
             </div>
 
-            <div class="row mb-3">
-               <div class="col-md-7">
-                <label for="categories" class="form-label post-label">Categories</label>
-                <div class="d-flex gap-2">
-                @for ($i = 0; $i < 3; $i++)
-                    <select class="form-select post-input @error('category.' . $i) is-invalid @enderror" name="category[]">
-                        <option value="">-- Select --</option>
-                        @foreach ($all_categories as $category)
-                            <option value="{{ $category->id }}" {{ old('category.' . $i) == $category->id ? 'selected' : '' }}>
-                                {{ ucfirst($category->name) }}
-                            </option>
-                        @endforeach
-                    </select>
-                @endfor
-            </div>
-              @error('category')
-            <div class="text-danger small">{{ $message }}</div>
-            @enderror
+            <div class="mb-3">
+                    <label for="categories" class="form-label post-label">Categories</label>
 
-            </div>
+                    <div id="category-checkboxes" class="d-flex flex-wrap gap-3">
+                        @foreach ($all_categories as $category)
+                            <div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input category-checkbox @error('category') is-invalid @enderror"
+                                    name="category[]" 
+                                    id="category_{{ $category->id }}" 
+                                    value="{{ $category->id }}"
+                                    {{ in_array($category->id, old('category', [])) ? 'checked' : '' }}
+                                >
+                                <label class="form-check-label" for="category_{{ $category->id }}">
+                                    {{ ucfirst($category->name) }}
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    @error('category')
+                        <div class="text-danger small">{{ $message }}</div>
+                    @enderror
+                </div>
                 
                {{-- Prefecture Field (47 Prefectures) --}}
         <div class="col-md-5">
@@ -333,18 +339,29 @@
             @enderror
             </div>
 
-            {{-- Image --}}
+            {{-- Images --}}
             <div class="mb-4">
                 <label class="post-label" for="file-upload">Images (up to 3)</label>
+
                 <div class="image-controls">
                     <label for="file-upload" class="image-btn">+ Add</label>
-                    <input id="file-upload" name="image[]" type="file" accept="image/*" multiple hidden>
+                    <input 
+                        id="file-upload" 
+                        name="image[]" 
+                        type="file" 
+                        accept="image/*" 
+                        multiple 
+                        hidden
+                    >
                 </div>
+
                 <div id="image-previews" class="image-preview-area"></div>
-                  @error('image')
-            <div class="text-danger small">{{ $message }}</div>
-            @enderror
+
+                @error('image')
+                    <div class="text-danger small">{{ $message }}</div>
+                @enderror
             </div>
+
 
             {{-- Footer --}}
             <div class="form-footer">
@@ -354,7 +371,6 @@
         </form>
     </div>
 </div>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const MAX_IMAGES = 3;
@@ -362,14 +378,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewArea = document.getElementById('image-previews');
     const costSlider = document.getElementById('cost-slider');
     const costDisplay = document.getElementById('cost-current');
+    const checkboxes = document.querySelectorAll('.category-checkbox');
 
     // コストスライダー更新
-    costSlider.addEventListener('input', () => {
+    costSlider?.addEventListener('input', () => {
         costDisplay.textContent = '¥' + costSlider.value;
     });
 
     // 画像プレビュー処理
-    input.addEventListener('change', function(e) {
+    input?.addEventListener('change', function(e) {
         const files = Array.from(e.target.files);
         const existing = previewArea.querySelectorAll('.image-item').length;
         const addable = Math.min(files.length, MAX_IMAGES - existing);
@@ -394,11 +411,47 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             reader.readAsDataURL(file);
         });
+    });
 
-        // ファイルリセット（再度同じファイル選択可能に）
-        input.value = '';
+    // カテゴリ選択（最大3つまで）
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const checked = document.querySelectorAll('.category-checkbox:checked');
+            if (checked.length > 3) {
+                this.checked = false;
+                alert('Up to 3 categories allowed.');
+            }
+        });
     });
 });
 </script>
+<style>
+ .image-item {
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+  }
+  .image-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .remove-btn {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    background: #9F6B46;
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  </style>
 
 @endsection
