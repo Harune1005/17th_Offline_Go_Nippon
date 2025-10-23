@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-
 class Post extends Model
 {
     use HasFactory, SoftDeletes;
@@ -23,13 +22,13 @@ class Post extends Model
     ];
 
     protected $casts = [
-    'image' => 'array',
+        'image' => 'array',
     ];
 
     public function images()
-{
-    return $this->hasMany(Image::class);
-}
+    {
+        return $this->hasMany(Image::class);
+    }
 
     public function user()
     {
@@ -60,7 +59,6 @@ class Post extends Model
     // {
     //     return $this->likes()->where('user_id', Auth::id())->exists();
     // }
-       
 
     public function views()
     {

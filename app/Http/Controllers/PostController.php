@@ -14,6 +14,7 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::with('categories', 'user')->latest()->get();
+
         return view('users.posts.show', compact('posts'));
     }
 
@@ -25,55 +26,54 @@ class PostController extends Controller
         return view('users.posts.create', compact('all_categories', 'prefectures'));
     }
 
-  public function store(Request $request)
-{
-    
-    $validated = $request->validate([
-        'title' => 'string|max:255',
-        'content' => 'string',
-        'date' => 'required|date',
-        'time_hour' => 'required|min:0|max:23',
-        'time_min' => 'required|min:0|max:59',
-        'category' => 'required|array|max:3',
-        'category.*' => 'nullable|integer|exists:categories,id',
-        'prefecture_id' => 'required|integer|exists:prefectures,id',
-        'cost' => 'nullable|integer|min:0|max:10000',
-        'image' => 'nullable',
-        'image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
+    public function store(Request $request)
+    {
 
-    $visitedAt = $validated['date'] . ' ' .
-        str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT) . ':' .
-        str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT) . ':00';
+        $validated = $request->validate([
+            'title' => 'string|max:255',
+            'content' => 'string',
+            'date' => 'required|date',
+            'time_hour' => 'required|min:0|max:23',
+            'time_min' => 'required|min:0|max:59',
+            'category' => 'required|array|max:3',
+            'category.*' => 'nullable|integer|exists:categories,id',
+            'prefecture_id' => 'required|integer|exists:prefectures,id',
+            'cost' => 'nullable|integer|min:0|max:10000',
+            'image' => 'nullable',
+            'image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-         if ($request->hasFile('image')) {
-    $base64Images = [];
-        foreach ($request->file('image') as $image) {
-            $base64Images[] = base64_encode(file_get_contents($image));
+        $visitedAt = $validated['date'].' '.
+            str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT).':'.
+            str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT).':00';
+
+        if ($request->hasFile('image')) {
+            $base64Images = [];
+            foreach ($request->file('image') as $image) {
+                $base64Images[] = base64_encode(file_get_contents($image));
+            }
         }
+
+        $post = new Post([
+            'user_id' => Auth::id(),
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'prefecture_id' => $validated['prefecture_id'],
+            'visited_at' => $visitedAt,
+            'cost' => $validated['cost'] ?? 0,
+            'image' => $base64Images,
+        ]);
+
+        $post->save();
+
+        return redirect()->route('home')->with('success');
     }
-
-
-    $post = new Post([
-        'user_id' => Auth::id(),
-        'title' => $validated['title'],
-        'content' => $validated['content'],
-        'prefecture_id' => $validated['prefecture_id'],
-        'visited_at' => $visitedAt,
-        'cost' => $validated['cost'] ?? 0,
-        'image' =>$base64Images
-    ]);
-
-    $post->save();
-    
-    return redirect()->route('home')->with('success');
-}
-
 
     public function show($id)
     {
         $post = Post::with('categories', 'user', 'comments.user')->findOrFail($id);
-        return view('posts.show', compact('post')); 
+
+        return view('posts.show', compact('post'));
     }
 
     public function edit($id)
@@ -90,7 +90,6 @@ class PostController extends Controller
 
         return view('users.posts.edit', compact('post', 'all_categories', 'selected_categories', 'prefectures'));
 
-        
     }
 
     public function update(Request $request, $id)
@@ -126,7 +125,7 @@ class PostController extends Controller
             $imagePaths = array_slice($imagePaths, 0, 3);
         }
 
-        $visitedAt = $validated['date'] . ' ' . str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT) . ':00';
+        $visitedAt = $validated['date'].' '.str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT).':'.str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT).':00';
 
         $post->title = $validated['title'];
         $post->content = $validated['content'];
@@ -136,7 +135,7 @@ class PostController extends Controller
         $post->image = json_encode($imagePaths);
         $post->save();
 
-        if (!empty($validated['category'])) {
+        if (! empty($validated['category'])) {
             $post->categories()->sync(array_filter($validated['category']));
         }
 

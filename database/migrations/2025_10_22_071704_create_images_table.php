@@ -9,16 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up()
-{
-    Schema::create('images', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('post_id')->constrained()->onDelete('cascade');
-        $table->longText('image'); // base64文字列を保存するため longText
-        $table->timestamps();
-    });
-}
-
+    public function up()
+    {
+        Schema::create('images', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id')->constrained()->onDelete('cascade');
+            $table->longText('image'); // base64文字列を保存するため longText
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

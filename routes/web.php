@@ -7,7 +7,6 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-
 Auth::routes();
 // Admin
 Route::get('admin/users', function () {
@@ -50,7 +49,6 @@ Route::get('/show2', function () {
 Route::get('profile/trip-map', function () {
     return view('users.profile.trip-map');
 });
-
 
 Route::get('/post/create', [PostController::class, 'create'])->name('post.create');
 Route::post('/post/store', [PostController::class, 'store'])->name('post.store');
