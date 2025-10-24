@@ -107,7 +107,7 @@ class ProfileController extends Controller
     public function followers($id, Request $request)
     {
         $user = $this->user->findOrFail($id);
-        $followController = new FollowController(new Follow());
+        $followController = new FollowController(new Follow);
         $suggested_users = $followController->getSuggestedUsers();
 
         $activeTab = $request->get('tab', 'followers'); // ← デフォルトはfollowers
@@ -118,7 +118,7 @@ class ProfileController extends Controller
     public function following($id, Request $request)
     {
         $user = $this->user->findOrFail($id);
-        $followController = new FollowController(new Follow());
+        $followController = new FollowController(new Follow);
         $suggested_users = $followController->getSuggestedUsers();
 
         $activeTab = $request->get('tab', 'following'); // ← デフォルトはfollowing

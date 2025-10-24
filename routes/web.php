@@ -77,5 +77,5 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/follow/{user_id}/store', 'store')->name('follow.store');
         Route::delete('/follow/{user_id}/destroy', 'destroy')->name('follow.destroy');
     });
-   
+
 });
