@@ -36,17 +36,14 @@
     padding-right:0%;
     padding-left: 0.5rem;
   }
-  .container, .row, .col-md-4, .col-md-8 {
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-
-  /* 横余白でズレやすい要素をリセット */
-  .profile-row, .click-map {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+  .trip-map-a,
+  .profile-row,
+  .click-map {
+    padding-left: 0 !important;
+    padding-right: 10 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    
   }
 
   /* ボタンのマージン調整 */
@@ -179,62 +176,114 @@
 </style>
 
 <div class="container">
-    <div class="row mt-3 justify-content-center">
-        <div class="col d-none d-md-block mx-2">
+    <div class="row mt-2 justify-content-center">
+        <div class="col d-none d-md-block ">
             {{-- profile --}}
-            <div class="row ps-2 profile-row">
-                <div class="col-auto">
-                    <i class="fa-solid fa-circle-user text-secondary" style="font-size: 80px; border: 5px solid #9F6B46; border-radius: 50%; 
+            <div class="d-flex align-items-start ps-2 profile-row flex-wrap">
+                <div class="me-3 mb-3">
+                    @if ($user->avatar)
+                        <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="rounded-circle shadow-sm mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #9F6B46;">
+                    @else
+                        <i class="fa-solid fa-circle-user text-secondary mb-3" style="font-size: 110px; border: 5px solid #9F6B46; border-radius: 50%; 
                         padding:0;" ></i>
+                    @endif
                 </div>
-                <div class="col-auto">
-                    
-                    <div class="row name">
-                        <h3 >John</h3>
+                <div class="flex-grow-1 text-start">
+                    <h3 style="margin-left: 15px;">{{ $user->name }}</h3>
+
+                    <div class="d-flex justify-content-between text-center fw-semibold flex-wrap number">
+                        <a href="{{ route('profile.show', $user->id) }}" class="text-decoration-none flex-fill">
+                            <div class="fs-5 fw-bold">{{ $user->posts->count() }}</div>
+                            <div class="small">Posts</div>
+                        </a>
+                        <a href="{{ route('profile.followers', $user->id) }}" class="text-decoration-none flex-fill">
+                            <div class="fs-5 fw-bold">{{ $user->followers->count() }}</div>
+                            <div class="small">{{ $user->followers->count() == 1 ? 'Follower' : 'Followers' }}</div>
+                        </a>
+                        <a href="{{ route('profile.following', $user->id) }}" class="text-decoration-none flex-fill">
+                            <div class="fs-5 fw-bold">{{ $user->following->count() }}</div>
+                            <div class="small">Following</div>
+                        </a>
                     </div>
-                    <div class="row">
-                        <div class="row text-center mt-3 mb-2 number">
-                            <div class="col-4">
-                                <div class="fs-5 fw-bold" >10</div>
-                                <div class="small" >Posts</div>
-                            </div>
-                            <div class="col-4">
-                                <div class="fs-5 fw-bold" >10</div>
-                                <div class="small">Followers</div>
-                            </div>
-                            <div class="col-4">
-                                <div class="fs-5 fw-bold" >10</div>
-                                <div class="small" >Followings</div>
-                            </div>
-                        </div>
-                                    
-                    </div>
-                </div>
+                </div>          
             </div>
 
-            <div class="row profile-row">
-                <h5><span> country:</span>USA</h5>
+            <div class="mb-2">
+                <h4><span> country:</span> {{ $user->country }}</h4>
+                @if ($user->introduction)
+                    <p class="fw-semibold mb-3" style="color:#9F6B46;">
+                        {{ $user->introduction }}
+                    </p>
+                @endif
             </div>
-            <div class="row profile-row" >
-                <p>Hi. I'm John. <br> I love travering, meeting new people, and exploring different cultures. I'm always currious to learn new things and share experiences...</p>
-            </div>
-            <div class="row mb-2 profile-row">
-                <div class="col-auto px-2 ">
-                    <button type="submit" class="btn p-auto" style=" background-color: #F1BDB2; color:#FFFF; width:150px;">Edit Pofile</button>
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn p-auto" style=" border-color: #F1BDB2; color:#F1BDB2; width:150px;">Favorites</button>
-                </div>
+
+            <div class="row mb-4 justify-content-center">
+                @if (Auth::user()->id === $user->id)
+                    <div class="col-auto px-2">
+                        <a href="{{ route('profile.edit') }}" 
+                            class="btn editbtn shadow-sm"
+                            style="background-color:#F1BDB2; color:white; font-weight:bold; width:190px; border:2px solid #F1BDB2; transition:0.3s;"
+                            onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
+                            onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
+                            Edit profile
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="#" 
+                            class="btn editbtn shadow-sm"
+                            style="background-color:white; color:#F1BDB2; font-weight:bold; width:190px; border:2px solid #F1BDB2; transition:0.3s;"
+                            onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
+                            onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
+                            Favorite
+                        </a>
+                    </div>
+                @else
+                    <div class="col-auto px-2">
+                        @if ($user->isFollowed())
+                            <form action="{{ route('follow.destroy', $user->id) }}" method="post" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                               <button type="submit" 
+                                    class="btn editbtn shadow-sm"
+                                    style="background-color:#B0B0B0; color:white; font-weight:bold; width:180px; border:2px solid #B0B0B0; transition:0.3s;"
+                                    onmouseover="this.style.backgroundColor='white'; this.style.color='#B0B0B0';"
+                                    onmouseout="this.style.backgroundColor='#B0B0B0'; this.style.color='white';">
+                                    Following
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('follow.store', $user->id) }}" method="post" class="d-inline">
+                                @csrf
+                                <button type="submit" 
+                                        class="btn editbtn shadow-sm"
+                                        style="background-color:#F1BDB2; color:white; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
+                                        onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
+                                        onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
+                                    Follow
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+
+                    <div class="col-auto">
+                        <a href="¥" 
+                            class="btn editbtn shadow-sm"
+                            style="background-color:white; color:#F1BDB2; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
+                            onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
+                            onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
+                            DM
+                        </a>
+                    </div>
+                @endif
             </div>
             
             {{-- map --}}
-            <div class="row">
-                <p class="fw-bold h5 click-map">Click map <span>to view full map</span></p>
-
+           <div class="row">
+                <p class="fw-bold h5 click-map text-center">Click map <span>to view full map</span></p>
                 <div class="map-container">
-                    <a href="profile/trip-map" class="trip-map-a"> 
+                    <a href="#" class="trip-map-a">
                         <div id="map" style="width: 100%; height: 350px;"></div>
-                   </a>
+                    </a>
                     <div class="spinner-wrapper">
                         <div class="spinner-outer">
                             <div class="spinner-text">
@@ -258,152 +307,174 @@
                 <div class="mx-auto w-100 mb-2">
                     <ul class="nav nav-tabs border-bottom-0 justify-contenr-center" id="followTabs" role="tablist" style="height: 50px;">
                         <li class="nav-item text-center flex-fill follow-tab" role="presentation">
-                            <button class="nav-link active h-100 w-100" id="followings-tab" data-bs-toggle="tab" data-bs-target="#followings" type="button" role="tab" aria-controls="followings" aria-selected="true">Followings</button>
+                            <button class="nav-link h-100 w-100 {{ $activeTab === 'followers' ? 'active' : '' }}"
+                                id="followers-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#followers"
+                                type="button"
+                                role="tab"
+                                aria-controls="followers"
+                                aria-selected="{{ $activeTab === 'followers' ? 'true' : 'false' }}">
+                                Followers
+                            </button>
                         </li>
                         <li class="nav-item text-center flex-fill follow-tab" role="presentation">
-                            <button class="nav-link h-100 w-100" id="followers-tab" data-bs-toggle="tab" data-bs-target="#followers" type="button" role="tab" aria-controls="followers" aria-selected="false">Followers</button>
+                            <button class="nav-link h-100 w-100 {{ $activeTab === 'following' ? 'active' : '' }}"
+                                id="followings-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#followings"
+                                type="button"
+                                role="tab"
+                                aria-controls="followings"
+                                aria-selected="{{ $activeTab === 'following' ? 'true' : 'false' }}">
+                                Followings
+                            </button>
                         </li>
                     </ul>
                 </div>
 
                 {{-- content of tabs --}}
                 <div class="tab-content shadow p-3" id="followTabsContent">
-                    {{-- followings --}}
-                    <div class="tab-pane fade show active" id="followings" role="tabpanel" aria-labelledby="followings-tab">
-                        <div class="d-flex justify-content-center align-items-center text-center mt-2 w-50 mx-auto rounded" style="color:#ffffff ; background-color: #9F6B46; height:50px;">
-                            <h2 class="mb-0" style="font-size:20px;">120 Followings</h2>
+                    <div class="tab-pane fade {{ $activeTab === 'followers' ? 'show active' : '' }}"
+                        id="followers" role="tabpanel" aria-labelledby="followers-tab">
+                        {{-- Followers --}}                     
+                        <div class="d-flex justify-content-center align-items-center text-center mt-2 w-50 mx-auto rounded"
+                            style="color:#ffffff ; background-color: #9F6B46; height:50px;">
+                            <h2 class="mb-0" style="font-size:20px;">
+                                {{ $user->followers->count() }} Followers
+                            </h2>
                         </div>
-                        <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
-                            <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg" alt="user" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
-                            <div class="d-flex flex-column align-items-start">
-                                <h6 class="mb-0 fw-bold">USER 1</h6>
+
+                        @foreach ($user->followers as $follower)
+                            <div class="d-flex align-items-center rounded-3 p-3 mt-3" style="height: 100px;">
+                                <a href="{{ route('profile.show', $follower->id) }}" class="text-decoration-none">
+                                    @if ($follower->avatar)
+                                        <img src="{{ $follower->avatar }}" alt="{{ $follower->name }}"
+                                            class="rounded-circle me-4 align-items-center"
+                                            style="width:75px; height:75px;">
+                                    @else
+                                        <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4" style="font-size:60px;"></i>
+                                    @endif
+                                </a>
+
+                                <div class="d-flex flex-column align-items-start">
+                                    <h6 class="mb-0 fw-bold">{{ $follower->name }}</h6>
+                                </div>
+
+                                {{-- Follow/Unfollow ボタン --}}
+                                <div class="d-flex align-items-center justify-content-center ms-auto">
+                                    @if ($follower->id !== Auth::id())
+                                        @if ($follower->isFollowed())
+                                            <form action="{{ route('follow.destroy', $follower->id) }}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn m-0 following-btn">Following</button>
+                                            </form>
+                                        @else
+                                            <form action="{{ route('follow.store', $follower->id) }}" method="post">
+                                                @csrf
+                                                <button type="submit" class="btn m-0 follow-btn">Follow</button>
+                                            </form>
+                                        @endif
+                                    @endif
+                                </div>
                             </div>
-                            <div class="d-flex align-items-center justify-content-center ms-auto">
-                                <button class="btn m-0 following-btn">Following</button>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
-                            <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg" alt="user" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
-                            <div class="d-flex flex-column align-items-start">
-                                <h6 class="mb-0 fw-bold">USER 2</h6>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center ms-auto">
-                                <button class="btn m-0 following-btn">Following</button>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
-                            <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg" alt="user" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
-                            <div class="d-flex flex-column align-items-start">
-                                <h6 class="mb-0 fw-bold">USER 3</h6>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center ms-auto">
-                                <button class="btn m-0 following-btn">Following</button>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
-                            <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg" alt="user" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
-                            <div class="d-flex flex-column align-items-start">
-                                <h6 class="mb-0 fw-bold">USER 4</h6>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center ms-auto">
-                                <button class="btn m-0 following-btn">Following</button>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
-                    {{-- followers --}}
-                    <div class="tab-pane fade" id="followers" role="tabpanel" aria-labelledby="followers-tab">
-                        <div class="d-flex justify-content-center align-items-center text-center mt-2 w-50 mx-auto rounded" style="color:#ffffff ; background-color: #9F6B46; height:50px;">
-                            <h2 class="mb-0" style="font-size:20px;">350 Followers</h2>
+
+                    <div class="tab-pane fade {{ $activeTab === 'following' ? 'show active' : '' }}"
+                        id="followings" role="tabpanel" aria-labelledby="followings-tab">
+                        {{-- Followings --}}                      
+                        <div class="d-flex justify-content-center align-items-center text-center mt-2 w-50 mx-auto rounded"
+                            style="color:#ffffff ; background-color: #9F6B46; height:50px;">
+                            <h2 class="mb-0" style="font-size:20px;">
+                                {{ $user->following->count() }} Followings
+                            </h2>
                         </div>
-                        <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
-                            <img src="https://images.pexels.com/photos/31618288/pexels-photo-31618288.jpeg" alt="user" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
-                            <div class="d-flex flex-column align-items-start">
-                                <h6 class="mb-0 fw-bold">USER 1</h6>
+
+                        @foreach ($user->following as $following)
+                            <div class="d-flex align-items-center rounded-3 p-3 mt-3" style="height: 100px;">
+                                <a href="{{ route('profile.show', $following->id) }}" class="text-decoration-none">
+                                    @if ($following->avatar)
+                                        <img src="{{ $following->avatar }}" alt="{{ $following->name }}"
+                                            class="rounded-circle me-4 align-items-center"
+                                            style="width:75px; height:75px;">
+                                    @else
+                                        <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4" style="font-size:60px;"></i>
+                                    @endif
+                                </a>
+
+                                <div class="d-flex flex-column align-items-start">
+                                    <h6 class="mb-0 fw-bold">{{ $following->name }}</h6>
+                                </div>
+
+                                {{-- Follow/Unfollow ボタン --}}
+                                <div class="d-flex align-items-center justify-content-center ms-auto">
+                                    @if ($following->id !== Auth::id())
+                                        @if ($following->isFollowed())
+                                            <form action="{{ route('follow.destroy', $following->id) }}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn m-0 following-btn">Following</button>
+                                            </form>
+                                        @else
+                                            <form action="{{ route('follow.store', $following->id) }}" method="post">
+                                                @csrf
+                                                <button type="submit" class="btn m-0 follow-btn">Follow</button>
+                                            </form>
+                                        @endif
+                                    @endif
+                                </div>
                             </div>
-                            <div class="d-flex align-items-center justify-content-center ms-auto">
-                                <button class="btn m-0 following-btn">Following</button>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
-                            <img src="https://images.pexels.com/photos/31618288/pexels-photo-31618288.jpeg"" alt="user" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
-                            <div class="d-flex flex-column align-items-start">
-                                <h6 class="mb-0 fw-bold">USER 2</h6>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center ms-auto">
-                                <button class="btn m-0 follow-btn">Follow</button>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
-                            <img src="https://images.pexels.com/photos/31618288/pexels-photo-31618288.jpeg"" alt="user" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
-                            <div class="d-flex flex-column align-items-start">
-                                <h6 class="mb-0 fw-bold">USER 3</h6>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center ms-auto">
-                                <button class="btn m-0 following-btn">Following</button>
-                            </div>
-                        </div>
-                        
+                        @endforeach
                     </div>
-                </div>
+                </div>  
             </div>
         </div>
 
         <div class="col d-none d-md-block">
             <div class="shadow p-3 m-3">
-                <div class="d-flex justify-content-center align-items-center text-center mt-2 w-100 mx-auto mb-4" >
-                    <h2 class="mb-0" style="font-size:20px;"><i class="fa-solid fa-user"></i> Recommend Users</h2>
+                <div class="d-flex justify-content-center align-items-center text-center mt-2 w-100 mx-auto mb-4">
+                    <h2 class="mb-0" style="font-size:20px;">
+                        <i class="fa-solid fa-user"></i> Recommend Users
+                    </h2>
                 </div>
-                <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
-                    <img src="https://images.pexels.com/photos/34046748/pexels-photo-34046748.jpeg" alt="user" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
-                    <div class="d-flex flex-column align-items-start">
-                        <h6 class="mb-0 fw-bold">USER</h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center ms-auto">
-                        <button class="btn m-0 follow-btn">Follow</button>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
-                    <img src="https://images.pexels.com/photos/34046748/pexels-photo-34046748.jpeg" alt="user" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
-                    <div class="d-flex flex-column align-items-start">
-                        <h6 class="mb-0 fw-bold">USER</h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center ms-auto">
-                        <button class="btn m-0 follow-btn">Follow</button>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
-                    <img src="https://images.pexels.com/photos/34046748/pexels-photo-34046748.jpeg" alt="user" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
-                    <div class="d-flex flex-column align-items-start">
-                        <h6 class="mb-0 fw-bold">USER</h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center ms-auto">
-                        <button class="btn m-0 follow-btn">Follow</button>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
-                    <img src="https://images.pexels.com/photos/34046748/pexels-photo-34046748.jpeg" alt="user" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
-                    <div class="d-flex flex-column align-items-start">
-                        <h6 class="mb-0 fw-bold">USER</h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center ms-auto">
-                        <button class="btn m-0 follow-btn">Follow</button>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
-                    <img src="https://images.pexels.com/photos/34046748/pexels-photo-34046748.jpeg" alt="user" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
-                    <div class="d-flex flex-column align-items-start">
-                        <h6 class="mb-0 fw-bold">USER</h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center ms-auto">
-                        <button class="btn m-0 follow-btn">Follow</button>
-                    </div>
-                </div>
-                
+
+                @if ($suggested_users->isNotEmpty())
+                    @foreach ($suggested_users as $user)
+                        <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
+                            <a href="{{ route('profile.show', $user->id) }}" class="text-decoration-none">
+                                @if ($user->avatar)
+                                    <img src="{{ $user->avatar }}" alt="{{ $user->name }}"
+                                        class="rounded-circle me-4 align-items-center"
+                                        style="width:75px; height:75px;">
+                                @else
+                                    <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4"
+                                    style="font-size:60px;"></i>
+                                @endif
+                            </a>
+
+                            <div class="d-flex flex-column align-items-start">
+                                <h6 class="mb-0 fw-bold">{{ $user->name }}</h6>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-center ms-auto">
+                                <form action="{{ route('follow.store', $user->id) }}" method="post">
+                                    @csrf
+                                    <button type="submit" class="btn m-0 follow-btn">Follow</button>
+                                </form>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <p class="text-center mt-3" style="color:#9F6B46; font-weight:bold;">
+                        No recommended users
+                    </p>
+                @endif
             </div>
         </div>
     </div>
 </div>
-
 @endsection
 
 <script>

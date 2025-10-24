@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Follow;
 use App\Models\ProfileVisit;
 use App\Models\User;
 use Carbon\Carbon;
@@ -103,18 +104,25 @@ class ProfileController extends Controller
 
     }
 
-    public function followers($id)
+    public function followers($id, Request $request)
     {
         $user = $this->user->findOrFail($id);
+        $followController = new FollowController(new Follow());
+        $suggested_users = $followController->getSuggestedUsers();
 
-        return view('followers_followings')->with('user', $user);
+        $activeTab = $request->get('tab', 'followers'); // ← デフォルトはfollowers
 
+        return view('followers_followings', compact('user', 'suggested_users', 'activeTab'));
     }
 
-    public function following($id)
+    public function following($id, Request $request)
     {
         $user = $this->user->findOrFail($id);
+        $followController = new FollowController(new Follow());
+        $suggested_users = $followController->getSuggestedUsers();
 
-        return view('followers_followings')->with('user', $user);
+        $activeTab = $request->get('tab', 'following'); // ← デフォルトはfollowing
+
+        return view('followers_followings', compact('user', 'suggested_users', 'activeTab'));
     }
 }

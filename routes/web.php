@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -71,4 +72,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/profile/{id}/following', 'following')->name('profile.following');
     });
 
+    // follow
+    Route::controller(FollowController::class)->group(function () {
+        Route::post('/follow/{user_id}/store', 'store')->name('follow.store');
+        Route::delete('/follow/{user_id}/destroy', 'destroy')->name('follow.destroy');
+    });
+   
 });
