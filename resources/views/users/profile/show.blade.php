@@ -199,11 +199,12 @@
                             <div class="fs-5 fw-bold">{{ $user->posts->count() }}</div>
                             <div class="small">Posts</div>
                         </a>
-                        <a href="{{ route('profile.followers', $user->id) }}" class="text-decoration-none flex-fill">
+                        <a href="{{ route('profile.followers', ['id' => $user->id, 'tab' => 'followers']) }}" class="text-decoration-none flex-fill">
                             <div class="fs-5 fw-bold">{{ $user->followers->count() }}</div>
                             <div class="small">{{ $user->followers->count() == 1 ? 'Follower' : 'Followers' }}</div>
                         </a>
-                        <a href="{{ route('profile.following', $user->id) }}" class="text-decoration-none flex-fill">
+
+                        <a href="{{ route('profile.following', ['id' => $user->id, 'tab' => 'following']) }}" class="text-decoration-none flex-fill">
                             <div class="fs-5 fw-bold">{{ $user->following->count() }}</div>
                             <div class="small">Following</div>
                         </a>
@@ -242,16 +243,16 @@
                     </div>
                 @else
                     <div class="col-auto px-2">
-                        {{-- @if ($user->isFollowed())
+                        @if ($user->isFollowed())
                             <form action="{{ route('follow.destroy', $user->id) }}" method="post" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" 
-                                        class="btn editbtn shadow-sm"
-                                        style="background-color:transparent; color:#B0B0B0; font-weight:bold; width:180px; border:2px solid #B0B0B0; transition:0.3s;"
-                                        onmouseover="this.style.backgroundColor='#B0B0B0'; this.style.color='white';"
-                                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#B0B0B0';">
-                                    <i class="fa-regular fa-circle-check"></i>Following
+                               <button type="submit" 
+                                    class="btn editbtn shadow-sm"
+                                    style="background-color:#B0B0B0; color:white; font-weight:bold; width:180px; border:2px solid #B0B0B0; transition:0.3s;"
+                                    onmouseover="this.style.backgroundColor='white'; this.style.color='#B0B0B0';"
+                                    onmouseout="this.style.backgroundColor='#B0B0B0'; this.style.color='white';">
+                                    Following
                                 </button>
                             </form>
                         @else
@@ -265,17 +266,17 @@
                                     Follow
                                 </button>
                             </form>
-                        @endif --}}
+                        @endif
                     </div>
 
                     <div class="col-auto">
-                        {{-- <a href="{{ route('dm.show', $user->id) }}" 
+                        <a href="#" 
                             class="btn editbtn shadow-sm"
                             style="background-color:white; color:#F1BDB2; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
                             onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
                             onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
                             DM
-                        </a> --}}
+                        </a>
                     </div>
                 @endif
             </div>
@@ -284,8 +285,9 @@
             <div class="row">
                 <p class="fw-bold h5 click-map text-center">Click map <span>to view full map</span></p>
                 <div class="map-container">
-                    <a href="profile/trip-map" class="trip-map-a"></a>
-                    <div id="map" style="width: 100%; height: 350px;"></div>
+                    <a href="#" class="trip-map-a">
+                        <div id="map" style="width: 100%; height: 350px;"></div>
+                    </a>
                     <div class="spinner-wrapper">
                         <div class="spinner-outer">
                             <div class="spinner-text">
@@ -302,7 +304,48 @@
         <div class="col-md-8">
             <div class="row mt-3 mb-2">
                 <div class="col-12">
-                    @if ($user->posts->isNotEmpty())
+                    @if (isset($user) && $user->posts && $user->posts->isNotEmpty())
+                <div class="row g-4">
+                    @foreach ($user->posts as $post)
+                        @if (!empty($post->image))
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="card border-0 p-0 shadow-sm overflow-hidden">
+                                    <div class="card-header border-0 p-0">
+                                        <a href="{{ route('post.show', $post->id) }}" class="d-block position-relative">
+                                            {{-- 単一画像表示（Carousel は images リレーション用なので省略） --}}
+                                            @php
+                                                // storage/app/public/images/ に置いた場合のパス確認
+                                                $imagePath = 'storage/images/' . $post->image;
+                                            @endphp
+
+                                            @if (file_exists(public_path($imagePath)))
+                                                <img src="{{ asset($imagePath) }}"
+                                                     alt="Post image {{ $post->id }}"
+                                                     class="post-image d-block w-100"
+                                                     style="width:100%; height:auto; object-fit:cover;">
+                                            @else
+                                                {{-- デフォルト画像（存在しない場合の保険） --}}
+                                                <img src="{{ asset('images/no-image.png') }}"
+                                                     alt="No image"
+                                                     class="post-image d-block w-100"
+                                                     style="width:100%; height:auto; object-fit:cover;">
+                                            @endif
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            @else
+                <div class="d-flex flex-column justify-content-center align-items-center text-center"
+                     style="min-height: 60vh;">
+                    <i class="fa-regular fa-image mb-3" style="font-size: 9rem; color:#B0A695;"></i>
+                    <h3 class="fw-semibold" style="color:#776B5D;">No Posts Yet</h3>
+                </div>
+            @endif
+
+                    {{-- @if ($user->posts->isNotEmpty())
                         <div class="row g-4">
                             @foreach ($user->posts as $post)
                                 @if ($post->images->isNotEmpty())
@@ -353,7 +396,7 @@
                             <i class="fa-regular fa-image mb-3" style="font-size: 9rem; color:#B0A695;"></i>
                             <h3 class="fw-semibold" style="color:#776B5D;">No Posts Yet</h3>
                         </div>
-                    @endif
+                    @endif --}}
                 </div>
             </div>
         </div>
