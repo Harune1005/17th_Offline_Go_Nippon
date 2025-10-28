@@ -286,8 +286,9 @@
             <div class="row">
                 <p class="fw-bold h5 click-map text-center">Click map <span>to view full map</span></p>
                 <div class="map-container">
-                    <a href="profile/trip-map" class="trip-map-a"></a>
-                    <div id="map" style="width: 100%; height: 350px;"></div>
+                    <a href="/profile/trip-map" class="trip-map-a"> 
+                   <div id="map" style="width: 100%; height: 350px;"></div>
+                   </a>
                     <div class="spinner-wrapper">
                         <div class="spinner-outer">
                             <div class="spinner-text">

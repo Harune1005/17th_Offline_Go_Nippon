@@ -79,4 +79,20 @@ class Post extends Model
     {
         return $this->hasMany(Save::class);
     }
+
+    public function prefecture()
+    {
+        return $this->belongsTo(Prefecture::class);
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function isFavorited()
+    {
+        return $this->favorites()->where('user_id', Auth::user()->id)->exists();
+
+    }
 }

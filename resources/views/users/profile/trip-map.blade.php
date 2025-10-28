@@ -175,7 +175,15 @@ div{
    background-color: #FFFBEB;
    border-radius: 20px;
    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);   
+   opacity: 0;
+  transition: opacity 0.4s ease;
+  display: none;
 }
+
+.big-card.show{
+    display:block !important;
+    opacity:1;
+  }
 
 .post-card{
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -212,15 +220,17 @@ div{
 }
 
 .big-card {
-    order: 2;
-    width: 100%;
-    border-radius: 15px 15px 0 0;
-    overflow-y: visible; 
-    max-height: none; 
-    border: 3px solid #9F6B46;
+  order: 2;
+  width: 100%;
+  border-radius: 15px 15px 0 0;
+  overflow-y: visible; 
+  max-height: none; 
+  border: 3px solid #9F6B46;
   background-color: #FFFBEB;
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 0.4s ease;
   }
 
 .map-container {
@@ -284,8 +294,6 @@ div{
 </style>
 
 
-    {{-- Nav bar --}}
-
 <div class="container-fluid">
     {{-- Map  --}}
   <div class="row">
@@ -308,79 +316,20 @@ div{
     <div class="col mt-1">
         <div class="card mt-4 big-card">
             <div class="card-header border-0">
-                <h1 class="fw-bold  d-flex justify-content-center " style="color:#9F6B46;">HOKKAIDO</h1>
+                <h1 class="fw-bold  d-flex justify-content-center " style="color:#9F6B46;">&nbsp;</h1>
             </div>
-            <div class="card-body big-card-body" >
-                <div class="row align-items-center">
-                    <div class="col-12 col-md-6 post-col-12">
-                        <div class="card border-0 post-card">
-                            <div class="card-header p-0 border-0 ">
-                               <a href="#">
-                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map"  class="p-0 post-image">  
-                               </a> 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 post-col-12">
-                        <div class="card border-0 post-card">
-                            <div class="card-header p-0 border-0 ">
-                               <a href="#">
-                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map"  class="p-0 post-image">  
-                               </a> 
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="row align-items-center">
-                    <div class="col-12 col-md-6 post-col-12">
-                        <div class="card border-0 post-card">
-                            <div class="card-header p-0 border-0 ">
-                               <a href="#">
-                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map"  class="p-0 post-image">  
-                               </a> 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 post-col-12">
-                        <div class="card border-0 post-card">
-                            <div class="card-header p-0 border-0 ">
-                               <a href="#">
-                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map"  class="p-0 post-image">  
-                               </a> 
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="row align-items-center">
-                    <div class="col-12 col-md-6 post-col-12">
-                        <div class="card border-0 post-card">
-                            <div class="card-header p-0 border-0 ">
-                               <a href="#">
-                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map"  class="p-0 post-image">  
-                               </a> 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 post-col-12">
-                        <div class="card border-0 post-card">
-                            <div class="card-header p-0 border-0 ">
-                               <a href="#">
-                                <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map"  class="p-0 post-image">  
-                               </a> 
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
+            <div class="card-body big-card-body" ></div>
         </div>
     </div> 
   </div>
  </div>
 @endsection
+
+<script>
+    const prefectures = @json($prefectures ?? []); // ← LaravelからJSへ渡す
+    const userId = {{ $user->id ?? 'null' }};
+</script>
+
 <script>
     window.onload = function() {
       const baseWidth = 675;
@@ -393,27 +342,20 @@ div{
     
       const path = d3.geoPath().projection(projection);
     
-      // ✅ 画面サイズに応じて動的にスケール・中心補正
       function adjustProjectionScale() {
         const container = document.querySelector(".map-container");
         const cw = container.clientWidth;
         const ch = container.clientHeight;
     
-        // 横と縦の比率の小さい方に合わせる
         const scaleFactor = Math.min(cw / baseWidth, ch / baseHeight);
         let baseScale = 1800 * scaleFactor;
     
         if (window.innerWidth < 600) {
-    // スマホ時のオフセット（幅/高さの割合で決める）
-    // xOffset: 画面幅の約12%〜15%分だけ右に動かす
-    // yOffset: コンテナ高さの約12%〜18%分だけ下に動かす
-    const xOffset = Math.round(Math.max(40, cw * 0.3)); // 最低40pxは動かす
-    const yOffset = Math.round(Math.max(40, ch * 0.4)); // 最低40pxは動かす
+    const xOffset = Math.round(Math.max(40, cw * 0.3)); 
+    const yOffset = Math.round(Math.max(40, ch * 0.4)); 
 
-    // 必要ならここで更に拡大（スマホで見やすく）
     baseScale *= 2;
 
-    // 右下に寄せる（+が右／下）
     projection
       .scale(baseScale)
       .translate([cw / 2 + xOffset, ch / 2 + yOffset]);
@@ -426,22 +368,29 @@ div{
       }
     
       function renderMap(data) {
-        // ===== 本州など（沖縄以外） =====
+        //本州
         svg.selectAll(".prefecture")
           .data(data.features.filter(d => d.properties.nam_ja !== "沖縄県"))
           .enter()
           .append("path")
           .attr("class", "prefecture")
           .attr("d", path)
-          .attr("fill", "#dcdcdc")
+          .attr("fill", d =>{
+            const prefData = prefectures.find(p => p.name === d.properties.nam_ja);
+            return prefData && prefData.has_post ? "#F1BDB2" : "#dcdcdc";
+          })
           .attr("stroke", "#333")
           .on("mouseover", function() { d3.select(this).attr("fill", "#ff7f50"); })
           .on("mouseout", function() { d3.select(this).attr("fill", "#dcdcdc"); })
           .on("click", function(event, d) {
-            alert(d.properties.nam_ja + " がクリックされました");
+            const prefName = d.properties.nam_ja;
+            const prefData = prefectures.find(p => p.name === prefName);
+            if(prefData){
+                loadPosts(prefData.id, prefName);
+            }
           });
     
-        // ===== 沖縄を左上に別枠表示 =====
+        // 沖縄
         const okinawaProjection = d3.geoMercator()
           .center([127.6, 26.2])
           .scale(4500)
@@ -462,10 +411,13 @@ div{
           .on("mouseover", function() { d3.select(this).attr("fill", "#ffb37f"); })
           .on("mouseout", function() { d3.select(this).attr("fill", "#ffdcb2"); })
           .on("click", function(event, d) {
-            alert(d.properties.nam_ja + " がクリックされました");
+            const prefName = d.properties.nam_ja;
+            const prefData = prefectures.find(p => p.name === prefName);
+            if(prefData){
+                loadPosts(prefData.id, prefName);
+            }
           });
     
-        // 沖縄囲い線（左上）
         svg.append("line")
         .attr("x1", 240)
         .attr("y1", 20)
@@ -495,20 +447,52 @@ div{
     
         adjustProjectionScale();
     
-        // GeoJSON読み込み
         d3.json("{{ asset('geojson/japan.geojson') }}").then(renderMap);
       }
     
       drawMap();
     
-// ✅ リサイズ対応（デバウンス付き）
-let resizeTimeout;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      drawMap();
-    }, 400);
-  });
-};
+        let resizeTimeout;
+        window.addEventListener("resize", () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+            drawMap();
+            }, 400);
+        });
+
+    function loadPosts(prefId, prefName) {
+     const bigCard = document.querySelector('.big-card');
+    fetch(`/profile/${userId}/pref/${prefId}`)
+    .then(response => response.json())
+    .then(posts => {
+      const postContainer = document.querySelector('.big-card-body');
+      const prefHeader = document.querySelector('.big-card h1');
+      prefHeader.textContent = prefName; // ← 都道府県名をタイトルに表示
+
+      if (posts.length === 0) {
+        postContainer.innerHTML = `<p class="text-center text-muted">投稿はありません。</p>`;
+        return;
+      }
+
+      postContainer.innerHTML = posts.map(post => `
+        <div class="row align-items-center mb-3">
+          <div class="col-12 col-md-6">
+            <div class="card border-0 post-card">
+              <div class="card-header p-0 border-0">
+                <a href="/post/${post.id}/show">
+                  <img src="${post.image}" alt="${post.user.name}" class="p-0 post-image">
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+        bigCard.style.display = 'block';
+        bigCard.classList.add('show');
+    })
+    .catch(error => console.error('Error loading posts:', error));
+}
+
+     };
 </script>
     

@@ -41,10 +41,15 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     
+<<<<<<< Updated upstream
     @vite(['resources/css/app.css', 'resources/js/app.js']) 
 
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
+=======
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+     
+>>>>>>> Stashed changes
 </head>
 <body>
     <div id="app">

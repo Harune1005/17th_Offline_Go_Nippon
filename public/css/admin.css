@@ -1,4 +1,6 @@
 /* Admin */
+
+
 /* === 全体のスタイル === */
     body {
       font-family: 'Source Serif Pro', serif;
@@ -6,15 +8,6 @@
       color: #9F6B46;
       margin: 0;
       padding: 0;
-    }
-
-    /* === ヘッダー部分 === */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 50px 50px;
-      background-color: #FFFBEB;
     }
 
     .brand-text {
@@ -71,7 +64,6 @@
       justify-content: flex-start;
       gap: 40px;
       padding: 20px 80px;
-      border-bottom: 2px solid #9F6B46;
     }
 
     nav a {
@@ -125,47 +117,6 @@
       background-color: #9F6B46;
     }
 
-    /* === テーブル部分 === */
-    table {
-      width: 85%;
-      margin: 0 auto;
-      border-collapse: collapse;
-      text-align: left;
-      margin-top: 20px;
-    }
-
-    th, td {
-      border-bottom: 1px solid #9F6B46;
-      padding: 12px 10px;
-    }
-
-    th {
-      font-weight: 600;
-      color: #9F6B46;
-    }
-
-    td {
-      font-size: 14px;
-    }
-
-    /* 編集・削除アイコン */
-    td i {
-    font-size: 20px; 
-    cursor: pointer;
-    color: #9F6B46;
-    transition: color 0.2s;
-    }
-
-    /* アイコン同士にスペースを追加 */
-    td i:first-child {
-    margin-right: 32px; /* ← アイコンの間にスペース */
-    }
-
-    /* ホバー時に色を少し濃く */
-    td i:hover {
-    color: #7b4e30;
-    }
-
     /* === ページネーション === */
     .pagination {
       display: flex;
@@ -180,6 +131,7 @@
       background-color: transparent;
       color: #9F6B46;
       font-size: 14px;
+      padding: 4px 10px;
       cursor: pointer;
     }
 
@@ -299,10 +251,10 @@
 
     /* === テーブル部分 === */
     table {
-    width: 70%; /* ← 横幅を85% → 70% にして中央に */
-    margin: 20px auto; /* 上下にも少し余白を */
+    width: 100%; 
+    margin: 20px auto; 
     border-collapse: collapse;
-    text-align: center; /* ← 中央寄せ */
+    text-align: center; 
     }
 
     /* 列タイトル */
@@ -311,7 +263,7 @@
     color: #9F6B46;
     border-bottom: 1.5px solid #9F6B46;
     padding: 12px 10px;
-    text-align: center; /* ← タイトルも中央寄せ */
+    text-align: center; 
     }
 
     /* 各セル */
@@ -319,20 +271,25 @@
     font-size: 14px;
     border-bottom: 1px solid #9F6B46;
     padding: 12px 10px;
-    text-align: center; /* ← 内容も中央揃え */
+    text-align: center; 
     }
 
     /* 編集・削除アイコンの調整 */
     td i:first-child {
-    margin-right: 24px; /* 少し狭めてバランスよく */
+    margin-right: 24px;
+    }
+
+     /* ホバー時に色を少し濃く */
+    td i:hover {
+    color: #7b4e30;
     }
 
     /* 投稿画像 */
-    .post-img {
-      width: 100px;
-      height: 100px;
-      border-radius: 8px;
+    .post-image {
+      width: 150px;             /* 任意のサイズ（必要に応じて変更） */
+      aspect-ratio: 1 / 1;
       object-fit: cover;
+      border-radius: 8px;
     }
 
     /* カテゴリーのタグ */
@@ -356,6 +313,134 @@
     .status-dot {
       width: 8px;
       height: 8px;
-      background-color: #3EC70B; /* 緑の点 */
+      background-color: #3EC70B; 
       border-radius: 50%;
     }
+
+
+/* ==============================
+    スマホ用レイアウト調整
+============================== */
+@media (max-width: 768px) {
+
+  /* --- 全体 --- */
+  .post-page {
+    padding: 0;
+  }
+
+  main {
+    padding: 0 4px;
+  }
+
+  /* --- ナビゲーション --- */
+  nav {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+  }
+
+  nav a {
+    font-size: 14px;
+  }
+
+  /* --- フィルター --- */
+  .filters {
+    flex-direction: column;
+    gap: 16px;
+    padding: 10px 16px;
+  }
+
+  .filter-group select {
+    width: 100%;
+  }
+
+  /* --- テーブル --- */
+  table {
+    display: block;
+    width: 100vw;
+    overflow-x: auto;
+    white-space: nowrap;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  th, td {
+    padding: 10px 8px;
+    text-align: left;
+  }
+
+  th:first-child, td:first-child {
+    padding-left: 12px;
+  }
+
+  th:last-child, td:last-child {
+    padding-right: 12px;
+  }
+
+  .post-image {
+  width: 100%;            /* 親幅いっぱい */
+  aspect-ratio: 1 / 1;    /* 正方形にする */
+  object-fit: cover;      /* はみ出す部分をトリミング */
+  height: auto;           /* 一応auto指定で安全 */
+  display: block;         /* レイアウト崩れ防止 */
+  }
+
+  td img.post-image {
+  width: 100px;      /* 固定幅 */
+  height: 100px;     /* 固定高さで確実に正方形 */
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+  /* --- ステータス --- */
+  .status {
+    gap: 4px;
+    font-size: 12px;
+  }
+
+  /* --- ページネーション --- */
+  .pagination {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .pagination button {
+    font-size: 12px;
+    padding: 4px 6px;
+  }
+
+   /* --- Addボタンを1行に並べる --- */
+  .category-page .actions,
+  .category-page .add-buttons {
+    display: flex;
+    flex-wrap: nowrap;         /* 改行させない */
+    justify-content: center;   /* 中央揃え */
+    gap: 10px;                 /* ボタン間の隙間 */
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .category-page .add-button {
+    flex: 1 1 auto;
+    padding: 10px;
+    font-size: 14px;
+    white-space: nowrap;       /* テキスト改行防止 */
+  }
+
+  /* --- テーブルを中央寄せに --- */
+  .category-page table {
+    margin: 0 auto;            /* 左右中央寄せ */
+    width: 95%;                /* 画面に少し余白を残す */
+    border-collapse: collapse;
+  }
+
+  .category-page th, 
+  .category-page td {
+    text-align: center;
+    padding: 8px;
+  }
+}
