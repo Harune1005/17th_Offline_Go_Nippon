@@ -75,7 +75,7 @@ class User extends Authenticatable
         return $this->hasMany(Favorite::class);
 
     }
-    
+
     public function isFollowed()
     {
         return $this->followers()->where('follower_id', Auth::user()->id)->exists();
