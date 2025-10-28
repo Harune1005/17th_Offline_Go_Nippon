@@ -39,17 +39,14 @@
     padding-right:0%;
     padding-left: 0.5rem;
   }
-  .container, .row, .col-md-4, .col-md-8 {
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-
-  /* 横余白でズレやすい要素をリセット */
-  .profile-row, .click-map {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+  .trip-map-a,
+  .profile-row,
+  .click-map {
+    padding-left: 0 !important;
+    padding-right: 10 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    
   }
 
   /* ボタンのマージン調整 */
@@ -183,60 +180,114 @@
 
     {{-- Profile area --}}
 <div class="container">
-<div class="row mt-4 profile-row p-0">
-    <div class="col-md-4">
-        <div class="row ps-2 profile-row">
-            <div class="col-auto">
-                <i class="fa-solid fa-circle-user text-secondary" style="font-size: 80px; border: 5px solid #9F6B46; border-radius: 50%; 
-                     padding:0;" ></i>
-            </div>
-            <div class="col-auto">
-                
-                <div class="row name">
-                    <h3 >John</h3>
+    <div class="row mt-2 profile-row p-0">
+        <div class="col-md-4">
+            <div class="d-flex align-items-start ps-2 profile-row flex-wrap">
+                <div class="me-3 mb-3">
+                    @if ($user->avatar)
+                        <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="rounded-circle shadow-sm mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #9F6B46;">
+                    @else
+                        <i class="fa-solid fa-circle-user text-secondary mb-3" style="font-size: 110px; border: 5px solid #9F6B46; border-radius: 50%; 
+                        padding:0;" ></i>
+                    @endif
                 </div>
-                <div class="row">
-                    <div class="row text-center mt-3 mb-2 number">
-                        <div class="col-4">
-                            <div class="fs-5 fw-bold" >10</div>
-                            <div class="small" >Posts</div>
-                        </div>
-                        <div class="col-4">
-                            <div class="fs-5 fw-bold" >10</div>
-                            <div class="small">Followers</div>
-                        </div>
-                        <div class="col-4">
-                            <div class="fs-5 fw-bold" >10</div>
-                            <div class="small" >Followings</div>
-                        </div>
+                <div class="flex-grow-1 text-start">
+                    <h3 style="margin-left: 15px;">{{ $user->name }}</h3>
+
+                    <div class="d-flex justify-content-between text-center fw-semibold flex-wrap number">
+                        <a href="{{ route('profile.show', $user->id) }}" class="text-decoration-none flex-fill">
+                            <div class="fs-5 fw-bold">{{ $user->posts->count() }}</div>
+                            <div class="small">Posts</div>
+                        </a>
+                        <a href="{{ route('profile.followers', ['id' => $user->id, 'tab' => 'followers']) }}" class="text-decoration-none flex-fill">
+                            <div class="fs-5 fw-bold">{{ $user->followers->count() }}</div>
+                            <div class="small">{{ $user->followers->count() == 1 ? 'Follower' : 'Followers' }}</div>
+                        </a>
+
+                        <a href="{{ route('profile.following', ['id' => $user->id, 'tab' => 'following']) }}" class="text-decoration-none flex-fill">
+                            <div class="fs-5 fw-bold">{{ $user->following->count() }}</div>
+                            <div class="small">Following</div>
+                        </a>
                     </div>
-                                   
-                </div>
+                </div>          
             </div>
-        </div>
-        <div class="row profile-row">
-            <h5><span> country:</span>USA</h5>
-        </div>
-        <div class="row profile-row" >
-            <p>Hi. I'm John. <br> I love travering, meeting new people, and exploring different cultures. I'm always currious to learn new things and share experiences...</p>
-        </div>
-        <div class="row mb-2 profile-row">
-            <div class="col-auto px-2 ">
-                <button type="submit" class="btn p-auto" style=" background-color: #F1BDB2; color:#FFFF; width:150px;">Edit Pofile</button>
+            
+            <div class="mb-2">
+                <h4><span> country:</span> {{ $user->country }}</h4>
+                @if ($user->introduction)
+                    <p class="fw-semibold mb-3" style="color:#9F6B46;">
+                        {{ $user->introduction }}
+                    </p>
+                @endif
             </div>
-            <div class="col-auto">
-                <button type="submit" class="btn p-auto" style=" border-color: #F1BDB2; color:#F1BDB2; width:150px;">Favorites</button>
-            </div>
-        </div>
+               
+            <div class="row mb-4 justify-content-center">
+                @if (Auth::user()->id === $user->id)
+                    <div class="col-auto px-2">
+                        <a href="{{ route('profile.edit') }}" 
+                            class="btn editbtn shadow-sm"
+                            style="background-color:#F1BDB2; color:white; font-weight:bold; width:190px; border:2px solid #F1BDB2; transition:0.3s;"
+                            onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
+                            onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
+                            Edit profile
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="#" 
+                            class="btn editbtn shadow-sm"
+                            style="background-color:white; color:#F1BDB2; font-weight:bold; width:190px; border:2px solid #F1BDB2; transition:0.3s;"
+                            onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
+                            onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
+                            Favorite
+                        </a>
+                    </div>
+                @else
+                    <div class="col-auto px-2">
+                        @if ($user->isFollowed())
+                            <form action="{{ route('follow.destroy', $user->id) }}" method="post" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                               <button type="submit" 
+                                    class="btn editbtn shadow-sm"
+                                    style="background-color:#B0B0B0; color:white; font-weight:bold; width:180px; border:2px solid #B0B0B0; transition:0.3s;"
+                                    onmouseover="this.style.backgroundColor='white'; this.style.color='#B0B0B0';"
+                                    onmouseout="this.style.backgroundColor='#B0B0B0'; this.style.color='white';">
+                                    Following
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('follow.store', $user->id) }}" method="post" class="d-inline">
+                                @csrf
+                                <button type="submit" 
+                                        class="btn editbtn shadow-sm"
+                                        style="background-color:#F1BDB2; color:white; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
+                                        onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
+                                        onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
+                                    Follow
+                                </button>
+                            </form>
+                        @endif
+                    </div>
 
-      {{-- Map --}}
-        <div class="row">
-            <p class="fw-bold h5 click-map">Click map <span>to view full map</span></p>
+                    <div class="col-auto">
+                        <a href="#" 
+                            class="btn editbtn shadow-sm"
+                            style="background-color:white; color:#F1BDB2; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
+                            onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
+                            onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
+                            DM
+                        </a>
+                    </div>
+                @endif
+            </div>
 
+        {{-- Map --}}
+            <div class="row">
+                <p class="fw-bold h5 click-map text-center">Click map <span>to view full map</span></p>
                 <div class="map-container">
-                    <a href="profile/trip-map" class="trip-map-a"> 
-                   <div id="map" style="width: 100%; height: 350px;"></div>
-                   </a>
+                    <a href="#" class="trip-map-a">
+                        <div id="map" style="width: 100%; height: 350px;"></div>
+                    </a>
                     <div class="spinner-wrapper">
                         <div class="spinner-outer">
                             <div class="spinner-text">
@@ -246,53 +297,110 @@
                         </div>
                     </div>
                 </div>
-             
+            </div>
         </div>
-    </div>
 
-    {{-- Post area --}}
-    <div class="col-md-8 ">
-        <div class="row align-items-center  mt-3 mb-2">
-            <div class="col-4 ps-2 pe-0">
-                <a href="#1">
-                    <div class="card border-0 p-0">
-                        <div class="card-header border-0 p-0 ">
-                        <a href="#">
-                            <img src="{{ asset('images/japan-map.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class="post-image p-0">  
-                        </a> 
-                        </div>                  
-                    </div>
-                </a>
-            </div>
-            <div class="col-4 ps-2 pe-0">
-                <a href="#2">
-                    <div class="card border-0 p-0">
-                        <div class="card-header border-0 p-0">
-                        <a href="#">
-                            <img src="{{ asset('images/japan-map.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class=" post-image p-0">  
-                        </a> 
-                        </div>                  
-                    </div>
-                </a>
-            </div>
+        {{-- Post area --}}
+        <div class="col-md-8">
+            <div class="row mt-3 mb-2">
+                <div class="col-12">
+                    @if (isset($user) && $user->posts && $user->posts->isNotEmpty())
+                <div class="row g-4">
+                    @foreach ($user->posts as $post)
+                        @if (!empty($post->image))
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="card border-0 p-0 shadow-sm overflow-hidden">
+                                    <div class="card-header border-0 p-0">
+                                        <a href="{{ route('post.show', $post->id) }}" class="d-block position-relative">
+                                            {{-- 単一画像表示（Carousel は images リレーション用なので省略） --}}
+                                            @php
+                                                // storage/app/public/images/ に置いた場合のパス確認
+                                                $imagePath = 'storage/images/' . $post->image;
+                                            @endphp
 
-            <div class="col-4 ps-2 pe-0">
-                <a href="#3">
-                    <div class="card border-0 p-0">
-                        <div class="card-header border-0 p-0">
-                        <a href="#">
-                            <img src="{{ asset('images/たぬきち.png') }}" alt="Japan Map" style="width: 100%; height:auto;" class="post-image p-0">  
-                        </a> 
+                                            @if (file_exists(public_path($imagePath)))
+                                                <img src="{{ asset($imagePath) }}"
+                                                     alt="Post image {{ $post->id }}"
+                                                     class="post-image d-block w-100"
+                                                     style="width:100%; height:auto; object-fit:cover;">
+                                            @else
+                                                {{-- デフォルト画像（存在しない場合の保険） --}}
+                                                <img src="{{ asset('images/no-image.png') }}"
+                                                     alt="No image"
+                                                     class="post-image d-block w-100"
+                                                     style="width:100%; height:auto; object-fit:cover;">
+                                            @endif
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            @else
+                <div class="d-flex flex-column justify-content-center align-items-center text-center"
+                     style="min-height: 60vh;">
+                    <i class="fa-regular fa-image mb-3" style="font-size: 9rem; color:#B0A695;"></i>
+                    <h3 class="fw-semibold" style="color:#776B5D;">No Posts Yet</h3>
+                </div>
+            @endif
+
+                    {{-- @if ($user->posts->isNotEmpty())
+                        <div class="row g-4">
+                            @foreach ($user->posts as $post)
+                                @if ($post->images->isNotEmpty())
+                                    <div class="col-lg-4 col-md-6 col-sm-12">
+                                        <div class="card border-0 p-0 shadow-sm rounded-4 overflow-hidden">
+                                            <div class="card-header border-0 p-0">
+                                                <a href="{{ route('post.show', $post->id) }}" class="d-block position-relative">
+                                                    @if ($post->images->count() > 1)
+                                                        <div id="carouselPost{{ $post->id }}" 
+                                                            class="carousel slide" 
+                                                            data-bs-ride="carousel">
+                                                            <div class="carousel-inner">
+                                                                @foreach ($post->images as $key => $image)
+                                                                    <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
+                                                                        <img src="{{ $image->image }}" 
+                                                                            alt="Post image {{ $post->id }}" 
+                                                                            class="d-block w-100 post-image"
+                                                                            style="width: 100%; height: auto; object-fit: cover;">
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+
+                                                            <button class="carousel-control-prev" type="button"
+                                                                data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="prev">
+                                                                <span class="carousel-control-prev-icon"></span>
+                                                            </button>
+                                                            <button class="carousel-control-next" type="button"
+                                                                data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="next">
+                                                                <span class="carousel-control-next-icon"></span>
+                                                            </button>
+                                                        </div>
+                                                    @else
+                                                        <img src="{{ $post->images->first()->image }}" 
+                                                            alt="Post image {{ $post->id }}" 
+                                                            class="post-image"
+                                                            style="width: 100%; height: auto; object-fit: cover;">
+                                                    @endif
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
                         </div>
-                    </div>
-                </a>
-            </div>    
+                    @else
+                        <div class="d-flex flex-column justify-content-center align-items-center text-center"
+                            style="min-height: 60vh;">
+                            <i class="fa-regular fa-image mb-3" style="font-size: 9rem; color:#B0A695;"></i>
+                            <h3 class="fw-semibold" style="color:#776B5D;">No Posts Yet</h3>
+                        </div>
+                    @endif --}}
+                </div>
+            </div>
         </div>
-
-
-
     </div>
-</div>
 </div>
 @endsection
 
@@ -337,5 +445,5 @@
 
       
     });
-    </script>
+</script>
     

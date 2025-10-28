@@ -22,7 +22,7 @@ return new class extends Migration
 
             $table->string('cost', 10)->default('0');
 
-            $table->string('image', 255)->nullable();
+            $table->json('image')->nullable();
 
             $table->text('content');
 

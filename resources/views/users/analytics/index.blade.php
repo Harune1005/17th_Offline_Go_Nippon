@@ -22,38 +22,46 @@
 
     <!-- ここから3カード（縦並びver） -->
     <div class="card-container">
-
       <!-- カード① Views -->
       <div class="card">
         <h2>Views</h2>
         <div class="main-value">{{ number_format($viewsTotal) }}</div>
-        <div class="chart"><div class="donut"></div></div>
+        
+        <div class="chart">
+          <div class="donut"></div>
+        </div>
+
         <div class="legend">
-          <span class="followers">Followers 86%</span>
-          <span class="non-followers">Non-followers 14%</span>
+          @php
+            $followersRate = $viewsTotal > 0 ? round(($viewsFollowers / $viewsTotal) * 100, 1) : 0;
+            $nonFollowersRate = 100 - $followersRate;
+          @endphp
+          <span class="followers">Followers {{ $followersRate }}%</span>
+          <span class="non-followers">Non-followers {{ $nonFollowersRate }}%</span>
         </div>
 
         <div class="sub-section">
           <h4>By top content</h4>
-            <div class="thumbs">
+          <div class="thumbs">
+            @foreach($topViewedPosts as $post)
               <div class="content-item">
-                <img src="https://images.unsplash.com/photo-1554797589-7241bb691973?w=200">
-                <span class="views">1.2K views</span>
+                <img src="{{ asset('storage/' . $post->image) }}" alt="">
+                <span class="views">{{ number_format($post->views_count) }} views</span>
               </div>
-              <div class="content-item">
-                <img src="https://images.unsplash.com/photo-1554797589-7241bb691973?w=200">
-                <span class="views">980 views</span>
-              </div>
-              <div class="content-item">
-                <img src="https://images.unsplash.com/photo-1554797589-7241bb691973?w=200">
-                <span class="views">865 views</span>
-              </div>
+            @endforeach
           </div>
+
           <br>
+
           <h4>Profile activity</h4>
           <div class="profile-activity">
             <span>Profile visits:</span>
-            <span class="numbers">1,182 <span class="increase">+58.2%</span></span>
+            <span class="numbers">
+              {{ number_format($profileVisitsNow) }}
+              <span class="increase">
+                {{ $profileVisitChange >= 0 ? '+' : '' }}{{ $profileVisitChange }}%
+              </span>
+            </span>
           </div>
         </div>
       </div>
@@ -61,33 +69,27 @@
       <!-- カード② Interactions -->
       <div class="card">
         <h2>Interactions</h2>
-        <div class="main-value">190</div>
+        <div class="main-value">{{ number_format($interactionsTotal) }}</div>
         <div class="chart"><div class="donut"></div></div>
         <div class="legend">
-          <span class="followers">Followers 95%</span>
-          <span class="non-followers">Non-followers 5%</span>
+          <span class="followers">Followers {{ $interactionFollowersRate }}%</span>
+          <span class="non-followers">Non-followers {{ $interactionNonFollowersRate }}%</span>
         </div>
 
         <div class="sub-section">
           <h4>By interaction</h4>
-          <div class="profile-activity"><span>Likes:</span><span class="numbers">108</span></div>
-          <div class="profile-activity"><span>Comments:</span><span class="numbers">3</span></div>
-          <div class="profile-activity"><span>Saves:</span><span class="numbers">15</span></div>
+          <div class="profile-activity"><span>Likes:</span><span class="numbers">{{ $likes }}</span></div>
+          <div class="profile-activity"><span>Comments:</span><span class="numbers">{{ $comments }}</span></div>
+          <div class="profile-activity"><span>Saves:</span><span class="numbers">{{ $saves }}</span></div>
           <br>
           <h4>Top posts</h4>
           <div class="thumbs">
+            @foreach($topInteractionPosts as $post)
             <div class="content-item">
-              <img src="https://images.unsplash.com/photo-1554797589-7241bb691973?w=200">
-              <span class="views">Oct 5</span>
+              <img src="{{ asset('storage/' . $post->image) }}" alt="">
+              <span class="views">{{ $post->created_at->format('M j') }}</span>
             </div>
-            <div class="content-item">
-              <img src="https://images.unsplash.com/photo-1554797589-7241bb691973?w=200">
-              <span class="views">Sep 23</span>
-            </div>
-            <div class="content-item">
-              <img src="https://images.unsplash.com/photo-1554797589-7241bb691973?w=200">
-              <span class="views">Sep 15</span>
-            </div>
+            @endforeach
           </div>
         </div>
       </div>
@@ -95,8 +97,10 @@
       <!-- カード③ Followers -->
       <div class="card">
         <h2>Followers</h2>
-        <div class="main-value">860</div>
-        <div style="text-align:center; color:#F1BDB2;">+58.2% vs Sep 7</div>
+        <div class="main-value">{{ number_format($followersNow) }}</div>
+        <div style="text-align:center; color:#F1BDB2;">
+          {{ $followersPercent >= 0 ? '+' : '' }}{{ $followersPercent }}% vs last month
+        </div>
 
         <div class="sub-section">
           <h4>Follower details</h4>
@@ -179,7 +183,18 @@
             <div class="country">South Korea 4.8%<div class="bar" style="width:40%;"></div></div>
             <div class="country">China 3.7%<div class="bar" style="width:30%;"></div></div>
             <div class="country">Vietnam 3.1%<div class="bar" style="width:25%;"></div></div>
-            <div class="country">USA 1.2%<div class="bar" style="width:10%;"></div></div>
+            
+
+            @foreach($countryStats as $country)
+              @php
+                $maxCount = $countryStats->first()->count ?? 1;
+                $percent = round(($country->count / $maxCount) * 100);
+              @endphp
+              <div class="country">
+                {{ $country->country ?? 'Unknown' }} ({{ $country->count }})
+                <div class="bar" style="width:{{ $percent }}%;"></div>
+              </div>
+            @endforeach
           </div>
         </div>
       </div>
