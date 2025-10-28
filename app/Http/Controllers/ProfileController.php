@@ -110,7 +110,7 @@ class ProfileController extends Controller
         $followController = new FollowController(new Follow);
         $suggested_users = $followController->getSuggestedUsers();
 
-        $activeTab = $request->get('tab', 'followers'); // ← デフォルトはfollowers
+        $activeTab = $request->get('tab', 'followers');
 
         return view('followers_followings', compact('user', 'suggested_users', 'activeTab'));
     }
@@ -121,7 +121,7 @@ class ProfileController extends Controller
         $followController = new FollowController(new Follow);
         $suggested_users = $followController->getSuggestedUsers();
 
-        $activeTab = $request->get('tab', 'following'); // ← デフォルトはfollowing
+        $activeTab = $request->get('tab', 'following');
 
         return view('followers_followings', compact('user', 'suggested_users', 'activeTab'));
     }
