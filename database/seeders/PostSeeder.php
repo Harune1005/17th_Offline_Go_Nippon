@@ -71,7 +71,7 @@ class PostSeeder extends Seeder
             $imagesArray = [];
 
             foreach ($postData['image_files'] as $fileName) {
-                $path = storage_path('app/public/' . $fileName);
+                $path = storage_path('app/public/'.$fileName);
                 if (file_exists($path)) {
                     $base64 = base64_encode(file_get_contents($path));
 
