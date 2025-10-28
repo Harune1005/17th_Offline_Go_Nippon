@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FavoriteController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -33,9 +34,9 @@ route::get('/message/board', function () {
     return view('messages.chat');
 });
 
-route::get('/favorites', function () {
-    return view('favorite');
-});
+route::get('/favorites',[FavoriteController::class, 'show'])->name('favorite');
+route::post('/favorite/{post_id}/store',[FavoriteController::class, 'store'])->name('favorite.store');
+route::delete('/favorite/{post_id}/destroy',[FavoriteController::class, 'destroy'])->name('favorite.destroy');
 
 route::get('/followers', function () {
     return view('followers_followings');
