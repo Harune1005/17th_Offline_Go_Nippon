@@ -44,7 +44,7 @@ route::get('/followers', function () {
 });
 
 Route::get('/show2', function () {
-    return view('users.profile.show2');
+    return view('users.profile.show3');
 });
 
 Route::get('profile/trip-map', function () {
@@ -75,6 +75,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::controller(FollowController::class)->group(function () {
         Route::post('/follow/{user_id}/store', 'store')->name('follow.store');
         Route::delete('/follow/{user_id}/destroy', 'destroy')->name('follow.destroy');
+        Route::get('/follow/{user_id}/search', 'search')->name('follow.search');
     });
 
 });

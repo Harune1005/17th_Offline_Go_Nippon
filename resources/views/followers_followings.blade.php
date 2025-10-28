@@ -23,161 +23,161 @@
     }
 
 
- @media (max-width: 600px) {
-    html, body {
-    overflow-x: hidden; /* 横スクロール禁止 */
-  }
+    @media (max-width: 600px) {
+        html, body {
+        overflow-x: hidden; /* 横スクロール禁止 */
+    }
 
-  .col-md-4{
-    padding-right:0;
-  }
+    .col-md-4{
+        padding-right:0;
+    }
 
-  .trip-map-a{
-    padding-right:0%;
+    .trip-map-a{
+        padding-right:0%;
+        padding-left: 0.5rem;
+    }
+    .trip-map-a,
+    .profile-row,
+    .click-map {
+        padding-left: 0 !important;
+        padding-right: 10 !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        
+    }
+
+    /* ボタンのマージン調整 */
+    .btn {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* スピナーの位置調整も微修正（右にはみ出ることがあるため） */
+    .spinner-wrapper {
+        right: 10%;
+        transform: translateX(0) scale(0.9);
+    }
+    .col-auto{
+        padding: 0;
+    }
+    .phone {
+        font-size: 12px;
+        padding: 0;
+    }
+
+    .name{
+        padding-left: 2rem;
+    }
+    .number{
+        padding-left: 2rem;
+    }
+    .profile-row{
     padding-left: 0.5rem;
-  }
-  .trip-map-a,
-  .profile-row,
-  .click-map {
-    padding-left: 0 !important;
-    padding-right: 10 !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+    }
+    .spinner-wrapper {
+        bottom: 5px;
+        right: 30px;
+        transform: translateX(10%) scale(0.9);
+    }
     
-  }
+    .btn{
+        margin-left:0.5rem;
+        margin-right:0.5rem;
+    }
+    .click-map{
+        margin-left: 1rem;
+        padding-right: 0;
+        padding-left: 1rem;
+    }
 
-  /* ボタンのマージン調整 */
-  .btn {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-  }
+    }
+        .map-container {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    background-color: #E6F4FA;
+    border-radius: 20px;
+    overflow: hidden;
+    }
 
-  /* スピナーの位置調整も微修正（右にはみ出ることがあるため） */
-  .spinner-wrapper {
-    right: 10%;
-    transform: translateX(0) scale(0.9);
-  }
-.col-auto{
-    padding: 0;
-}
-  .phone {
-    font-size: 12px;
-    padding: 0;
-  }
-
-  .name{
-    padding-left: 2rem;
-  }
-  .number{
-    padding-left: 2rem;
-  }
- .profile-row{
-   padding-left: 0.5rem;
- }
- .spinner-wrapper {
-    bottom: 5px;
-    right: 30px;
-    transform: translateX(10%) scale(0.9);
-  }
- 
- .btn{
-    margin-left:0.5rem;
-    margin-right:0.5rem;
- }
- .click-map{
-    margin-left: 1rem;
-    padding-right: 0;
-    padding-left: 1rem;
- }
-
- }
-    .map-container {
-  position: relative;
-  width: 100%;
-  height: 350px;
-  background-color: #E6F4FA;
-  border-radius: 20px;
-  overflow: hidden;
-}
-
- 
-  path {
-    stroke: #333;
-    stroke-width: 0.5;
-    fill: #ccc;
-  }
-  path:hover {
-    fill: #F1BDB2;
-  }
+    
+    path {
+        stroke: #333;
+        stroke-width: 0.5;
+        fill: #ccc;
+    }
+    path:hover {
+        fill: #F1BDB2;
+    }
 
 
 
 
-/* 外円 */
-.spinner-outer {
-  position: relative;
-  width: 130px;
-  height: 130px;
-}
+    /* 外円 */
+    .spinner-outer {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    }
 
-.spinner-outer::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 15px solid #FFFF;
-  border-radius: 50%;
-}
-
-
-.spinner-outer::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 15px solid transparent;
-  border-top-color: #F1BDB2;
-  border-radius: 50%;
-  animation: spin 1.5s linear infinite;
-}
+    .spinner-outer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 15px solid #FFFF;
+    border-radius: 50%;
+    }
 
 
-/* 中央のテキスト */
-.spinner-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
+    .spinner-outer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 15px solid transparent;
+    border-top-color: #F1BDB2;
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+    }
 
-.spinner-text p {
-  margin: 0;
-}
 
-.spinner-text .label {
-  font-family: 'Source Serif Pro', serif;
-  color: #9F6B46;
-  font-weight: 600;
-  font-size: 15px;
-}
+    /* 中央のテキスト */
+    .spinner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    }
 
-.spinner-text .count {
-  font-family: 'Source Serif Pro', serif;
-  color: #9F6B46;
-  font-weight: bold;
-  font-size: 32px;
-}
-.spinner-wrapper {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  z-index: 10; /* 地図の上に出す */
-}
+    .spinner-text p {
+    margin: 0;
+    }
+
+    .spinner-text .label {
+    font-family: 'Source Serif Pro', serif;
+    color: #9F6B46;
+    font-weight: 600;
+    font-size: 15px;
+    }
+
+    .spinner-text .count {
+    font-family: 'Source Serif Pro', serif;
+    color: #9F6B46;
+    font-weight: bold;
+    font-size: 32px;
+    }
+    .spinner-wrapper {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10; /* 地図の上に出す */
+    }
 
 </style>
 
 <div class="container">
     <div class="row mt-2 justify-content-center">
-        <div class="col d-none d-md-block ">
+        <div class="col d-none d-md-block">
             {{-- profile --}}
             <div class="d-flex align-items-start ps-2 profile-row flex-wrap">
                 <div class="me-3 mb-3">
@@ -298,10 +298,19 @@
 
         <div class="col-12 col-md-4">
             <div class="mx-auto" style="max-width: 500px;">
-                <div class="d-flex mb-3">
-                    <input type="text" name="" placeholder="Search User ...." class="d-flex form-control me-2" style="width: 75%;">
-                    <button class="btn custom-btn ms-auto"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
-                </div>
+                <form action="{{ route('follow.search', $user->id) }}" method="GET" class="d-flex mb-3">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        value="{{ $keyword ?? '' }}" 
+                        placeholder="Search User ...." 
+                        class="d-flex form-control me-2" 
+                        style="width: 75%;">
+                    <input type="hidden" name="tab" value="{{ $activeTab ?? 'followers' }}">
+                    <button class="btn custom-btn ms-auto">
+                        <i class="fa-solid fa-magnifying-glass"></i>Search
+                    </button>
+                </form>
 
                 {{-- tabs --}}
                 <div class="mx-auto w-100 mb-2">
@@ -335,100 +344,121 @@
 
                 {{-- content of tabs --}}
                 <div class="tab-content shadow p-3" id="followTabsContent">
+                    {{-- ▼ Followersタブ --}}
                     <div class="tab-pane fade {{ $activeTab === 'followers' ? 'show active' : '' }}"
                         id="followers" role="tabpanel" aria-labelledby="followers-tab">
-                        {{-- Followers --}}                     
-                        <div class="d-flex justify-content-center align-items-center text-center mt-2 w-50 mx-auto rounded"
-                            style="color:#ffffff ; background-color: #9F6B46; height:50px;">
-                            <h2 class="mb-0" style="font-size:20px;">
-                                {{ $user->followers->count() }} Followers
-                            </h2>
+                        <div class="default-list {{ isset($searchResults) && $activeTab === 'followers' ? 'd-none' : '' }}">
+                            <div class="d-flex justify-content-center align-items-center text-center mt-2 w-50 mx-auto rounded"
+                                style="color:#ffffff; background-color: #9F6B46; height:50px;">
+                                <h2 class="mb-0" style="font-size:20px;">
+                                    {{ $user->followers->count() }} Followers
+                                </h2>
+                            </div>
+
+                            @foreach ($user->followers as $follower)
+                                <div class="d-flex align-items-center rounded-3 p-3 mt-3" style="height: 100px;">
+                                    <a href="{{ route('profile.show', $follower->id) }}" class="text-decoration-none">
+                                        @if ($follower->avatar)
+                                            <img src="{{ $follower->avatar }}" alt="{{ $follower->name }}"
+                                                class="rounded-circle me-4 align-items-center"
+                                                style="width:60px; height:60px;">
+                                        @else
+                                            <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4"
+                                                style="font-size:60px;"></i>
+                                        @endif
+                                    </a>
+
+                                    <div class="d-flex flex-column align-items-start">
+                                        <h6 class="mb-0 fw-bold">{{ $follower->name }}</h6>
+                                    </div>
+
+                                    <div class="d-flex align-items-center justify-content-center ms-auto">
+                                        @if ($follower->id !== Auth::id())
+                                            @if ($follower->isFollowed())
+                                                <form action="{{ route('follow.destroy', $follower->id) }}" method="post">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <input type="hidden" name="tab" value="followers">
+                                                    <button type="submit" class="btn m-0 following-btn">Following</button>
+                                                </form>
+
+                                            @else
+                                                <form action="{{ route('follow.store', $follower->id) }}" method="post">
+                                                    @csrf
+                                                    <input type="hidden" name="tab" value="followers">
+                                                    <button type="submit" class="btn m-0 follow-btn">Follow</button>
+                                                </form>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
 
-                        @foreach ($user->followers as $follower)
-                            <div class="d-flex align-items-center rounded-3 p-3 mt-3" style="height: 100px;">
-                                <a href="{{ route('profile.show', $follower->id) }}" class="text-decoration-none">
-                                    @if ($follower->avatar)
-                                        <img src="{{ $follower->avatar }}" alt="{{ $follower->name }}"
-                                            class="rounded-circle me-4 align-items-center"
-                                            style="width:75px; height:75px;">
-                                    @else
-                                        <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4" style="font-size:60px;"></i>
-                                    @endif
-                                </a>
-
-                                <div class="d-flex flex-column align-items-start">
-                                    <h6 class="mb-0 fw-bold">{{ $follower->name }}</h6>
-                                </div>
-
-                                {{-- Follow/Unfollow ボタン --}}
-                                <div class="d-flex align-items-center justify-content-center ms-auto">
-                                    @if ($follower->id !== Auth::id())
-                                        @if ($follower->isFollowed())
-                                            <form action="{{ route('follow.destroy', $follower->id) }}" method="post">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn m-0 following-btn">Following</button>
-                                            </form>
-                                        @else
-                                            <form action="{{ route('follow.store', $follower->id) }}" method="post">
-                                                @csrf
-                                                <button type="submit" class="btn m-0 follow-btn">Follow</button>
-                                            </form>
-                                        @endif
-                                    @endif
-                                </div>
+                        @if (isset($searchResults) && $activeTab === 'followers')
+                            <div class="search-result-container">
+                                @include('search_result', ['searchResults' => $searchResults])
                             </div>
-                        @endforeach
+                        @endif
                     </div>
 
+                    {{-- ▼ Followingタブ --}}
                     <div class="tab-pane fade {{ $activeTab === 'following' ? 'show active' : '' }}"
                         id="followings" role="tabpanel" aria-labelledby="followings-tab">
-                        {{-- Followings --}}                      
-                        <div class="d-flex justify-content-center align-items-center text-center mt-2 w-50 mx-auto rounded"
-                            style="color:#ffffff ; background-color: #9F6B46; height:50px;">
-                            <h2 class="mb-0" style="font-size:20px;">
-                                {{ $user->following->count() }} Followings
-                            </h2>
+                        <div class="default-list {{ isset($searchResults) && $activeTab === 'following' ? 'd-none' : '' }}">
+                            <div class="d-flex justify-content-center align-items-center text-center mt-2 w-50 mx-auto rounded"
+                                style="color:#ffffff; background-color: #9F6B46; height:50px;">
+                                <h2 class="mb-0" style="font-size:20px;">
+                                    {{ $user->following->count() }} Followings
+                                </h2>
+                            </div>
+
+                            @foreach ($user->following as $following)
+                                <div class="d-flex align-items-center rounded-3 p-3 mt-3" style="height: 100px;">
+                                    <a href="{{ route('profile.show', $following->id) }}" class="text-decoration-none">
+                                        @if ($following->avatar)
+                                            <img src="{{ $following->avatar }}" alt="{{ $following->name }}"
+                                                class="rounded-circle me-4 align-items-center"
+                                                style="width:60px; height:60px;">
+                                        @else
+                                            <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4"
+                                                style="font-size:60px;"></i>
+                                        @endif
+                                    </a>
+
+                                    <div class="d-flex flex-column align-items-start">
+                                        <h6 class="mb-0 fw-bold">{{ $following->name }}</h6>
+                                    </div>
+
+                                    <div class="d-flex align-items-center justify-content-center ms-auto">
+                                        @if ($following->id !== Auth::id())
+                                            @if ($following->isFollowed())
+                                                <form action="{{ route('follow.destroy', $following->id) }}" method="post">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <input type="hidden" name="tab" value="following">
+                                                    <button type="submit" class="btn m-0 following-btn">Following</button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('follow.store', $following->id) }}" method="post">
+                                                    @csrf
+                                                    <input type="hidden" name="tab" value="following">
+                                                    <button type="submit" class="btn m-0 follow-btn">Follow</button>
+                                                </form>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
 
-                        @foreach ($user->following as $following)
-                            <div class="d-flex align-items-center rounded-3 p-3 mt-3" style="height: 100px;">
-                                <a href="{{ route('profile.show', $following->id) }}" class="text-decoration-none">
-                                    @if ($following->avatar)
-                                        <img src="{{ $following->avatar }}" alt="{{ $following->name }}"
-                                            class="rounded-circle me-4 align-items-center"
-                                            style="width:75px; height:75px;">
-                                    @else
-                                        <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4" style="font-size:60px;"></i>
-                                    @endif
-                                </a>
-
-                                <div class="d-flex flex-column align-items-start">
-                                    <h6 class="mb-0 fw-bold">{{ $following->name }}</h6>
-                                </div>
-
-                                {{-- Follow/Unfollow ボタン --}}
-                                <div class="d-flex align-items-center justify-content-center ms-auto">
-                                    @if ($following->id !== Auth::id())
-                                        @if ($following->isFollowed())
-                                            <form action="{{ route('follow.destroy', $following->id) }}" method="post">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn m-0 following-btn">Following</button>
-                                            </form>
-                                        @else
-                                            <form action="{{ route('follow.store', $following->id) }}" method="post">
-                                                @csrf
-                                                <button type="submit" class="btn m-0 follow-btn">Follow</button>
-                                            </form>
-                                        @endif
-                                    @endif
-                                </div>
+                        @if (isset($searchResults) && $activeTab === 'following')
+                            <div class="search-result-container">
+                                @include('search_result', ['searchResults' => $searchResults])
                             </div>
-                        @endforeach
+                        @endif
                     </div>
-                </div>  
+                </div> 
             </div>
         </div>
 
@@ -447,7 +477,7 @@
                                 @if ($user->avatar)
                                     <img src="{{ $user->avatar }}" alt="{{ $user->name }}"
                                         class="rounded-circle me-4 align-items-center"
-                                        style="width:75px; height:75px;">
+                                        style="width:60px; height:60px;">
                                 @else
                                     <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4"
                                     style="font-size:60px;"></i>
@@ -461,6 +491,7 @@
                             <div class="d-flex align-items-center justify-content-center ms-auto">
                                 <form action="{{ route('follow.store', $user->id) }}" method="post">
                                     @csrf
+                                    <input type="hidden" name="tab" id="current-tab" value="{{ $activeTab ?? 'followers' }}">
                                     <button type="submit" class="btn m-0 follow-btn">Follow</button>
                                 </form>
                             </div>
@@ -516,4 +547,55 @@
           });
       });
     });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabInput = document.querySelector('input[name="tab"]') || document.getElementById('current-tab');
+            const searchInput = document.querySelector('input[name="search"]');
+            const tabButtons = document.querySelectorAll('#followTabs button[data-bs-toggle="tab"]');
+            const followersPane = document.querySelector('#followers');
+            const followingPane = document.querySelector('#followings');
+
+            // タブ切り替え時の処理
+            tabButtons.forEach(button => {
+                button.addEventListener('shown.bs.tab', function (event) {
+                    const activeTabId = event.target.getAttribute('data-bs-target');
+                    const activeTab = activeTabId.includes('following') ? 'following' : 'followers';
+                    
+                    // 🔹 現在のタブを hidden input に保存（これが重要）
+                    if (tabInput) tabInput.value = activeTab;
+
+                    // 🔹 検索欄クリア
+                    if (searchInput) searchInput.value = '';
+
+                    // 🔹 通常リストを表示、検索結果を非表示
+                    if (activeTab === 'followers') {
+                        toggleLists(followersPane, true);
+                        toggleLists(followingPane, true); // ← 前のタブも復元
+                    } else {
+                        toggleLists(followingPane, true);
+                        toggleLists(followersPane, true);
+                    }
+                });
+            });
+
+            // リスト切替関数
+            function toggleLists(pane, showDefault) {
+                const defaultList = pane.querySelector('.default-list');
+                const searchResult = pane.querySelector('.search-result-container');
+                if (defaultList) defaultList.classList.toggle('d-none', !showDefault);
+                if (searchResult) searchResult.classList.toggle('d-none', showDefault);
+            }
+
+            // 検索時の動作
+            const searchForm = document.querySelector('form[action*="follow/search"]');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function() {
+                    const activeTab = tabInput ? tabInput.value : 'followers';
+                    const pane = activeTab === 'following' ? followingPane : followersPane;
+                    toggleLists(pane, false);
+                });
+            }
+        });
     </script>
