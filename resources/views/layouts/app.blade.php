@@ -41,10 +41,15 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     
+<<<<<<< Updated upstream
     @vite(['resources/css/app.css', 'resources/js/app.js']) 
 
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
+=======
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+     
+>>>>>>> Stashed changes
 </head>
 <body>
     <div id="app">
@@ -64,19 +69,19 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto align-items-center gap-1">
                         <!-- Authentication Links -->
-                        {{-- @guest --}}
-                            {{-- @if (Route::has('login'))
+                        @guest
+                            @if (Route::has('login'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                    <a class="nav-link" href="{{ route('login') }}" style="color:#9F6B46;">{{ __('Login') }}</a>
                                 </li>
                             @endif
 
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link" href="{{ route('register') }}" style="color:#9F6B46;">{{ __('Register') }}</a>
                                 </li>
-                            @endif --}}
-                        {{-- @else --}}
+                            @endif
+                        @else
                                 <li class="nav-item">
                                 <a href="" class="nav-link fs-2" style="color:#9F6B46;">
                                     <i class="fa-solid fa-circle-plus"></i>
@@ -99,11 +104,15 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                                 <button class="btn shadow-none nav-link d-flex align-items-center"
                                     id="account-dropdown" data-bs-toggle="dropdown" aria-expanded="false"
                                     style="color:#9F6B46;">
-                                    {{-- @if (Auth::user()->avatar) --}}
-                                        <img src="https://placehold.co/40x40" class="rounded-circle" alt="user">
-                                    {{-- @else --}}
-                                        {{-- <i class="fa-solid fa-circle-user"></i> --}}
-                                    {{-- @endif --}}
+                                    @if (Auth::user()->avatar)
+                                        <img src="{{ Auth::user()->avatar }}" 
+                                            alt="{{ Auth::user()->name }}" 
+                                            class="rounded-circle" 
+                                            style="width: 40px; height: 40px; object-fit: cover;">
+                                    @else
+                                        <i class="fa-solid fa-circle-user text-secondary" 
+                                        style="font-size: 40px;"></i>
+                                    @endif
                                 </button>
 
                                 <div class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-2"
@@ -124,7 +133,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                                     <a href="#" class="dropdown-item"><i class="fa-solid fa-toggle-on me-2"></i>Notification</a>
                                 </div>
                             </li>
-                        {{-- @endguest --}}
+                        @endguest
                     </ul>
                 </div>  
             </div>

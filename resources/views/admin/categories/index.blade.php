@@ -1,11 +1,9 @@
-@extends('layouts.admin.app') 
-{{-- 共通レイアウト layouts/app.blade.php を継承 --}}
+@extends('layouts.app') 
 
 @section('title', 'Categories Management') 
-{{-- タイトル設定（layoutsで @yield("title") を使う） --}}
 
 @section('content')
-{{-- ================= カテゴリー管理ページ ================= --}}
+@vite(['public/css/admin.css'])
 
 <div class="category-page">
 
@@ -19,7 +17,7 @@
   <!-- === 検索バー === -->
   <div class="search-bar">
     <input type="text" placeholder="Add a category...">
-    <button>+ Add</button>
+    <button class="add-button">+ Add</button>
   </div>
 
   <!-- === ユーザー一覧テーブル === -->

@@ -1,11 +1,11 @@
-@extends('layouts.admin.app') 
-{{-- 共通レイアウト layouts/app.blade.php を継承 --}}
+@extends('layouts.app') 
 
 @section('title', 'User Management') 
-{{-- タイトル設定（layoutsで @yield("title") を使う） --}}
 
 @section('content')
 {{-- ================= ユーザー管理ページ ================= --}}
+@vite(['public/css/admin.css'])
+
 
 <div class="user-page">
 
