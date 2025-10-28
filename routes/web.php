@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
@@ -27,19 +28,19 @@ Route::get('admin/categories', function () {
 // Analytics
 Route::get('/users/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 
-route::get('/message', function () {
+Route::get('/message', function () {
     return view('messages.message');
 });
 
-route::get('/message/board', function () {
+Route::get('/message/board', function () {
     return view('messages.chat');
 });
 
-route::get('/favorites', function () {
-    return view('favorite');
-});
+Route::get('/favorites', [FavoriteController::class, 'show'])->name('favorite');
+Route::post('/favorite/{post_id}/store', [FavoriteController::class, 'store'])->name('favorite.store');
+Route::delete('/favorite/{post_id}/destroy', [FavoriteController::class, 'destroy'])->name('favorite.destroy');
 
-route::get('/followers', function () {
+Route::get('/followers', function () {
     return view('followers_followings');
 });
 

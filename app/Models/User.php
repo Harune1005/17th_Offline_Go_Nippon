@@ -70,6 +70,12 @@ class User extends Authenticatable
         return $this->belongsToMany(Category::class, 'category_user');
     }
 
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+
+    }
+
     public function isFollowed()
     {
         return $this->followers()->where('follower_id', Auth::user()->id)->exists();
