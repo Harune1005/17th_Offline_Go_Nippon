@@ -73,7 +73,7 @@ class PostController extends Controller
     {
         $post = Post::with('categories', 'user', 'comments.user')->findOrFail($id);
 
-        return view('posts.show', compact('post'));
+        return view('users.posts.show', compact('post'));
     }
 
     public function edit($id)
