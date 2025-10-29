@@ -95,4 +95,6 @@ class Post extends Model
         return $this->favorites()->where('user_id', Auth::user()->id)->exists();
 
     }
+
+    
 }

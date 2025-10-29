@@ -41,15 +41,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     
-<<<<<<< Updated upstream
     @vite(['resources/css/app.css', 'resources/js/app.js']) 
 
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
-=======
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-     
->>>>>>> Stashed changes
 </head>
 <body>
     <div id="app">
@@ -122,7 +117,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                                     {{-- @endcan --}}
 
                                     <hr class="dropdown-divider">
-                                    <a href="#" class="dropdown-item"><i class="fa-solid fa-user me-2"></i>Profile</a>
+                                    <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-user me-2"></i>Profile</a>
                                     <a href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
                                                         document.getElementById('logout-form').submit();" class="dropdown-item text-danger"><i
@@ -157,11 +152,25 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" style="border-left:2px solid #d1a07d;">
     
             <div class="offcanvas-header border-bottom" style="background-color:#fff5ee;">
-                <div class="d-flex align-items-center">
-                    <img src="https://placehold.co/50x50" class="rounded-circle me-2" alt="user">
-                    <span class="fw-bold" style="color:#9F6B46;">NAME</span>
-                </div>
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                @if (Auth::check())
+                    <a href="{{ route('profile.show', Auth::user()->id) }}" class="d-flex align-items-center text-decoration-none">
+                        @if (Auth::user()->avatar)
+                            <img src="{{ Auth::user()->avatar }}" 
+                                alt="{{ Auth::user()->name }}" 
+                                class="rounded-circle me-3" 
+                                style="width:50px; height:50px; object-fit:cover;">
+                        @else
+                            <i class="fa-solid fa-circle-user text-secondary me-3" 
+                            style="font-size:50px;"></i>
+                        @endif
+                        <span class="fw-bold" style="color:#9F6B46; font-size:20px;">{{ Auth::user()->name }}</span>
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa-solid fa-circle-user text-secondary me-3" style="font-size:50px;"></i>
+                        <span class="fw-bold" style="color:#9F6B46; font-size:20px;">Login</span>
+                    </a>
+                @endif
             </div>
 
             <div class="offcanvas-body d-flex flex-column align-items-center justify-content-start text-center pt-4">

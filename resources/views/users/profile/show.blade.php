@@ -233,7 +233,7 @@
                         </a>
                     </div>
                     <div class="col-auto">
-                        <a href="#" 
+                        <a href="{{ route('favorite') }}" 
                             class="btn editbtn shadow-sm"
                             style="background-color:white; color:#F1BDB2; font-weight:bold; width:190px; border:2px solid #F1BDB2; transition:0.3s;"
                             onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
@@ -305,7 +305,7 @@
         <div class="col-md-8">
             <div class="row mt-3 mb-2">
                 <div class="col-12">
-                    {{-- @if ($user->posts->isNotEmpty())
+                    @if ($user->posts->isNotEmpty())
                         <div class="row g-4">
                             @foreach ($user->posts as $post)
                                 @if ($post->images->isNotEmpty())
@@ -320,7 +320,7 @@
                                                             <div class="carousel-inner">
                                                                 @foreach ($post->images as $key => $image)
                                                                     <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
-                                                                        <img src="{{ $image->image }}" 
+                                                                        <img src="data:image/jpeg;base64,{{ $image->image }}" 
                                                                             alt="Post image {{ $post->id }}" 
                                                                             class="d-block w-100 post-image"
                                                                             style="width: 100%; height: auto; object-fit: cover;">
@@ -338,7 +338,7 @@
                                                             </button>
                                                         </div>
                                                     @else
-                                                        <img src="{{ $post->images->first()->image }}" 
+                                                        <img src="data:image/jpeg;base64,{{ $post->images->first()->image }}" 
                                                             alt="Post image {{ $post->id }}" 
                                                             class="post-image"
                                                             style="width: 100%; height: auto; object-fit: cover;">
@@ -356,7 +356,7 @@
                             <i class="fa-regular fa-image mb-3" style="font-size: 9rem; color:#B0A695;"></i>
                             <h3 class="fw-semibold" style="color:#776B5D;">No Posts Yet</h3>
                         </div>
-                    @endif --}}
+                    @endif
                 </div>
             </div>
         </div>

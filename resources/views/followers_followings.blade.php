@@ -221,7 +221,7 @@
                 @if (Auth::user()->id === $user->id)
                     <div class="col-auto px-2">
                         <a href="{{ route('profile.edit') }}" 
-                            class="btn editbtn shadow-sm"
+                            class="btn shadow-sm"
                             style="background-color:#F1BDB2; color:white; font-weight:bold; width:190px; border:2px solid #F1BDB2; transition:0.3s;"
                             onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
                             onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
@@ -230,7 +230,7 @@
                     </div>
                     <div class="col-auto">
                         <a href="#" 
-                            class="btn editbtn shadow-sm"
+                            class="btn shadow-sm"
                             style="background-color:white; color:#F1BDB2; font-weight:bold; width:190px; border:2px solid #F1BDB2; transition:0.3s;"
                             onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
                             onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
@@ -244,7 +244,7 @@
                                 @csrf
                                 @method('DELETE')
                                <button type="submit" 
-                                    class="btn editbtn shadow-sm"
+                                    class="btn shadow-sm"
                                     style="background-color:#B0B0B0; color:white; font-weight:bold; width:180px; border:2px solid #B0B0B0; transition:0.3s;"
                                     onmouseover="this.style.backgroundColor='white'; this.style.color='#B0B0B0';"
                                     onmouseout="this.style.backgroundColor='#B0B0B0'; this.style.color='white';">
@@ -255,7 +255,7 @@
                             <form action="{{ route('follow.store', $user->id) }}" method="post" class="d-inline">
                                 @csrf
                                 <button type="submit" 
-                                        class="btn editbtn shadow-sm"
+                                        class="btn shadow-sm"
                                         style="background-color:#F1BDB2; color:white; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
                                         onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
                                         onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
@@ -299,15 +299,9 @@
         <div class="col-12 col-md-4">
             <div class="mx-auto" style="max-width: 500px;">
                 <form action="{{ route('follow.search', $user->id) }}" method="GET" class="d-flex mb-3">
-                    <input 
-                        type="text" 
-                        name="search" 
-                        value="{{ $keyword ?? '' }}" 
-                        placeholder="Search User ...." 
-                        class="d-flex form-control me-2" 
-                        style="width: 75%;">
+                    <input type="text" name="search" value="{{ $keyword ?? '' }}" placeholder="Search User ...." class="d-flex form-control me-2" style="width: 75%;">
                     <input type="hidden" name="tab" value="{{ $activeTab ?? 'followers' }}">
-                    <button class="btn custom-btn ms-auto">
+                    <button class="btn follow-btn ms-auto">
                         <i class="fa-solid fa-magnifying-glass"></i>Search
                     </button>
                 </form>
@@ -317,24 +311,14 @@
                     <ul class="nav nav-tabs border-bottom-0 justify-contenr-center" id="followTabs" role="tablist" style="height: 50px;">
                         <li class="nav-item text-center flex-fill follow-tab" role="presentation">
                             <button class="nav-link h-100 w-100 {{ $activeTab === 'followers' ? 'active' : '' }}"
-                                id="followers-tab"
-                                data-bs-toggle="tab"
-                                data-bs-target="#followers"
-                                type="button"
-                                role="tab"
-                                aria-controls="followers"
+                                id="followers-tab" data-bs-toggle="tab" data-bs-target="#followers" type="button" role="tab" aria-controls="followers"
                                 aria-selected="{{ $activeTab === 'followers' ? 'true' : 'false' }}">
                                 Followers
                             </button>
                         </li>
                         <li class="nav-item text-center flex-fill follow-tab" role="presentation">
                             <button class="nav-link h-100 w-100 {{ $activeTab === 'following' ? 'active' : '' }}"
-                                id="followings-tab"
-                                data-bs-toggle="tab"
-                                data-bs-target="#followings"
-                                type="button"
-                                role="tab"
-                                aria-controls="followings"
+                                id="followings-tab" data-bs-toggle="tab" data-bs-target="#followings" type="button" role="tab" aria-controls="followings"
                                 aria-selected="{{ $activeTab === 'following' ? 'true' : 'false' }}">
                                 Followings
                             </button>
@@ -360,11 +344,9 @@
                                     <a href="{{ route('profile.show', $follower->id) }}" class="text-decoration-none">
                                         @if ($follower->avatar)
                                             <img src="{{ $follower->avatar }}" alt="{{ $follower->name }}"
-                                                class="rounded-circle me-4 align-items-center"
-                                                style="width:60px; height:60px;">
+                                                class="rounded-circle me-4 align-items-center" style="width:60px; height:60px;">
                                         @else
-                                            <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4"
-                                                style="font-size:60px;"></i>
+                                            <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4" style="font-size:60px;"></i>
                                         @endif
                                     </a>
 
@@ -418,11 +400,9 @@
                                     <a href="{{ route('profile.show', $following->id) }}" class="text-decoration-none">
                                         @if ($following->avatar)
                                             <img src="{{ $following->avatar }}" alt="{{ $following->name }}"
-                                                class="rounded-circle me-4 align-items-center"
-                                                style="width:60px; height:60px;">
+                                                class="rounded-circle me-4 align-items-center" style="width:60px; height:60px;">
                                         @else
-                                            <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4"
-                                                style="font-size:60px;"></i>
+                                            <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4" style="font-size:60px;"></i>
                                         @endif
                                     </a>
 
@@ -476,11 +456,9 @@
                             <a href="{{ route('profile.show', $user->id) }}" class="text-decoration-none">
                                 @if ($user->avatar)
                                     <img src="{{ $user->avatar }}" alt="{{ $user->name }}"
-                                        class="rounded-circle me-4 align-items-center"
-                                        style="width:60px; height:60px;">
+                                        class="rounded-circle me-4 align-items-center" style="width:60px; height:60px;">
                                 @else
-                                    <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4"
-                                    style="font-size:60px;"></i>
+                                    <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4" style="font-size:60px;"></i>
                                 @endif
                             </a>
 

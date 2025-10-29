@@ -25,12 +25,10 @@ class FollowController extends Controller
         $tab = $request->input('tab');
         $returnUrl = $request->input('return_url');
 
-        // もし return_url が指定されていればそのままそこへ戻る
         if ($returnUrl) {
             return redirect($returnUrl);
         }
 
-        // tab が指定されていれば followers/following に戻る
         $currentUser = Auth::user();
         if ($tab === 'following') {
             return redirect()->route('profile.following', $currentUser->id);
@@ -38,7 +36,6 @@ class FollowController extends Controller
             return redirect()->route('profile.followers', $currentUser->id);
         }
 
-        // それ以外（profile.showなど）の場合 → フォローした相手のプロフィールに戻る
         return redirect()->route('profile.show', $user_id);
     }
 
