@@ -306,11 +306,11 @@
             <div class="row mt-3 mb-2">
                 <div class="col-12">
                     @if ($user->posts->isNotEmpty())
-                        <div class="row g-4">
+                        <div class="row g-3">
                             @foreach ($user->posts as $post)
                                 @if ($post->images->isNotEmpty())
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <div class="card border-0 p-0 shadow-sm rounded-4 overflow-hidden">
+                                    <div class="col-4 col-sm-4 col-md-4 col-lg-4">
+                                        <div class="card border-0 p-0 shadow-sm rounded-2 overflow-hidden">
                                             <div class="card-header border-0 p-0">
                                                 <a href="{{ route('post.show', $post->id) }}" class="d-block position-relative">
                                                     @if ($post->images->count() > 1)

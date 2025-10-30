@@ -8,6 +8,7 @@
     body, html {
         font-family: 'Source Serif Pro', serif; 
         background-color: white; 
+        
     }
 
     /* ページの背景と中央寄せのコンテナ設定 */
@@ -16,7 +17,6 @@
         justify-content: center;
         align-items: flex-start; 
         min-height: 100vh;
-        padding-top: 80px;
         position: relative; 
         background-color: white; 
     }

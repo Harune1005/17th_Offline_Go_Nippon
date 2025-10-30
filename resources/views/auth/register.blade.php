@@ -3,10 +3,6 @@
 @section('content')
 
 <style>
-    /* -------------------------------------- */
-    /* ** カスタムCSS ** */
-    /* -------------------------------------- */
-
     /* 全体とフォント設定 */
     body, html {
         font-family: 'Source Serif Pro', serif; 
@@ -19,7 +15,6 @@
         justify-content: center;
         align-items: flex-start; 
         min-height: 100vh;
-        padding-top: 80px;
         position: relative; 
         background-color: white; 
     }
@@ -218,123 +213,28 @@
                     @enderror
                 </div>
                 
+                @php
+                    $groupedCountries = collect($countries)
+                        ->sortBy('name')
+                        ->groupBy(function ($country) {
+                            return strtoupper(substr($country['name'], 0, 1));
+                        });
+                @endphp
+
                 <div class="mb-3">
                     <label for="country" class="form-label register-label">Country</label>
-                    <select id="country" class="form-select register-input @error('country') is-invalid @enderror" name="country" required autocomplete="country">
+                    <select id="country" name="country" class="form-select register-input @error('country') is-invalid @enderror" required>
                         <option value="" disabled selected>Select your country</option>
-                        
-                        <optgroup label="A">
-                            <option value="Afghanistan" {{ old('country') == 'Afghanistan' ? 'selected' : '' }}>Afghanistan</option>
-                            <option value="Algeria" {{ old('country') == 'Algeria' ? 'selected' : '' }}>Algeria</option>
-                            <option value="Argentina" {{ old('country') == 'Argentina' ? 'selected' : '' }}>Argentina</option>
-                            <option value="Australia" {{ old('country') == 'Australia' ? 'selected' : '' }}>Australia</option>
-                            <option value="Austria" {{ old('country') == 'Austria' ? 'selected' : '' }}>Austria</option>
-                        </optgroup>
 
-                        <optgroup label="B">
-                            <option value="Bangladesh" {{ old('country') == 'Bangladesh' ? 'selected' : '' }}>Bangladesh</option>
-                            <option value="Belgium" {{ old('country') == 'Belgium' ? 'selected' : '' }}>Belgium</option>
-                            <option value="Brazil" {{ old('country') == 'Brazil' ? 'selected' : '' }}>Brazil</option>
-                        </optgroup>
-                        
-                        <optgroup label="C">
-                            <option value="Canada" {{ old('country') == 'Canada' ? 'selected' : '' }}>Canada</option>
-                            <option value="Chile" {{ old('country') == 'Chile' ? 'selected' : '' }}>Chile</option>
-                            <option value="China" {{ old('country') == 'China' ? 'selected' : '' }}>China</option>
-                            <option value="Colombia" {{ old('country') == 'Colombia' ? 'selected' : '' }}>Colombia</option>
-                        </optgroup>
-                        
-                        <optgroup label="D">
-                            <option value="Denmark" {{ old('country') == 'Denmark' ? 'selected' : '' }}>Denmark</option>
-                        </optgroup>
-
-                        <optgroup label="E">
-                            <option value="Egypt" {{ old('country') == 'Egypt' ? 'selected' : '' }}>Egypt</option>
-                        </optgroup>
-                        
-                        <optgroup label="F">
-                            <option value="Finland" {{ old('country') == 'Finland' ? 'selected' : '' }}>Finland</option>
-                            <option value="France" {{ old('country') == 'France' ? 'selected' : '' }}>France</option>
-                        </optgroup>
-
-                        <optgroup label="G">
-                            <option value="Germany" {{ old('country') == 'Germany' ? 'selected' : '' }}>Germany</option>
-                            <option value="Ghana" {{ old('country') == 'Ghana' ? 'selected' : '' }}>Ghana</option>
-                            <option value="Greece" {{ old('country') == 'Greece' ? 'selected' : '' }}>Greece</option>
-                        </optgroup>
-
-                        <optgroup label="I">
-                            <option value="India" {{ old('country') == 'India' ? 'selected' : '' }}>India</option>
-                            <option value="Indonesia" {{ old('country') == 'Indonesia' ? 'selected' : '' }}>Indonesia</option>
-                            <option value="Ireland" {{ old('country') == 'Ireland' ? 'selected' : '' }}>Ireland</option>
-                            <option value="Israel" {{ old('country') == 'Israel' ? 'selected' : '' }}>Israel</option>
-                            <option value="Italy" {{ old('country') == 'Italy' ? 'selected' : '' }}>Italy</option>
-                        </optgroup>
-
-                        <optgroup label="J">
-                            <option value="Japan" {{ old('country') == 'Japan' ? 'selected' : '' }}>Japan</option>
-                            <option value="Jordan" {{ old('country') == 'Jordan' ? 'selected' : '' }}>Jordan</option>
-                        </optgroup>
-
-                        <optgroup label="K">
-                            <option value="Kenya" {{ old('country') == 'Kenya' ? 'selected' : '' }}>Kenya</option>
-                            <option value="Kuwait" {{ old('country') == 'Kuwait' ? 'selected' : '' }}>Kuwait</option>
-                        </optgroup>
-
-                        <optgroup label="M">
-                            <option value="Malaysia" {{ old('country') == 'Malaysia' ? 'selected' : '' }}>Malaysia</option>
-                            <option value="Mexico" {{ old('country') == 'Mexico' ? 'selected' : '' }}>Mexico</option>
-                            <option value="Morocco" {{ old('country') == 'Morocco' ? 'selected' : '' }}>Morocco</option>
-                        </optgroup>
-
-                        <optgroup label="N">
-                            <option value="Netherlands" {{ old('country') == 'Netherlands' ? 'selected' : '' }}>Netherlands</option>
-                            <option value="New Zealand" {{ old('country') == 'New Zealand' ? 'selected' : '' }}>New Zealand</option>
-                            <option value="Nigeria" {{ old('country') == 'Nigeria' ? 'selected' : '' }}>Nigeria</option>
-                            <option value="Norway" {{ old('country') == 'Norway' ? 'selected' : '' }}>Norway</option>
-                        </optgroup>
-
-                        <optgroup label="P">
-                            <option value="Pakistan" {{ old('country') == 'Pakistan' ? 'selected' : '' }}>Pakistan</option>
-                            <option value="Peru" {{ old('country') == 'Peru' ? 'selected' : '' }}>Peru</option>
-                            <option value="Philippines" {{ old('country') == 'Philippines' ? 'selected' : '' }}>Philippines</option>
-                            <option value="Poland" {{ old('country') == 'Poland' ? 'selected' : '' }}>Poland</option>
-                            <option value="Portugal" {{ old('country') == 'Portugal' ? 'selected' : '' }}>Portugal</option>
-                        </optgroup>
-
-                        <optgroup label="R">
-                            <option value="Romania" {{ old('country') == 'Romania' ? 'selected' : '' }}>Romania</option>
-                            <option value="Russia" {{ old('country') == 'Russia' ? 'selected' : '' }}>Russia</option>
-                        </optgroup>
-
-                        <optgroup label="S">
-                            <option value="Saudi Arabia" {{ old('country') == 'Saudi Arabia' ? 'selected' : '' }}>Saudi Arabia</option>
-                            <option value="Singapore" {{ old('country') == 'Singapore' ? 'selected' : '' }}>Singapore</option>
-                            <option value="South Africa" {{ old('country') == 'South Africa' ? 'selected' : '' }}>South Africa</option>
-                            <option value="South Korea" {{ old('country') == 'South Korea' ? 'selected' : '' }}>South Korea</option>
-                            <option value="Spain" {{ old('country') == 'Spain' ? 'selected' : '' }}>Spain</option>
-                            <option value="Sweden" {{ old('country') == 'Sweden' ? 'selected' : '' }}>Sweden</option>
-                            <option value="Switzerland" {{ old('country') == 'Switzerland' ? 'selected' : '' }}>Switzerland</option>
-                        </optgroup>
-
-                        <optgroup label="T">
-                            <option value="Taiwan" {{ old('country') == 'Taiwan' ? 'selected' : '' }}>Taiwan</option>
-                            <option value="Thailand" {{ old('country') == 'Thailand' ? 'selected' : '' }}>Thailand</option>
-                            <option value="Turkey" {{ old('country') == 'Turkey' ? 'selected' : '' }}>Turkey</option>
-                        </optgroup>
-
-                        <optgroup label="U">
-                            <option value="United Arab Emirates" {{ old('country') == 'United Arab Emirates' ? 'selected' : '' }}>United Arab Emirates</option>
-                            <option value="United Kingdom" {{ old('country') == 'United Kingdom' ? 'selected' : '' }}>United Kingdom</option>
-                            <option value="United States" {{ old('country') == 'United States' ? 'selected' : '' }}>United States</option>
-                        </optgroup>
-
-                        <optgroup label="V">
-                            <option value="Venezuela" {{ old('country') == 'Venezuela' ? 'selected' : '' }}>Venezuela</option>
-                            <option value="Vietnam" {{ old('country') == 'Vietnam' ? 'selected' : '' }}>Vietnam</option>
-                        </optgroup>
-
-                        <option value="Other" {{ old('country') == 'Other' ? 'selected' : '' }}>--- Other / その他 ---</option>
+                        @foreach ($groupedCountries as $letter => $group)
+                            <optgroup label="{{ $letter }}">
+                                @foreach ($group as $country)
+                                    <option value="{{ $country['name'] }}" {{ old('country') == $country['name'] ? 'selected' : '' }}>
+                                        {{ $country['name'] }}
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                        @endforeach
                     </select>
 
                     @error('country')
