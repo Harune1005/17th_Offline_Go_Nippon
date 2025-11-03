@@ -12,6 +12,7 @@ class Prefecture extends Model
     protected $fillable = ['name'];
 
     public $timestamps = false;
+
     public function posts()
     {
         return $this->hasMany(Post::class);
