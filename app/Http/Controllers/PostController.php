@@ -13,13 +13,9 @@ class PostController extends Controller
 {
     public function index()
     {
-        $post = Post::with('images')->latest()->get();
-
-        return view('home', compact('posts'));
-
         $post = Post::with('categories', 'user')->latest()->get();
 
-        return view('users.posts.show', compact('posts'));
+        return view('home', compact('posts'));
     }
 
     public function create()
