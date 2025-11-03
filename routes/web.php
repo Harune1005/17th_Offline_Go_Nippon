@@ -50,7 +50,7 @@ Route::get('profile/trip-map', function () {
     return view('users.profile.trip-map');
 });
 
-//Post
+// Post
 Route::get('/post/create', [PostController::class, 'create'])->name('post.create');
 Route::post('/post/store', [PostController::class, 'store'])->name('post.store');
 Route::get('/post/{id}/show', [PostController::class, 'show'])->name('post.show');

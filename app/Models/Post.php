@@ -19,8 +19,8 @@ class Post extends Model
         'visited_at',
         'cost',
         'image',
-        'time_hour', 
-        'time_min', 
+        'time_hour',
+        'time_min',
     ];
 
     protected $casts = [
@@ -43,10 +43,9 @@ class Post extends Model
     }
 
     public function prefecture()
-{
-    return $this->belongsTo(Prefecture::class);
-}
-
+    {
+        return $this->belongsTo(Prefecture::class);
+    }
 
     // public function comments()
     // {

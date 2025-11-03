@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post; 
+use App\Models\Post;
 
 class HomeController extends Controller
 {
@@ -13,7 +13,8 @@ class HomeController extends Controller
 
     public function index()
     {
-       $posts = Post::with(['categories'])->latest()->get();
-       return view('home', compact('posts'));;
+        $posts = Post::with(['categories'])->latest()->get();
+
+        return view('home', compact('posts'));
     }
 }
