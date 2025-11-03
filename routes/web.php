@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminpostController;
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\CategoriesController;
+use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\HomeController;
@@ -11,19 +14,25 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Auth::routes();
-// Admin
-Route::get('admin/users', function () {
-    return view('admin.users.index');
-});
-Route::get('/', function () {
-    return view('home');
-})->name('home');
 
-Route::get('admin/posts', function () {
-    return view('admin.posts.index');
-});
-Route::get('admin/categories', function () {
-    return view('admin.categories.index');
+// Admin Controllers
+// Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], function(){
+Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+    // User
+    Route::get('/users', [UsersController::class, 'index'])->name('users');
+    Route::delete('/users/{id}/deactivate', [UsersController::class, 'deactivate'])->name('users.deactivate');
+    Route::patch('/users/{id}/activate', [UsersController::class, 'activate'])->name('users.activate');
+    Route::get('/users/search', [UsersController::class, 'search'])->name('users.search');
+    // Post
+    Route::get('/posts', [AdminpostController::class, 'index'])->name('posts');
+    Route::delete('posts/{id}/deactivate', [AdminpostController::class, 'deactivate'])->name('posts.deactivate');
+    Route::patch('posts/{id}/activate', [AdminpostController::class, 'activate'])->name('posts.activate');
+    Route::get('/posts/search', [AdminpostController::class, 'search'])->name('posts.search');
+    // Categories
+    Route::get('/categories', [CategoriesController::class, 'index'])->name('categories');
+    Route::post('categories/store', [CategoriesController::class, 'store'])->name('categories.store');
+    Route::patch('/categories/{id}/update', [CategoriesController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{id}/delete', [CategoriesController::class, 'delete'])->name('categories.delete');
 });
 
 // Analytics

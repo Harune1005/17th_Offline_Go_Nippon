@@ -1,6 +1,6 @@
 @extends('layouts.app') 
 
-@section('title', 'Post Management') 
+@section('title', 'Admin: Posts') 
 
 @section('content')
 @vite(['public/css/admin.css'])
@@ -10,27 +10,49 @@
 
   <!-- ナビゲーション部分 -->
   <nav>
-    <a href="#">User</a>
-    <a href="#" class="active">Post</a>
-    <a href="#">Category</a>
+    <a href="{{ route('admin.users') }}">User</a>
+    <a href="{{ route('admin.posts') }}" class="active">Post</a>
+    <a href="{{ route('admin.categories') }}">Category</a>
   </nav>
 
   <!-- メインコンテンツ -->
   <main>
     <!-- フィルター部分 -->
-    <div class="filters">
-      <div class="filter-group">
-        <label for="category">Category</label>
-        <select id="category">
-          <option value="">select</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="prefecture">Prefecture</label>
-        <select id="prefecture">
-          <option value="">select</option>
-        </select>
-      </div>
+    <div class="filters mb-3">
+      <form method="GET" action="{{ route('admin.posts') }}" class="d-flex gap-3">
+        <!-- Category -->
+        <div class="filter-group">
+          <label for="category">Category</label>
+          <select name="category" id="category" class="form-select">
+            <option value="">All</option>
+            @foreach ($categories as $category)
+              <option value="{{ $category->id }}" {{ $selectedCategory == $category->id ? 'selected' : '' }}>
+                {{ $category->name }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+
+        <!-- Prefecture -->
+        <div class="filter-group">
+          <label for="prefecture">Prefecture</label>
+          <select name="prefecture" id="prefecture" class="form-select">
+            <option value="">All</option>
+            @foreach ($prefectures as $prefecture)
+              <option value="{{ $prefecture->id }}" {{ $selectedPrefecture == $prefecture->id ? 'selected' : '' }}>
+                {{ $prefecture->name }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+
+        <!-- 検索ボタン -->
+        <div class="search-bar-2 align-self-end">
+          <button type="submit" class="btn">
+            <i class="fa-solid fa-magnifying-glass"></i> Search
+          </button>
+        </div>
+      </form>
     </div>
 
     <!-- 投稿一覧テーブル -->
@@ -47,80 +69,66 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td><img src="https://images.unsplash.com/photo-1554797589-7241bb691973?w=200" class="post-img" alt="Tokyo Tower"></td>
-          <td><span class="tag">Tower</span></td>
-          <td>Tokyo</td>
-          <td>Mark</td>
-          <td><div class="status"><div class="status-dot"></div>Visible</div></td>
-          <td class="text-end">
-            <div class="dropdown">
-            <button class="btn-dropdown" type="button">
-                <i class="fa-solid fa-ellipsis"></i>
-            </button>
-            <ul class="dropdown-menu">
-                <li>
-                  <button class="dropdown-item text-danger" data-bs-toggle="modal" ><i class="fa-solid fa-ban text-danger"></i>Hide</button>
-                </li>
-            </ul>
-            </div>
-        </td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td><img src="https://images.unsplash.com/photo-1554797589-7241bb691973?w=200" class="post-img" alt="Kyoto Temple"></td>
-          <td><span class="tag">Temple</span></td>
-          <td>Kyoto</td>
-          <td>Jacob</td>
-          <td><div class="status"><div class="status-dot"></div>Visible</div></td>
-          <td class="text-end">
-            <div class="dropdown">
-            <button class="btn-dropdown" type="button">
-                <i class="fa-solid fa-ellipsis"></i>
-            </button>
-            <ul class="dropdown-menu">
-                <li>
-                  <button class="dropdown-item text-danger" data-bs-toggle="modal" ><i class="fa-solid fa-ban text-danger"></i>Hide</button>
-                </li>
-            </ul>
-            </div>
+        @forelse ($all_posts as $post)
+          <tr>
+            <td>{{ $post->id }}</td>
+            <td>
+              <a href="{{ route('post.show', $post->id) }}">
+                <img src="{{ $post->image }}" alt="{{ $post->id }}" class="image-lg">
+              </a>
+            </td>
+            <td>
+              <div class="col">
+                @forelse ($post->categoryPost as $category_post)
+                  <div class="tag">{{ $category_post->category->name ?? 'Uncategorised' }}</div>
+                @empty
+                  <div class="tag">Uncategorised</div>
+                @endforelse
+              </div>
+            </td>
+            <td>{{ $post->prefecture->name ?? 'Unknown' }}</td>
+            <td>{{ $post->user->name }}</td>
+            <td>
+              @if ($post->trashed())
+                <i class="fa-solid fa-circle text-secondary"></i>&nbsp; Hide
+              @else
+                <i class="fa-solid fa-circle text-success"></i>&nbsp; Visible
+              @endif
+            </td>
+            <td>
+            {{-- @if (Auth::user()->id !== $post->user->id) --}}
+                <div class="dropdown">
+                    <button class="btn-dropdown btn-sm" data-bs-toggle="dropdown">
+                        <i class="fa-solid fa-ellipsis"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        @if ($post->trashed())
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
+                                <i class="fa-solid fa-check-to-slot"></i>&nbsp; Visible
+                            </button>
+                        @else
+                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
+                            <i class="fa-solid fa-ban"></i>&nbsp; Hide
+                        </button>
+                        @endif
+                    </div>
+                </div>
+            {{-- @endif --}}
+            @include('admin.posts.modal.status')
           </td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td><img src="https://images.unsplash.com/photo-1549692520-acc6669e2f0c?w=200" class="post-img" alt="Mt. Fuji"></td>
-          <td><span class="tag">Mountain</span></td>
-          <td>Yamanashi</td>
-          <td>Larry</td>
-          <td><div class="status"><div class="status-dot"></div>Visible</div></td>
-          <td class="text-end">
-            <div class="dropdown">
-            <button class="btn-dropdown" type="button">
-                <i class="fa-solid fa-ellipsis"></i>
-            </button>
-            <ul class="dropdown-menu">
-                <li>
-                  <button class="dropdown-item text-danger" data-bs-toggle="modal" ><i class="fa-solid fa-ban text-danger"></i>Hide</button>
-                </li>
-            </ul>
-            </div>
-          </td>
-        </tr>
+          </tr>
+        @empty
+          <tr>
+            <td colspan="7" class="text-center text-muted">No posts found</td>
+          </tr>
+        @endforelse
       </tbody>
     </table>
 
     <!-- === ページネーション === -->
-    <div class="pagination">
-        <button>&lt;</button>
-        <button class="active">1</button>
-        <button>2</button>
-        <button>3</button>
-        <button>4</button>
-        <button>&gt;</button>
-    </div>
+    <div class="d-flex justify-content-center">
+        {{ $all_posts->links('vendor.pagination.custom') }}
+    </div> 
   </main>
-
 </div>
-
 @endsection
