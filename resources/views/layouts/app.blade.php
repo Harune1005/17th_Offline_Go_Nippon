@@ -13,25 +13,25 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
      <!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Kosugi+Maru&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Kosugi+Maru&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
 
 
-    {{-- FontAwesome --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        {{-- FontAwesome --}}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
-    <!-- Font Awesome -->
-<link
-rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-/>
+        <!-- Font Awesome -->
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
-{{-- Google Fontsの Source Serif Pro --}}
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600&display=swap" rel="stylesheet">
+    {{-- Google Fontsの Source Serif Pro --}}
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600&display=swap" rel="stylesheet">
 
-{{-- Leaflet  --}}
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-@vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    {{-- Leaflet  --}}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
@@ -75,16 +75,17 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('register') }}" style="color:#9F6B46;">{{ __('Register') }}</a>
                                 </li>
+                        
                             @endif
                         @else
                                 <li class="nav-item">
-                                <a href="" class="nav-link fs-2" style="color:#9F6B46;">
+                                <a href="{{ route('post.create') }}" class="nav-link fs-2" style="color:#9F6B46;">
                                     <i class="fa-solid fa-circle-plus"></i>
                                 </a>
                             </li>
 
                             <li class="nav-item">
-                                <a href="" class="nav-link fs-2" style="color:#9F6B46;">
+                                <a href="#" class="nav-link fs-2" style="color:#9F6B46;">
                                     <i class="fa-regular fa-comment "></i>
                                 </a>
                             </li>
@@ -176,7 +177,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
             <div class="offcanvas-body d-flex flex-column align-items-center justify-content-start text-center pt-4">
                 <ul class="list-unstyled w-100">
                     <li class="mb-3">
-                        <a href="" class="menu-link nav-text-brown">
+                        <a href="{{ route('home') }}" class="menu-link nav-text-brown">
                             <i class="fa-solid fa-store me-3"></i> Home
                         </a>
                     </li>
@@ -224,7 +225,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
             </div>
         </div>
 
-        <main class="mt-5 py-4">
+        <main class="mt-4 py-4">
             @yield('content')
         </main>
     </div>

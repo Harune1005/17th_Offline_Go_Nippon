@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Post extends Model
 {
-    use HasFactory, SoftDeletes;
+    // ※Push前に戻す  use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -19,16 +19,13 @@ class Post extends Model
         'visited_at',
         'cost',
         'image',
+        'time_hour',
+        'time_min',
     ];
 
     protected $casts = [
         'image' => 'array',
     ];
-
-    public function images()
-    {
-        return $this->hasMany(Image::class);
-    }
 
     public function user()
     {
@@ -43,6 +40,11 @@ class Post extends Model
     public function categoryPost()
     {
         return $this->hasMany(CategoryPost::class);
+    }
+
+    public function prefecture()
+    {
+        return $this->belongsTo(Prefecture::class);
     }
 
     // public function comments()
@@ -78,11 +80,6 @@ class Post extends Model
     public function saves()
     {
         return $this->hasMany(Save::class);
-    }
-
-    public function prefecture()
-    {
-        return $this->belongsTo(Prefecture::class);
     }
 
     public function favorites()

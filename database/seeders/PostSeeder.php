@@ -13,8 +13,8 @@ class PostSeeder extends Seeder
     {
         $posts = [
             [
-                'title' => 'Tokyo',
-                'prefecture_id' => 13,
+                'title' => 'Hokkaido',
+                'prefecture_id' => 1,
                 'visited_at' => Carbon::now()->subDays(10),
                 'cost' => '10000',
                 'image_files' => ['sample1.jpg', 'sample1-2.jpg'],
@@ -36,11 +36,35 @@ class PostSeeder extends Seeder
                 'image_files' => ['sample3.jpg', 'sample3-2.jpg', 'sample3-3.jpg'],
                 'content' => 'Fukuoka food trip!',
             ],
+            // [
+            //     'title' => '福岡旅行',
+            //     'prefecture_id' => 40,
+            //     'visited_at' => Carbon::now()->subDays(2),
+            //     'cost' => '12000',
+            //     'image_files' => ['sample3.jpeg'],
+            //     'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
+            // ],
+            // [
+            //     'title' => 'Kyoto',
+            //     'prefecture_id' => 26,
+            //     'visited_at' => Carbon::now()->subDays(2),
+            //     'cost' => '2000',
+            //     'image_files' => ['sample4.jpeg'],
+            //     'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
+            // ],
+            // [
+            //     'title' => 'Kanagawa',
+            //     'prefecture_id' => 14,
+            //     'visited_at' => Carbon::now()->subDays(2),
+            //     'cost' => '112000',
+            //     'image_files' => ['sample5.jpeg'],
+            //     'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
+            // ],
         ];
 
         foreach ($posts as $data) {
             $post = Post::create([
-                'user_id' => 1,
+                'user_id' => 2,
                 'title' => $data['title'],
                 'prefecture_id' => $data['prefecture_id'],
                 'visited_at' => $data['visited_at'],
@@ -61,6 +85,7 @@ class PostSeeder extends Seeder
                 } else {
                     echo "⚠️ Image file not found: {$fileName}\n";
                 }
+
             }
         }
     }

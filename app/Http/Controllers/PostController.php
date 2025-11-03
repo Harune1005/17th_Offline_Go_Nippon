@@ -13,9 +13,9 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::with('categories', 'user')->latest()->get();
+        $post = Post::with('categories', 'user')->latest()->get();
 
-        return view('users.posts.show', compact('posts'));
+        return view('home', compact('posts'));
     }
 
     public function create()
@@ -52,6 +52,7 @@ class PostController extends Controller
             foreach ($request->file('image') as $image) {
                 $base64Images[] = base64_encode(file_get_contents($image));
             }
+            $validated['image'] = $base64Images;
         }
 
         $post = new Post([
@@ -62,9 +63,15 @@ class PostController extends Controller
             'visited_at' => $visitedAt,
             'cost' => $validated['cost'] ?? 0,
             'image' => $base64Images,
+            'time_hour' => $validated['time_hour'],
+            'time_min' => $validated['time_min'],
         ]);
 
         $post->save();
+
+        if (! empty($validated['category'])) {
+            $post->categories()->attach(array_filter($validated['category']));
+        }
 
         return redirect()->route('home')->with('success');
     }
@@ -74,6 +81,7 @@ class PostController extends Controller
         $post = Post::with('categories', 'user', 'comments.user')->findOrFail($id);
 
         return view('users.posts.show', compact('post'));
+
     }
 
     public function edit($id)
@@ -113,7 +121,8 @@ class PostController extends Controller
             'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $imagePaths = json_decode($post->image, true) ?? [];
+        $imagePaths = is_string($post->image) ? json_decode($post->image, true) : $post->image;
+        $imagePaths = $imagePaths ?? [];
 
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $file) {
@@ -122,24 +131,28 @@ class PostController extends Controller
                     $imagePaths[] = $path;
                 }
             }
+            // 最大3枚に制限
             $imagePaths = array_slice($imagePaths, 0, 3);
         }
 
-        $visitedAt = $validated['date'].' '.str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT).':'.str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT).':00';
+        $visitedAt = $validated['date'].' '.
+            str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT).':'.
+            str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT).':00';
 
-        $post->title = $validated['title'];
-        $post->content = $validated['content'];
-        $post->prefecture_id = $validated['prefecture_id'];
-        $post->visited_at = $visitedAt;
-        $post->cost = $validated['cost'] ?? 0;
-        $post->image = json_encode($imagePaths);
-        $post->save();
+        $post->update([
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'prefecture_id' => $validated['prefecture_id'],
+            'visited_at' => $visitedAt,
+            'cost' => $validated['cost'] ?? 0,
+            'image' => ($imagePaths),
+        ]);
 
         if (! empty($validated['category'])) {
             $post->categories()->sync(array_filter($validated['category']));
         }
 
-        return redirect()->route('posts.show', $post->id)->with('success');
+        return redirect()->route('post.show', $post->id)->with('success');
     }
 
     public function destroy($id)
