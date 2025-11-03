@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Follow;
+use App\Models\Post;
+use App\Models\Prefecture;
 use App\Models\ProfileVisit;
 use App\Models\User;
 use Carbon\Carbon;
@@ -15,9 +17,12 @@ class ProfileController extends Controller
 {
     private $user;
 
-    public function __construct(User $user)
+    private $post;
+
+    public function __construct(User $user, Post $post)
     {
         $this->user = $user;
+        $this->post = $post;
 
     }
 
@@ -45,7 +50,22 @@ class ProfileController extends Controller
             ]);
         }
 
-        return view('users.profile.show')->with('user', $user);
+        $prefecture_ids = Post::where('user_id', $user->id)
+            ->pluck('prefecture_id')
+            ->unique();
+
+        $prefectures = Prefecture::select('id', 'name', 'code')
+            ->get()
+            ->map(function ($pref) use ($prefecture_ids) {
+                $pref->has_post = $prefecture_ids->contains($pref->id);
+
+                return $pref;
+            });
+
+        return view('users.profile.show')
+            ->with('user', $user)
+            ->with('prefectures', $prefectures);
+
     }
 
     public function edit()
@@ -107,22 +127,104 @@ class ProfileController extends Controller
     public function followers($id, Request $request)
     {
         $user = $this->user->findOrFail($id);
-        $followController = new FollowController(new Follow);
+        $followController = new FollowController(new Follow, new Post, new User);
         $suggested_users = $followController->getSuggestedUsers();
 
         $activeTab = $request->get('tab', 'followers');
 
-        return view('followers_followings', compact('user', 'suggested_users', 'activeTab'));
+        $prefecture_ids = Post::where('user_id', $user->id)
+            ->pluck('prefecture_id')
+            ->unique();
+
+        $prefectures = Prefecture::select('id', 'name', 'code')
+            ->get()
+            ->map(function ($pref) use ($prefecture_ids) {
+                $pref->has_post = $prefecture_ids->contains($pref->id);
+
+                return $pref;
+            });
+
+        return view('followers_followings', compact('user', 'suggested_users', 'activeTab', 'prefectures'));
     }
 
     public function following($id, Request $request)
     {
         $user = $this->user->findOrFail($id);
-        $followController = new FollowController(new Follow);
+        $followController = new FollowController(new Follow, new Post, new User);
         $suggested_users = $followController->getSuggestedUsers();
 
         $activeTab = $request->get('tab', 'following');
 
-        return view('followers_followings', compact('user', 'suggested_users', 'activeTab'));
+        $prefecture_ids = Post::where('user_id', $user->id)
+            ->pluck('prefecture_id')
+            ->unique();
+
+        $prefectures = Prefecture::select('id', 'name', 'code')
+            ->get()
+            ->map(function ($pref) use ($prefecture_ids) {
+                $pref->has_post = $prefecture_ids->contains($pref->id);
+
+                return $pref;
+            });
+
+        return view('followers_followings', compact('user', 'suggested_users', 'activeTab', 'prefectures'));
+    }
+
+    public function showPref($id)
+    {
+        $this->user = User::findOrFail($id);
+
+        $prefecture_id = Post::where('user_id', $this->user->id)
+            ->pluck('prefecture_id')
+            ->unique();
+
+        $prefectures = Prefecture::select('id', 'name', 'code')
+            ->get()
+            ->map(function ($pref) use ($prefecture_id) {
+                $pref->has_post = $prefecture_id->contains($pref->id);
+
+                return $pref;
+
+            });
+
+        return view('users.profile.trip-map', [
+            'user' => $this->user,
+            'prefectures' => $prefectures,
+        ]);
+    }
+
+    public function showPost($id, $prefecture_id)
+    {
+        $user = User::findOrFail($id);
+
+        $posts = Post::where('user_id', $user->id)
+            ->where('prefecture_id', $prefecture_id)
+            ->with(['user', 'images'])
+            ->latest()
+            ->get();
+
+        return response()->json($posts);
+    }
+
+    public function getPost($id)
+    {
+        // get all the post
+        $all_posts = $this->post
+            ->where('user_id', $id)
+            ->whereIn('id', function ($query) use ($id) {
+                $query->selectRaw('MIN(id)')
+                    ->from('posts')
+                    ->where('user_id', $id)
+                    ->groupBy('prefecture_id');
+            })
+            ->get();
+        // roop each of the post
+        $map_posts = [];
+        foreach ($all_posts as $post) {
+            $map_posts[] = ['code' => $post->prefecture->code, 'has_post' => true];
+
+        }
+
+        return response()->json($map_posts);
     }
 }

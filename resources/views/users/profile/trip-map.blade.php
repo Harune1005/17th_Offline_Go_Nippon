@@ -131,17 +131,6 @@ div{
   transition: background 0.5s ease;
 }
 
-/* .spinner-fill {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 15px solid transparent;
-  border-top-color: #F1BDB2; /* 塗る色 */
-  /* transform: rotate(-90deg); */
-  /* transform-origin: center; */
-  /* transition: transform 0.3s ease; */
-/* } */ 
-
 .spinner-text {
   position: absolute;
   top: 50%;
@@ -301,7 +290,7 @@ div{
     {{-- Map  --}}
   <div class="row">
     <div class="col" style="width: 50vh; height: 50vh;">
-        <p class="fw-bold h2 mt-4 text-center  d-flex justify-content-center flex-wrap-nowrap" style="white-space: nowrap;">Click prefecture<span>to view your posts</span></p>
+        <p class="fw-bold h2 mt-5 text-center  d-flex justify-content-center flex-wrap-nowrap" style="white-space: nowrap;">Click prefecture<span>to view your posts</span></p>
             <div class="map-container">
                  <div id="map" class="map"></div>
                     <div class="spinner-wrapper">

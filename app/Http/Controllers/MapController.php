@@ -56,7 +56,6 @@ class MapController extends Controller
     public function getPost($id)
     {
         // get all the post
-        // $all_posts = $this->post->where('user_id', $id)->distinct()->get();
         $all_posts = $this->post
             ->where('user_id', $id)
             ->whereIn('id', function ($query) use ($id) {
@@ -67,19 +66,12 @@ class MapController extends Controller
             })
             ->get();
 
-        // dd($all_posts);
-
         // roop each of the post
         $map_posts = [];
         foreach ($all_posts as $post) {
-            // if($post->user->has_post){
             $map_posts[] = ['code' => $post->prefecture->code, 'has_post' => true];
-            // }
-
         }
 
-        // dd($map_posts)
-        // get the code
         return response()->json($map_posts);
     }
 }
