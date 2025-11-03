@@ -82,18 +82,28 @@
       padding: 40px 80px 10px 80px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+    }
+
+    .search-bar form {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+      gap: 0; /* 隙間をなくす */
     }
 
     .search-bar input[type="text"] {
       flex: 1;
-      max-width: 400px; 
       padding: 10px 15px;
       border: 1.5px solid #9F6B46;
-      border-radius: 8px;
+      border-right: none; /* ボタンとの境界線を消す */
+      border-radius: 8px 0 0 8px;
       font-family: inherit;
       color: #9F6B46;
       background-color: #ffffff;
+      font-size: 16px;
+      min-width: 0; /* スマホでのはみ出し防止 */
     }
 
     .search-bar input[type="text"]:focus {
@@ -105,16 +115,29 @@
     .search-bar button {
       background-color: #F1BDB2;
       color: white;
-      border: none;
+      border: 1.5px solid #9F6B46;
+      border-left: none; /* inputとつなげる */
       padding: 10px 18px;
-      border-radius: 8px;
+      border-radius: 0 8px 8px 0;
       font-family: inherit;
       cursor: pointer;
       transition: background-color 0.2s;
+      font-size: 16px;
+      white-space: nowrap; /* ボタン内の文字を折り返さない */
     }
 
     .search-bar button:hover {
       background-color: #9F6B46;
+    }
+
+    .search-bar-2 button {
+      background-color: #F1BDB2;
+      color: white;
+    }
+
+    .search-bar-2 button:hover {
+      background-color: #9F6B46;
+      color: white;
     }
 
     /* === ページネーション === */
@@ -147,7 +170,7 @@
   .btn-dropdown {
     background: transparent;
     border: none;
-    color: #F1BDB2;
+    color: #9F6B46;
     font-size: 16px;
     cursor: pointer;
     padding: 4px 8px;
@@ -189,10 +212,12 @@
     padding: 8px 12px;
     font-size: 14px;
     cursor: pointer;
+    color: #9F6B46;
     }
 
     .dropdown-item:hover {
     background-color: #f8f9fa;
+    color: #9F6B46;
     }
 
     /* text colors */
@@ -274,7 +299,11 @@
     text-align: center; 
     }
 
-    /* 編集・削除アイコンの調整 */
+   /* アイコンの調整 */ 
+    i.edit , i.delete{
+      color: #9F6B46;
+    }
+
     td i:first-child {
     margin-right: 24px;
     }
@@ -317,6 +346,10 @@
       border-radius: 50%;
     }
 
+    .modal-body, .modal-head, .modal-content{
+      color: #9F6B46;
+    }
+
 
 /* ==============================
     スマホ用レイアウト調整
@@ -353,6 +386,25 @@
 
   .filter-group select {
     width: 100%;
+  }
+
+  /* === 検索バー === */
+  .search-bar {
+    padding: 20px;
+  }
+
+  .search-bar form {
+    max-width: 100%;
+  }
+
+  .search-bar input[type="text"] {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .search-bar button {
+    font-size: 14px;
+    padding: 8px 14px;
   }
 
   /* --- テーブル --- */
