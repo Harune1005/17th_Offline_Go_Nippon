@@ -10,9 +10,10 @@ use Illuminate\Http\Request;
 class CategoriesController extends Controller
 {
     private $category;
+
     private $post;
 
-    public function __construct (Category $category ,Post $post)
+    public function __construct(Category $category, Post $post)
     {
         $this->category = $category;
         $this->post = $post;
@@ -40,14 +41,14 @@ class CategoriesController extends Controller
             'name' => 'required|string|max:50',
         ]);
 
-        $new_category = new Category();
+        $new_category = new Category;
         $new_category->name = $request->name;
         $new_category->save();
 
         return redirect()->back();
     }
 
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'name' => 'required|string|max:50',
@@ -67,7 +68,5 @@ class CategoriesController extends Controller
 
         return redirect()->back();
 
-
     }
-
 }

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-
 class UsersController extends Controller
 {
     private $user;
@@ -21,7 +20,7 @@ class UsersController extends Controller
         $all_users = $this->user->withTrashed()->orderBy('id', 'asc')->paginate(5);
 
         return view('admin.users.index')
-        ->with('all_users', $all_users);
+            ->with('all_users', $all_users);
     }
 
     public function deactivate($id)
@@ -34,15 +33,17 @@ class UsersController extends Controller
     public function activate($id)
     {
         $this->user->onlyTrashed()->findOrFail($id)->restore();
+
         return redirect()->back();
     }
 
     public function search(Request $request)
     {
-        $all_users = $this->user->where('name','like',  '%'. $request->search. '%')->withTrashed()->latest()->paginate(5);
+        $all_users = $this->user->where('name', 'like', '%'.$request->search.'%')->withTrashed()->latest()->paginate(5);
+
         return view('admin.users.index')
-                ->with('all_users', $all_users)
-                ->with('search', $request->search);
+            ->with('all_users', $all_users)
+            ->with('search', $request->search);
 
     }
 }

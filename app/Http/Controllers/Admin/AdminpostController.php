@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Post;
-use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\Prefecture;
+use Illuminate\Http\Request;
 
 class AdminpostController extends Controller
 {
@@ -29,8 +29,8 @@ class AdminpostController extends Controller
 
         // 投稿の基本クエリ（必要なリレーションをロード）
         $query = Post::withTrashed()
-        ->with(['categoryPost.category', 'prefecture', 'user'])
-        ->latest();
+            ->with(['categoryPost.category', 'prefecture', 'user'])
+            ->latest();
 
         // カテゴリで絞る（post -> categoryPost -> category の構成を想定）
         if ($selectedCategory) {
@@ -60,6 +60,7 @@ class AdminpostController extends Controller
     {
         $post = $this->post->findOrFail($id);
         $post->delete();
+
         return redirect()->back();
     }
 
@@ -72,14 +73,10 @@ class AdminpostController extends Controller
 
     public function search(Request $request)
     {
-        $all_posts = $this->post->where('description', 'like', '%'. $request->search. '%')->withTrashed()->latest()->paginate(5);
+        $all_posts = $this->post->where('description', 'like', '%'.$request->search.'%')->withTrashed()->latest()->paginate(5);
 
         return view('admin.posts.index')
-                ->with('all_posts', $all_posts)
-                ->with('search', $request->search);
+            ->with('all_posts', $all_posts)
+            ->with('search', $request->search);
     }
-
-
-
 }
-
