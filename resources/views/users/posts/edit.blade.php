@@ -73,7 +73,7 @@
         border-color: #9F6B46;
     }
 
-    /* Range Input (Slider) Customization */
+    /* Range Input (Slider) */
     .range-wrap {
         display: flex;
         align-items: center;
@@ -155,7 +155,7 @@
         justify-content: center;
     }
 
-    /* Footer Buttons (Cancel / Post) */
+    /* Footer Buttons */
     .form-footer {
         display: flex;
         justify-content: flex-end; 
@@ -178,6 +178,13 @@
         font-weight: 600;
         border-radius: 5px;
     }
+
+    @media (max-width: 600px) {
+        .post-container {
+            padding: 25px 15px;
+            border: none;
+        }
+    }
 </style>
 
 <div class="full-page-container">
@@ -188,85 +195,50 @@
 
         <form method="POST" action="{{ route('post.update', $post->id) }}" enctype="multipart/form-data">
             @csrf
-            @method('PUT')
+            @method('PATCH')
 
             {{-- Title --}}
             <div class="mb-3">
                 <label for="title" class="form-label post-label">Title</label>
-                <input id="title" 
-                       type="text" 
-                       class="form-control post-input @error('title') is-invalid @enderror" 
-                       name="title" 
-                       value="{{ old('title', $post->title) }}" 
-                       required>
+                <input id="title" type="text" class="form-control post-input @error('title') is-invalid @enderror" 
+                    name="title" value="{{ old('title', $post->title) }}" required>
                 @error('title') <span class="invalid-feedback">{{ $message }}</span> @enderror
             </div>
 
             {{-- Description --}}
             <div class="mb-3">
                 <label for="content" class="form-label post-label">Description</label>
-                <textarea id="content" 
-                          class="form-control post-input @error('content') is-invalid @enderror" 
-                          name="content" 
-                          rows="4" 
-                          required>{{ old('content', $post->content) }}</textarea>
+                <textarea id="content" class="form-control post-input @error('content') is-invalid @enderror" 
+                    name="content" rows="4" required>{{ old('content', $post->content) }}</textarea>
                 @error('content') <span class="invalid-feedback">{{ $message }}</span> @enderror
             </div>
 
-           {{-- Date & Time --}}
-<div class="row mb-3">
-    {{-- Date --}}
-    <div class="col-md-6">
-        <label for="date" class="form-label post-label">Date</label>
-        <input
-            id="date"
-            type="date"
-            class="form-control post-input @error('date') is-invalid @enderror"
-            name="date"
-            value="{{ old('date', $post->date ? $post->date->format('Y-m-d') : date('Y-m-d')) }}"
-        >
-        @error('date')
-            <span class="invalid-feedback d-block" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
+            {{-- Date & Time --}}
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="date" class="form-label post-label">Date</label>
+                    <input id="date" type="date" 
+                        class="form-control post-input @error('date') is-invalid @enderror"
+                        name="date"
+                        value="{{ old('date', $post->visited_at) }}">
+                    @error('date') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                </div>
 
-    {{-- Time --}}
-            <div class="col-md-6">
-                <label for="time" class="form-label post-label">Time</label>
-                <div class="d-flex align-items-center">
-                    {{-- Hour --}}
-                    <input
-                        type="number"
-                        class="form-control post-input time-input @error('time_hour') is-invalid @enderror"
-                        name="time_hour"
-                        value="{{ old('time_hour', $post->time_hour ?? 0) }}"
-                        min="0"
-                        max="23"
-                    >
-                    <span class="time-unit ms-1">hour</span>
-                    @error('time_hour')
-                        <div class="text-danger small ms-2">{{ $message }}</div>
-                    @enderror
+                <div class="col-md-6">
+                    <label for="time" class="form-label post-label">Time</label>
+                    <div class="d-flex align-items-center">
+                        <input type="number" name="time_hour" min="0" max="23"
+                            class="form-control post-input time-input @error('time_hour') is-invalid @enderror"
+                            value="{{ old('time_hour', $post->time_hour ?? 0) }}">
+                        <span class="time-unit ms-1">hour</span>
 
-                    {{-- Minute --}}
-                    <input
-                        type="number"
-                        class="form-control post-input time-input ms-3 @error('time_min') is-invalid @enderror"
-                        name="time_min"
-                        value="{{ old('time_min', $post->time_min ?? 0) }}"
-                        min="0"
-                        max="59"
-                    >
-                    <span class="time-unit ms-1">min</span>
-                    @error('time_min')
-                        <div class="text-danger small ms-2">{{ $message }}</div>
-                    @enderror
+                        <input type="number" name="time_min" min="0" max="59"
+                            class="form-control post-input time-input ms-3 @error('time_min') is-invalid @enderror"
+                            value="{{ old('time_min', $post->time_min ?? 0) }}">
+                        <span class="time-unit ms-1">min</span>
+                    </div>
                 </div>
             </div>
-        </div>
-
 
             {{-- Categories --}}
             <div class="mb-3">
@@ -274,12 +246,8 @@
                 <div id="category-checkboxes" class="d-flex flex-wrap gap-3">
                     @foreach ($all_categories as $category)
                         <div class="form-check">
-                            <input 
-                                type="checkbox" 
-                                class="form-check-input category-checkbox"
-                                name="category[]" 
-                                id="category_{{ $category->id }}" 
-                                value="{{ $category->id }}"
+                            <input type="checkbox" class="form-check-input category-checkbox"
+                                name="category[]" id="category_{{ $category->id }}" value="{{ $category->id }}"
                                 {{ in_array($category->id, old('category', $post->categories->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
                             <label class="form-check-label" for="category_{{ $category->id }}">
                                 {{ ucfirst($category->name) }}
@@ -287,15 +255,13 @@
                         </div>
                     @endforeach
                 </div>
-                @error('category')
-                    <span class="invalid-feedback d-block">{{ $message }}</span>
-                @enderror
             </div>
 
             {{-- Prefecture --}}
             <div class="col-md-5 mb-4">
                 <label for="prefecture_id" class="form-label post-label">Prefecture</label>
-                <select class="form-select post-input @error('prefecture_id') is-invalid @enderror" name="prefecture_id" required>
+                <select class="form-select post-input @error('prefecture_id') is-invalid @enderror" 
+                        name="prefecture_id" required>
                     <option value="">Select Prefecture</option>
                     @foreach ($prefectures as $prefecture)
                         <option value="{{ $prefecture->id }}" 
@@ -304,26 +270,16 @@
                         </option>
                     @endforeach
                 </select>
-                @error('prefecture_id')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                @enderror
             </div>
 
             {{-- Cost --}}
             <div class="mb-4" style="width: 60%;">
                 <label class="post-label" for="cost-slider">Cost</label>
                 <div class="range-wrap">
-                    <span class="cost-display" id="cost-current">¥{{ old('cost', $post->cost) }}</span>
-                    <input id="cost-slider" 
-                           name="cost" 
-                           type="range" 
-                           min="0" max="10000" step="100" 
-                           value="{{ old('cost', $post->cost) }}" 
-                           class="range-input @error('cost') is-invalid @enderror">
+                    <span class="cost-display" id="cost-current">¥{{ number_format(old('cost', $post->cost)) }}</span>
+                    <input id="cost-slider" name="cost" type="range" min="0" max="10000" step="100"
+                        value="{{ old('cost', $post->cost) }}" class="range-input">
                 </div>
-                @error('cost')
-                    <span class="invalid-feedback d-block">{{ $message }}</span>
-                @enderror
             </div>
 
             {{-- Images --}}
@@ -333,15 +289,24 @@
                     <label for="file-upload" class="image-btn">+ Add</label>
                     <input id="file-upload" name="image[]" type="file" accept="image/*" multiple hidden>
                 </div>
-                @error('image')
-                    <span class="invalid-feedback d-block">{{ $message }}</span>
-                @enderror
+
+                @php
+                    $images = $post->image;
+                    if (is_string($images)) {
+                        $decoded = json_decode($images, true);
+                        $images = $decoded ?: [$images];
+                    }
+                @endphp
+
                 <div id="image-previews" class="image-preview-area">
-                    @foreach($post->images ?? [] as $image)
-                        <div class="image-item">
-                            <img src="{{ asset('storage/' . $image->path) }}" alt="Post Image">
-                        </div>
-                    @endforeach
+                    @if(!empty($images))
+                        @foreach($images as $image)
+                            <div class="image-item">
+                                <img src="data:image/jpeg;base64,{{ $image }}" alt="Post Image">
+                                <button type="button" class="remove-btn" onclick="this.parentElement.remove()">×</button>
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
 
@@ -363,12 +328,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const costDisplay = document.getElementById('cost-current');
     const checkboxes = document.querySelectorAll('.category-checkbox');
 
-    // costリアルタイム表示
     costSlider?.addEventListener('input', () => {
-        costDisplay.textContent = '¥' + costSlider.value;
+        costDisplay.textContent = '¥' + Number(costSlider.value).toLocaleString();
     });
 
-    // 画像プレビュー
     input?.addEventListener('change', function(e) {
         const files = Array.from(e.target.files);
         const existing = previewArea.querySelectorAll('.image-item').length;
@@ -393,7 +356,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // カテゴリ3つまで制限
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const checked = document.querySelectorAll('.category-checkbox:checked');

@@ -4,13 +4,11 @@
 
 <style>
     
-    /* 全体とフォント設定 */
     body, html {
         font-family: 'Source Serif Pro', serif; 
         background-color: white; 
     }
 
-    /* ページの背景と中央寄せのコンテナ設定 */
     .full-page-container {
         display: flex;
         justify-content: center;
@@ -21,23 +19,20 @@
         background-color: white; 
     }
 
-    /* ログインフォーム全体のコンテナ  */
     .login-container {
         width: 100%;
-        max-width: 760px; /* カードの最大幅 */
+        max-width: 760px;
         padding: 40px 20px;
         background-color: white; 
     }
 
-    /* ログインタイトルのスタイル */
     .log-in-title {
         font-size: 2.2rem; 
-        color: #9F6B46; /* 指定色1 (濃い茶色) */
+        color: #9F6B46; 
         font-weight: 700;
         margin-bottom: 0.5rem;
     }
 
-    /* Welcomeメッセージなどのテキストスタイル (濃い茶色に統一) */
     .welcome-message {
         margin-bottom: 0.2rem;
         font-size: 1.1rem;
@@ -50,7 +45,7 @@
         margin-bottom: 3rem; 
     }
 
-    /* フォームのラベル  */
+    
     .login-label {
         font-weight: 600; 
         margin-bottom: 0.3rem; 
@@ -60,15 +55,13 @@
         color: #9F6B46; 
     }
 
-    /* ★ 入力フィールドのスタイル  ★ */
     .login-input {
         height: 50px; 
         border-radius: 5px;
         padding: 0.375rem 1rem;
         border: 1px solid #ced4da; 
         font-size: 1rem;
-        width: 100%; /* 親コンテナの幅に合わせる */
-        /* max-width: 380px; は削除 */
+        width: 100%; 
     }
 
     .login-input:focus {
@@ -76,17 +69,14 @@
         border-color: #9F6B46;
     }
 
-    /* ★ プレースホルダーの文字色を茶色に統一 ★ */
     .login-input::placeholder {
         color: #9F6B46 !important;
         opacity: 0.8;
     }
 
-    /* パスワードフィールドのコンテナ（目のアイコン用） (幅を100%に) */
     .password-field-container {
         position: relative;
-        width: 100%; /* 親コンテナの幅に合わせる */
-        /* max-width: 380px; は削除 */
+        width: 100%; 
     }
 
     .password-toggle-icon {
@@ -99,7 +89,6 @@
         font-size: 1.1rem;
     }
 
-    /* ★ Sign In ボタン（茶色系） (幅を100%に) ★ */
     .custom-sign-in-btn {
         background-color: #F8C7B3; 
         color: #9F6B46; 
@@ -109,7 +98,7 @@
         font-size: 1.1rem;
         border-radius: 5px;
         transition: background-color 0.2s;
-        width: 100%; /* 幅を100%に */
+        width: 100%; 
     }
 
     .custom-sign-in-btn:hover {
@@ -118,7 +107,6 @@
         color: #9F6B46;
     }
 
-    /* ★ Googleサインインボタン (幅を100%に) ★ */
     .google-sign-in-btn {
         background-color: white;
         color: #9F6B46; 
@@ -130,7 +118,7 @@
         position: relative;
         padding-left: 45px;
         transition: background-color 0.2s;
-        width: 100%; /* 幅を100%に */
+        width: 100%; 
     }
 
     .google-sign-in-btn:hover {
@@ -149,7 +137,6 @@
         font-size: 1.2rem;
     }
 
-    /* Sign up リンク */
     .signup-text {
         color: #9F6B46;
         font-size: 1rem;

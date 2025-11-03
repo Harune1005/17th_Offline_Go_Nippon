@@ -77,14 +77,16 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                                 </li>
                             @endif --}}
                         {{-- @else --}}
+
+                         {{--Create Post--}}
                                 <li class="nav-item">
-                                <a href="" class="nav-link fs-2" style="color:#9F6B46;">
+                                <a href="{{ route('post.create') }}" class="nav-link fs-2" style="color:#9F6B46;">
                                     <i class="fa-solid fa-circle-plus"></i>
                                 </a>
                             </li>
 
                             <li class="nav-item">
-                                <a href="" class="nav-link fs-2" style="color:#9F6B46;">
+                                <a href="#" class="nav-link fs-2" style="color:#9F6B46;">
                                     <i class="fa-regular fa-comment "></i>
                                 </a>
                             </li>

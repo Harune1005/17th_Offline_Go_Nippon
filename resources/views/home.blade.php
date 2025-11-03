@@ -209,212 +209,118 @@
                         </ul>
                     </div>
 
-                    <div class="row g-4">
-                        {{-- post --}}
-                        <div class="col-12 col-md-6 d-flex justify-content-center mb-3">
-                            <div class="card border-0 shadow-lg w-100">
+                     {{-- Posts --}}
+                <div class="row g-4 mt-3">
+                    @forelse ($posts as $post)
+                        <div class="col-12 col-md-6 d-flex justify-content-center">
+                            <div class="card border-0 shadow-sm w-100">
                                 <div class="card-body p-0">
-                                        {{-- @if () --}}
-                                            <div id="carouselExample-1" class="carousel slide" data-bs-ride="carousel">
-                                                <div class="carousel-inner">
-                                                    {{-- @foreach () --}}
-                                                        <div class="carousel-item active">
-                                                            <a href="#">
-                                                                <img src="https://images.pexels.com/photos/33229965/pexels-photo-33229965.jpeg" class="d-block w-100 uniform-img" style="height: 350px; object-fit: cover;" alt="">
-                                                            </a>
-                                                        </div>
 
-                                                        <div class="carousel-item">
-                                                            <a href="#">
-                                                                <img src="https://images.pexels.com/photos/34123164/pexels-photo-34123164.jpeg" class="d-block w-100 uniform-img" style="height: 350px; object-fit: cover;" alt="">
-                                                            </a>
-                                                        </div>
-                                                    {{-- @endforeach --}}
-                                                </div>
-                                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample-1" data-bs-slide="prev">
-                                                    <span class="carousel-control-prev-icon"></span>
-                                                </button>
-                                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample-1" data-bs-slide="next">
-                                                    <span class="carousel-control-next-icon"></span>
-                                                </button>
+                                   @php
+                        
+                                    $images = is_array($post->image) ? $post->image : json_decode($post->image, true);
+                                @endphp
+
+                                @if (!empty($images) && count($images) > 0)
+                                    @if (count($images) > 1)
+                                        <div id="carouselPost{{ $post->id }}" class="carousel slide" data-bs-ride="carousel">
+                                            <div class="carousel-inner">
+                                                @foreach ($images as $index => $image)
+                                                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                                        <a href="{{ route('post.show', $post->id) }}">
+                                                            <div class="ratio ratio-1x1">
+                                                                <img src="data:image/jpeg;base64,{{ $image }}"
+                                                                    class="d-block w-100 h-100"
+                                                                    style="object-fit: cover; border-radius: 10px;"
+                                                                    alt="Post Image {{ $index + 1 }}">
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                @endforeach
                                             </div>
-                                        {{-- @elseif()
-                                            <a href="#">
-                                                <img src="" class="w-100 uniform-img" alt="">
-                                            </a>
-                                        @endif --}}
+
+                                         
+                                            <button class="carousel-control-prev" type="button"
+                                                    data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button"
+                                                    data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+
+                                            <div class="carousel-indicators">
+                                                @foreach ($images as $index => $image)
+                                                    <button type="button"
+                                                            data-bs-target="#carouselPost{{ $post->id }}"
+                                                            data-bs-slide-to="{{ $index }}"
+                                                            class="{{ $index === 0 ? 'active' : '' }}"
+                                                            aria-current="{{ $index === 0 ? 'true' : 'false' }}"
+                                                            aria-label="Slide {{ $index + 1 }}">
+                                                    </button>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @else
+                                    
+                                        <a href="{{ route('post.show', $post->id) }}">
+                                            <div class="ratio ratio-1x1">
+                                                <img src="data:image/jpeg;base64,{{ $images[0] }}"
+                                                    class="d-block w-100 h-100"
+                                                    style="object-fit: cover; border-radius: 10px;"
+                                                    alt="Post Image">
+                                            </div>
+                                        </a>
+                                    @endif
+                                @else
+                                    <div class="text-center py-5 text-muted">No image available.</div>
+                                @endif
+
                                 </div>
+
                                 <div class="card-footer bg-white border-0">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="fs-5 mb-0">Title</span>
+                                        <span class="fs-5 mb-0">{{ $post->title ?? 'Title' }}</span>
                                         <div>
-                                            <a href="#" class="text-decoration-none"><span>♡ 123</span></a>
-                                            &nbsp;
-                                            <a href="#" class="text-decoration-none"><span>☆</span></a>
+                                            <span>♡ 123</span>
+                                            <span>☆</span>
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="small mb-0">Oct-3-2025</span>
-                                        <div class="badge bg-opacity-50" style="background: rgb(236, 239, 255);"><span>Category</span></div>
+                                        <span class="small mb-0">{{ $post->date ?? 'Date' }}
+</span>
+                                         <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                            @foreach ($post->categories as $category)
+                                                <span style="
+                                                    background-color:rgb(236, 239, 255);
+                                                    color:#9F6B46 ;
+                                                    border-radius: 12px;
+                                                    padding: 2px 8px;
+                                                    font-size: 13px;
+                                                    font-weight: 500;
+                                                ">
+                                                    {{ $category->name }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+
+
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-12 col-md-6 d-flex justify-content-center mb-3">
-                            <div class="card border-0 shadow-lg w-100">
-                                <div class="card-body p-0">
-                                        {{-- @if () --}}
-                                            <div id="carouselExample-1" class="carousel slide" data-bs-ride="carousel">
-                                                <div class="carousel-inner">
-                                                    {{-- @foreach () --}}
-                                                        <div class="carousel-item active">
-                                                            <a href="#">
-                                                                <img src="https://images.pexels.com/photos/33229965/pexels-photo-33229965.jpeg" class="d-block w-100 uniform-img" style="height: 350px; object-fit: cover;" alt="">
-                                                            </a>
-                                                        </div>
-
-                                                        <div class="carousel-item">
-                                                            <a href="#">
-                                                                <img src="https://images.pexels.com/photos/34123164/pexels-photo-34123164.jpeg" class="d-block w-100 uniform-img" style="height: 350px; object-fit: cover;" alt="">
-                                                            </a>
-                                                        </div>
-                                                    {{-- @endforeach --}}
-                                                </div>
-                                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample-1" data-bs-slide="prev">
-                                                    <span class="carousel-control-prev-icon"></span>
-                                                </button>
-                                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample-1" data-bs-slide="next">
-                                                    <span class="carousel-control-next-icon"></span>
-                                                </button>
-                                            </div>
-                                        {{-- @elseif()
-                                            <a href="#">
-                                                <img src="" class="w-100 uniform-img" alt="">
-                                            </a>
-                                        @endif --}}
-                                </div>
-                                <div class="card-footer bg-white border-0">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="fs-5 mb-0">Title</span>
-                                        <div>
-                                            <a href="#" class="text-decoration-none"><span>♡ 123</span></a>
-                                            &nbsp;
-                                            <a href="#" class="text-decoration-none"><span>☆</span></a>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="small mb-0">Oct-3-2025</span>
-                                        <div class="badge bg-opacity-50" style="background: rgb(236, 239, 255);"><span>Category</span></div>
-                                    </div>
-                                </div>
-                            </div>
+                    @empty
+                        <div class="text-center py-5 text-muted">
+                            <h5>No posts available</h5>
+                            <a href="{{ route('post.create') }}" class="text-decoration-none">Share your first photo!</a>
                         </div>
-
-                        <div class="col-12 col-md-6 d-flex justify-content-center mb-3">
-                            <div class="card border-0 shadow-lg w-100">
-                                <div class="card-body p-0">
-                                        {{-- @if () --}}
-                                            <div id="carouselExample-1" class="carousel slide" data-bs-ride="carousel">
-                                                <div class="carousel-inner">
-                                                    {{-- @foreach () --}}
-                                                        <div class="carousel-item active">
-                                                            <a href="#">
-                                                                <img src="https://images.pexels.com/photos/33229965/pexels-photo-33229965.jpeg" class="d-block w-100 uniform-img" style="height: 350px; object-fit: cover;" alt="">
-                                                            </a>
-                                                        </div>
-
-                                                        <div class="carousel-item">
-                                                            <a href="#">
-                                                                <img src="https://images.pexels.com/photos/34123164/pexels-photo-34123164.jpeg" class="d-block w-100 uniform-img" style="height: 350px; object-fit: cover;" alt="">
-                                                            </a>
-                                                        </div>
-                                                    {{-- @endforeach --}}
-                                                </div>
-                                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample-1" data-bs-slide="prev">
-                                                    <span class="carousel-control-prev-icon"></span>
-                                                </button>
-                                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample-1" data-bs-slide="next">
-                                                    <span class="carousel-control-next-icon"></span>
-                                                </button>
-                                            </div>
-                                        {{-- @elseif()
-                                            <a href="#">
-                                                <img src="" class="w-100 uniform-img" alt="">
-                                            </a>
-                                        @endif --}}
-                                </div>
-                                <div class="card-footer bg-white border-0">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="fs-5 mb-0">Title</span>
-                                        <div>
-                                            <a href="#" class="text-decoration-none"><span>♡ 123</span></a>
-                                            &nbsp;
-                                            <a href="#" class="text-decoration-none"><span>☆</span></a>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="small mb-0">Oct-3-2025</span>
-                                        <div class="badge bg-opacity-50" style="background: rgb(236, 239, 255);"><span>Category</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-6 d-flex justify-content-center mb-3">
-                            <div class="card border-0 shadow-lg w-100">
-                                <div class="card-body p-0">
-                                        {{-- @if () --}}
-                                            <div id="carouselExample-1" class="carousel slide" data-bs-ride="carousel">
-                                                <div class="carousel-inner">
-                                                    {{-- @foreach () --}}
-                                                        <div class="carousel-item active">
-                                                            <a href="#">
-                                                                <img src="https://images.pexels.com/photos/33229965/pexels-photo-33229965.jpeg" class="d-block w-100 uniform-img" style="height: 350px; object-fit: cover;" alt="">
-                                                            </a>
-                                                        </div>
-
-                                                        <div class="carousel-item">
-                                                            <a href="#">
-                                                                <img src="https://images.pexels.com/photos/34123164/pexels-photo-34123164.jpeg" class="d-block w-100 uniform-img" style="height: 350px; object-fit: cover;" alt="">
-                                                            </a>
-                                                        </div>
-                                                    {{-- @endforeach --}}
-                                                </div>
-                                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample-1" data-bs-slide="prev">
-                                                    <span class="carousel-control-prev-icon"></span>
-                                                </button>
-                                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample-1" data-bs-slide="next">
-                                                    <span class="carousel-control-next-icon"></span>
-                                                </button>
-                                            </div>
-                                        {{-- @elseif()
-                                            <a href="#">
-                                                <img src="" class="w-100 uniform-img" alt="">
-                                            </a>
-                                        @endif --}}
-                                </div>
-                                <div class="card-footer bg-white border-0">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="fs-5 mb-0">Title</span>
-                                        <div>
-                                            <a href="#" class="text-decoration-none"><span>♡ 123</span></a>
-                                            &nbsp;
-                                            <a href="#" class="text-decoration-none"><span>☆</span></a>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="small mb-0">Oct-3-2025</span>
-                                        <div class="badge bg-opacity-50" style="background: rgb(236, 239, 255);"><span>Category</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
-            </div>
 
-        </div>
-    </div>
+            </div> {{-- col-md-8 --}}
+        </div> {{-- row --}}
+    </div> {{-- article --}}
 </div>
 @endsection

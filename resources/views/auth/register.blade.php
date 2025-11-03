@@ -3,17 +3,12 @@
 @section('content')
 
 <style>
-    /* -------------------------------------- */
-    /* ** カスタムCSS ** */
-    /* -------------------------------------- */
-
-    /* 全体とフォント設定 */
+  
     body, html {
         font-family: 'Source Serif Pro', serif; 
         background-color: white; 
     }
 
-    /* ページの背景と中央寄せのコンテナ設定 */
     .full-page-container {
         display: flex;
         justify-content: center;
@@ -24,15 +19,13 @@
         background-color: white; 
     }
 
-    /* フォーム全体のコンテナ (横幅を拡大) */
     .register-container {
         width: 100%;
-        max-width: 760px; /* カードの最大幅を維持 */
+        max-width: 760px; 
         padding: 40px 20px;
         background-color: white; 
     }
 
-    /* タイトルのスタイル */
     .register-title {
         font-size: 2.2rem; 
         color: #9F6B46; 
@@ -40,7 +33,6 @@
         margin-bottom: 0.5rem;
     }
 
-    /* Welcomeメッセージなどのテキストスタイル (濃い茶色に統一) */
     .welcome-message {
         margin-bottom: 0.2rem;
         font-size: 1.1rem;
@@ -53,7 +45,7 @@
         margin-bottom: 3rem; 
     }
 
-    /* フォームのラベル (濃い茶色に統一) */
+    
     .register-label {
         font-weight: 600; 
         margin-bottom: 0.3rem; 
@@ -63,7 +55,6 @@
         color: #9F6B46; 
     }
 
-    /* 入力フィールドのスタイル (幅を100%に) */
     .register-input {
         height: 50px; 
         border-radius: 5px;
@@ -71,7 +62,6 @@
         border: 1px solid #ced4da; 
         font-size: 1rem;
         width: 100%;
-        /* ★ SelectタグとInputタグのテキストを茶色に統一 ★ */
         color: #9F6B46; 
     }
 
@@ -80,13 +70,11 @@
         border-color: #9F6B46;
     }
 
-    /* ★ プレースホルダーの文字色を茶色に統一 ★ */
     .register-input::placeholder {
         color: #9F6B46 !important;
         opacity: 0.8;
     }
     
-    /* Selectタグの矢印の色を調整（オプション。OS依存） */
     .form-select.register-input {
         appearance: none;
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239F6B46' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
@@ -95,7 +83,6 @@
         background-size: 16px 12px;
     }
     
-    /* パスワードフィールドのコンテナ（目のアイコン用） (幅を100%に) */
     .password-field-container {
         position: relative;
         width: 100%;
@@ -111,7 +98,6 @@
         font-size: 1.1rem;
     }
 
-    /* Sign Up ボタン（茶色系） (幅を100%に) */
     .custom-sign-up-btn {
         background-color: #F8C7B3; 
         color: #9F6B46; 
@@ -130,7 +116,6 @@
         color: #9F6B46;
     }
 
-    /* Googleサインアップボタン (幅を100%に) */
     .google-sign-up-btn {
         background-color: white;
         color: #9F6B46; 
@@ -161,7 +146,6 @@
         font-size: 1.2rem;
     }
 
-    /* Sign In リンク */
     .signin-text {
         color: #9F6B46;
         font-size: 1rem;
@@ -176,9 +160,8 @@
         text-decoration: underline;
     }
     
-    /* フォーム要素を中央に配置する構造をフル幅に戻す */
     .d-flex.flex-column.align-items-center > div {
-        width: 100% !important; /* 子要素の固定幅を上書き */
+        width: 100% !important; 
     }
 
 </style>
@@ -392,22 +375,22 @@
 </div>
 
 <script>
-    // パスワード表示/非表示の切り替えJS (Font Awesome対応)
+
     function togglePasswordVisibility(fieldId, iconId) {
         const passwordField = document.getElementById(fieldId);
         const icon = document.getElementById(iconId);
         
-        // アイコンがない場合は処理を終了（安全策）
+        
         if (!icon) return; 
 
         if (passwordField.type === 'password') {
             passwordField.type = 'text';
-            icon.classList.remove('fa-eye-slash'); // 閉じた目アイコンを削除
-            icon.classList.add('fa-eye'); // 開いた目アイコンを追加
+            icon.classList.remove('fa-eye-slash'); 
+            icon.classList.add('fa-eye'); 
         } else {
             passwordField.type = 'password';
-            icon.classList.remove('fa-eye'); // 開いた目アイコンを削除
-            icon.classList.add('fa-eye-slash'); // 閉じた目アイコンを追加
+            icon.classList.remove('fa-eye'); 
+            icon.classList.add('fa-eye-slash'); 
         }
     }
 </script>

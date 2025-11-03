@@ -82,7 +82,7 @@
 
     <div class="container mt-5">
         <div class="justify-content-center">
-            <a href="#" class="text-decoration-none text-brown mb-2 d-inline-block">
+            <a href="{{ url('/') }}" class="text-decoration-none text-brown mb-2 d-inline-block">
                 <i class="fa-solid fa-angles-left"></i> back
             </a>
 
@@ -110,7 +110,8 @@
                                     </button>
                                     
                                     <div class="dropdown-menu dropdown-menu-end shadow-sm">
-                                        <a href=# class="dropdown-item text-brown">
+                                      <a href="{{ route('post.edit', ['id' => $post->id]) }}" class="dropdown-item text-brown">
+
                                             <i class="fa-regular fa-pen-to-square me-2"></i>Edit
                                         </a>
                                         <button class="dropdown-item text-danger" data-bs-toggle="modal"
@@ -143,54 +144,57 @@
                 <div class="card-body bg-white p-0">
                     <div class="row g-0">
                        <div class="col-md-7">
-                            @if ($post->images->count() > 1)
-                                {{-- ★複数画像 → カルーセル表示 --}}
-                                <div id="postCarousel" class="carousel slide" data-bs-ride="carousel">
-                                    <div class="carousel-inner">
-                                        @foreach ($post->images as $index => $img)
-                                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                                <img src="{{ $img->image }}" 
-                                                    class="d-block uniform-img" 
-                                                    alt="Post image {{ $index + 1 }}">
+                         @php
+                                        $images = is_string($post->image) ? json_decode($post->image, true) : $post->image;
+                                    @endphp
+
+                                    @if ($images && count($images) > 1)
+                                        
+                                        <div id="postCarousel" class="carousel slide" data-bs-ride="carousel">
+                                            <div class="carousel-inner">
+                                                @foreach ($images as $index => $img)
+                                                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                                        <img src="data:image/jpeg;base64,{{ $img }}" 
+                                                            class="d-block uniform-img" 
+                                                            alt="Post image {{ $index + 1 }}">
+                                                    </div>
+                                                @endforeach
                                             </div>
-                                        @endforeach
-                                    </div>
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon"></span>
-                                    </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon"></span>
-                                    </button>
+                                            <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon"></span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon"></span>
+                                            </button>
+                                        </div>
+
+                                    @elseif ($images && count($images) === 1)
+                                      
+                                        <img src="data:image/jpeg;base64,{{ $images[0] }}"
+                                            alt="Post image" 
+                                            class="uniform-img">
+
+                                    @else
+                                       
+                                        <img src="{{ asset('images/no-image.png') }}" 
+                                            alt="No image" 
+                                            class="uniform-img">
+                                    @endif
+
+                                    @error('image')
+                                        <div class="text-danger small">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
-                            @elseif ($post->images->count() === 1)
-                                {{-- ★1枚だけ → 通常表示 --}}
-                                <img src="{{ $post->images->first()->image }}" 
-                                    alt="Post image" 
-                                    class="uniform-img">
-
-                            @else
-                                {{-- ★画像なし → デフォルト画像 --}}
-                                <img src="{{ asset('images/no-image.png') }}" 
-                                    alt="No image" 
-                                    class="uniform-img">
-                            @endif
-
-
-                        @error('image')
-                            <div class="text-danger small">{{ $message }}</div>
-                        @enderror
-
-                        </div>
 
                         <div class="col-md-5 border-start border-brown">
                             <div class="p-4 bg-white h-100 comment-section-wrapper" style="max-height: 600px;">
-                                <h4 class="fw-bold text-brown mb-2 text-center">Arakurayamasengen Park</h4>
+                                <h4 class="fw-bold text-brown mb-2 text-center">{{ $post->title ?? 'Title' }}</h4>
 
                                 <div class="row align-items-center mb-3">
                                     <div class="col-auto">
                                         <p class="mb-2 text-brown">
-                                            <i class="fa-solid fa-location-dot text-danger me-1"></i> Yamanashi
+                                            <i class="fa-solid fa-location-dot text-danger me-1"></i>  {{ $post->prefecture ? $post->prefecture->name : 'Unknown' }}
                                         </p> 
                                     </div>
 
@@ -206,19 +210,36 @@
                                 </div>
                                 
                                 <div class="d-flex align-items-center justify-content-end text-brown small mb-3 gap-3">
-                                    <span><i class="fa-regular fa-calendar me-1 text-info"></i>Apr 10, 2025</span>
-                                    <span><i class="fa-solid fa-coins me-1 text-warning"></i>1000 YEN</span>
-                                    <span><i class="fa-regular fa-clock me-1 text-secondary"></i>50 minute</span>
+                                   <span><i class="fa-regular fa-calendar me-1 text-info"></i>{{ $post->visited_at ?? 'Date' }}</span>
+                                   <span><i class="fa-solid fa-coins me-1 text-warning"></i>{{ $post->cost ?? 'Cost' }} Yen</span>
+                                   <span>
+                                    <i class="fa-regular fa-clock me-1 text-secondary"></i>
+                                    {{ $post->time_hour ? $post->time_hour . 'h ' : '' }}
+                                    {{ $post->time_min ? $post->time_min . 'min' : '' }}
+                                    @if (!$post->time_hour && !$post->time_min)
+                                        Time
+                                    @endif
+                                    </span>
+
                                 </div>
 
                                 <p class="text-brown mb-3">
-                                    Approximately 650 cherry trees are planted in the park, and in the spring a cherry blossom festival is held, attracting many visitors.
+                                  {{ $post->content ?? 'Title' }}
                                 </p>
 
-                                <div class="mb-3 text-end">
-                                    <span class="badge bg-info-light text-brown fw-normal">Category</span>
-                                    <span class="badge bg-info-light text-brown fw-normal">Category</span>
-                                    <span class="badge bg-info-light text-brown fw-normal">Category</span>
+                                <div class="mb-3 text-end" style="display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px;">
+                                   @foreach ($post->categories as $category)
+                                                <span style="
+                                                    background-color:rgb(236, 239, 255);
+                                                    color:#9F6B46 ;
+                                                    border-radius: 12px;
+                                                    padding: 2px 8px;
+                                                    font-size: 13px;
+                                                    font-weight: 500;
+                                                ">
+                                                    {{ $category->name }}
+                                                </span>
+                                            @endforeach
                                 </div>
 
                                 <div class="input-group mb-4">
