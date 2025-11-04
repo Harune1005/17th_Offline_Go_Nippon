@@ -59,22 +59,9 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // Profile
-Route::get('/profile', function () {
-    return view('users.profile.show');
-});
 Route::get('/profile/{id}/trip-map', [MapController::class, 'show'])->name('map.show');
 Route::get('/profile/{id}/pref/{pref_id}', [MapController::class, 'showPost'])->name('map.showPost');
-Route::get('/profile/{id}/pref/{pref_id}', [MapController::class, 'showPost'])->name('map.showPost');
 Route::get('/prefectures/{id}/posts', [MapController::class, 'getPost'])->name('map.getPost');
-
-// Route::get('/prefectures/posts', function () {
-//     return response()->json([
-//         ['code' => 1, 'has_post' => true],
-//         ['code' => 13, 'has_post' => true],
-//         ['code' => 27, 'has_post' => false],
-//         // ... 必要に応じて
-//     ]);
-// });
 
 Route::get('/show2', function () {
     return view('users.profile.show3');
