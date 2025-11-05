@@ -200,8 +200,24 @@
 
                                     <div class="col d-flex justify-content-end align-items-center gap-3">
                                         <div class="d-flex align-items-center">
-                                            <i class="fa-regular fa-heart text-brown me-1"></i>
-                                            <span class="text-brown fw-bold">250</span>
+                                            @if ($post->isLiked())
+                                                <form action="{{ route('like.destroy', $post->id) }}" method="post">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm p-0">
+                                                        <i class="fa-solid fa-heart text-brown me-1"></i>
+                                                        <span class="text-brown fw-bold">{{ $post->likes->count() }}</span>
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('like.store', $post->id) }}" method="post">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm p-0">
+                                                        <i class="fa-regular fa-heart text-brown"></i>
+                                                        <span class="text-brown fw-bold">{{ $post->likes->count() }}</span>
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
                                         <div class="d-flex align-items-center">
                                             <i class="fa-regular fa-star text-brown me-1"></i>

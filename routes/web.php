@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -63,9 +64,9 @@ Route::get('/profile/{id}/trip-map', [MapController::class, 'show'])->name('map.
 Route::get('/profile/{id}/pref/{pref_id}', [MapController::class, 'showPost'])->name('map.showPost');
 Route::get('/prefectures/{id}/posts', [MapController::class, 'getPost'])->name('map.getPost');
 
-Route::get('/show2', function () {
-    return view('users.profile.show3');
-});
+//Like
+Route::post('/like/{post_id}/store', [LikeController::class, 'store'])->name('like.store');
+Route::delete('/like/{post_id}/destroy', [LikeController::class, 'destroy'])->name('like.destroy');
 
 // Post
 Route::get('/post/create', [PostController::class, 'create'])->name('post.create');

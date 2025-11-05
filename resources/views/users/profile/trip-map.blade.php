@@ -62,9 +62,9 @@ div{
 
 
 .map-container {
-    width: 100%;       /* 親幅いっぱい */
-  height: 80vh;      /* PC時はビュー高の80%など（必要に応じ調整） */
-  max-width: 900px;  /* PCで大きくしすぎないための上限（任意） */
+    width: 100%;     
+  height: 80vh;      
+  max-width: 900px; 
   margin: 0 auto;
   position: relative;
   overflow: hidden;
@@ -84,7 +84,6 @@ div{
   height: 100%;
   display: block;
   max-width: none;
-  /* preserveAspectRatio はJS側でも指定しますが念のため */
 }
 
  
@@ -194,16 +193,13 @@ div{
 
   .spinner-wrapper {
     position: absolute;
-    bottom: 0%;
-    right: 35%;
-    transform: translateX(80%) scale(0.9);
+    bottom: 5%;
+    right: 5%;
+    transform: translateX(10%) scale(0.6);
   }
     .col-auto{
         padding: 0;
     }
-
-
-
 
 .big-card-body {
   padding: 1rem;
@@ -246,16 +242,6 @@ div{
     height: 80vh;
   }
 
-  .spinner-outer {
-    width: 140px;
-    height: 140px;
-  }
-
-  .spinner-outer::before,
-  .spinner-outer::after {
-    border-width: 12px; 
-  }
-
 .spinner-text {
   position: absolute;
   top: 50%;
@@ -279,7 +265,12 @@ div{
   line-height: 1;
   margin: 2;
   padding: 0;
-  
+}
+
+.post-image{
+  height: auto;
+  width:100%;
+  object-fit: cover;
 }
 }
 
@@ -332,7 +323,7 @@ div{
       let svg;
     
       const projection = d3.geoMercator()
-        .center([137, 38]) // 日本の中心
+        .center([137, 38]) 
         .translate([baseWidth / 2, baseHeight / 2]);
     
       const path = d3.geoPath().projection(projection);
@@ -342,22 +333,24 @@ div{
       const cw = container.clientWidth;
       const ch = container.clientHeight;
       const scaleFactor = Math.min(cw / baseWidth, ch / baseHeight);
-      let baseScale = 1800 * scaleFactor;
-        if (window.innerWidth < 600) {
-            const xOffset = Math.round(Math.max(40, cw * 0.3)); 
-            const yOffset = Math.round(Math.max(40, ch * 0.4)); 
+      let baseScale = 3000 * scaleFactor;
 
-            baseScale *= 2;
+      if (window.innerWidth < 600) {
+        // スマホ
+        projection
+          .center([133.0, 43.0]) 
+          .scale(baseScale * 1.0) 
+          .translate([cw / 2, ch / 2.3]); 
 
-            projection
-            .scale(baseScale)
-            .translate([cw / 2 + xOffset, ch / 2 + yOffset]);
-        } else {
-            projection
-            .scale(baseScale)
-            .translate([cw / 2, ch / 2]);
-        }
+      } else {
+        //  PC
+        projection
+          .center([138.0, 38.0]) 
+          .scale(1800)
+          .translate([cw / 2, ch / 2]);
       }
+    }
+    
     
       function renderMap(data) {
         //本州のpath描画
@@ -443,7 +436,6 @@ div{
       }
     
       function drawMap() {
-        // 一旦削除しないといけない
         d3.select("#map").selectAll("*").remove();
         svg = d3.select("#map")
           .append("svg")
@@ -474,15 +466,12 @@ div{
 }
 
 
-// 地図を描画したあとにスピナー更新
 drawMap();
 
 const userId = {{ $user->id ?? 'null' }};
-// 投稿情報を取得してスピナー更新
 fetch(`/prefectures/${userId}/posts`)
   .then(response => response.json())
   .then(prefectures => {
-    // 投稿済み都道府県を塗る
     prefectures.forEach(pref => {
       const area = document.querySelector(`#pref-${pref.code}`); 
       if (area && pref.has_post) {
@@ -490,25 +479,19 @@ fetch(`/prefectures/${userId}/posts`)
       }
     });
 
-    // スピナー更新呼び出し
     updateSpinner(prefectures);
   })
   .catch(error => console.error('Error loading prefectures:', error));
 
       drawMap();
-      // 投稿済み都道府県に応じてスピナーを更新
 function updateSpinner(prefectures) {
     
   const completed = prefectures.filter(p => p.has_post).length;
   console.log(prefectures);
   const total = 47;
   const degree = (360 / total) * completed; 
-
-  // conic-gradient で塗り分け
   const spinnerOuter = document.querySelector('.spinner-outer');
   spinnerOuter.style.background = `conic-gradient(#F1BDB2 0deg ${degree}deg, #FFF ${degree}deg 360deg)`;
-
-  // 中央の数字を更新
   const countElement = document.querySelector('.spinner-text .count');
   countElement.innerHTML = `${completed}<span style="font-size: 27px">/47</span>`;
 }

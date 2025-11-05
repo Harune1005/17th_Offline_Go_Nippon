@@ -58,7 +58,7 @@
   /* スピナーの位置調整も微修正（右にはみ出ることがあるため） */
   .spinner-wrapper {
     right: 10%;
-    transform: translateX(0) scale(0.9);
+    transform: translateX(0) scale(0.8);
   }
 .col-auto{
     padding: 0;
@@ -77,11 +77,11 @@
  .profile-row{
    padding-left: 0.5rem;
  }
- .spinner-wrapper {
+ /* .spinner-wrapper {
     bottom: 5px;
     right: 30px;
     transform: translateX(10%) scale(0.9);
-  }
+  } */
  
  .btn{
     margin-left:0.5rem;
@@ -173,7 +173,11 @@
   right: 10px;
   z-index: 10; /* 地図の上に出す */
 }
-
+.map-container svg {
+  width: 100%;
+  max-width: 600px; /* パソコンでは600pxくらいに制限 */
+  height: auto;
+}
 </style>
 
     {{-- Profile area --}}
@@ -284,8 +288,8 @@
             <div class="row">
                 <p class="fw-bold h5 click-map text-center">Click map <span>to view full map</span></p>
                 <div class="map-container">
-                    <a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
-                        <div id="map" style="width: 100%; height: 350px;"></div>
+<a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
+                   <div id="map" style="width: 100%; height: 350px;"></div>
                    </a>
                     <div class="spinner-wrapper">
                         <div class="spinner-outer">
@@ -364,7 +368,7 @@
 @endsection
 
 <script>
-    const prefectures = @json($prefectures ?? []); // ← LaravelからJSへ渡す
+    const prefectures = @json($prefectures ?? []); 
 </script>
 
 
@@ -377,7 +381,7 @@
       let svg;
     
       const projection = d3.geoMercator()
-        .center([133, 42]) // 日本の中心
+        .center([133, 42]) 
         .translate([baseWidth / 2, baseHeight / 2]);
     
       const path = d3.geoPath().projection(projection);
@@ -388,24 +392,25 @@
       const ch = container.clientHeight;
       const scaleFactor = Math.min(cw / baseWidth, ch / baseHeight);
       let baseScale = 3000 * scaleFactor;
-        if (window.innerWidth < 600) {
-            const xOffset = Math.round(Math.max(40, cw * 0.3)); 
-            const yOffset = Math.round(Math.max(40, ch * 0.4)); 
 
-            baseScale *= 2;
+      if (window.innerWidth < 600) {
+        // スマホ
+        projection
+          .center([133.0, 43.0]) 
+          .scale(baseScale * 1.0) 
+          .translate([cw / 2, ch / 2.3]); 
 
-            projection
-            .scale(baseScale)
-            .translate([cw / 2 + xOffset, ch / 2 + yOffset]);
-        } else {
-            projection
-            .scale(baseScale)
-            .translate([cw / 2, ch / 2]);
-        }
+      } else {
+        //  PC
+        projection
+          .center([133.0, 42.0]) 
+          .scale(baseScale)
+          .translate([cw / 2, ch / 2]);
       }
+    }
     
       function renderMap(data) {
-        //本州のpath描画
+
         svg.selectAll(".prefecture")
           .data(data.features.filter(d => d.properties.nam_ja !== "沖縄県"))
           .enter()
@@ -488,7 +493,6 @@
       }
     
       function drawMap() {
-        // 一旦削除しないといけない
         d3.select("#map").selectAll("*").remove();
         svg = d3.select("#map")
           .append("svg")
@@ -501,164 +505,156 @@
     
         d3.json("{{ asset('geojson/japan.geojson') }}").then(renderMap);
       }
+
       function updateSpinner(prefectures) {
-  const completed = prefectures.filter(p => p.has_post).length;
-  console.log(completed);
-  const total = 47;
-  const degree = (360 / total) * completed;
+      const completed = prefectures.filter(p => p.has_post).length;
+      console.log(completed);
+      const total = 47;
+      const degree = (360 / total) * completed;
 
-  const spinnerFill = document.querySelector('.spinner-fill');
-  if(spinnerFill){
-    spinnerFill.style.transform = `rotate(${degree - 90}deg)`; 
-  }
-
-  const countElement = document.querySelector('.spinner-text .count');
-  if(countElement){
-    countElement.innerHTML = `${completed}<span style="font-size:27px">/47</span>`;
-  }
-}
-
-
-// 地図を描画したあとにスピナー更新
-drawMap();
-
-const userId = {{ $user->id ?? 'null' }};
-// 投稿情報を取得してスピナー更新
-fetch(`/prefectures/${userId}/posts`)
-  .then(response => response.json())
-  .then(prefectures => {
-    // 投稿済み都道府県を塗る
-    prefectures.forEach(pref => {
-      const area = document.querySelector(`#pref-${pref.code}`); 
-      if (area && pref.has_post) {
-        area.style.fill = "#F1BDB2";
+      const spinnerFill = document.querySelector('.spinner-fill');
+      if(spinnerFill){
+        spinnerFill.style.transform = `rotate(${degree - 90}deg)`; 
       }
-    });
 
-    // スピナー更新呼び出し
-    updateSpinner(prefectures);
-  })
-  .catch(error => console.error('Error loading prefectures:', error));
+      const countElement = document.querySelector('.spinner-text .count');
+      if(countElement){
+        countElement.innerHTML = `${completed}<span style="font-size:27px">/47</span>`;
+      }
+    }
+    drawMap();
 
-      drawMap();
-      // 投稿済み都道府県に応じてスピナーを更新
-function updateSpinner(prefectures) {
-    
-  const completed = prefectures.filter(p => p.has_post).length;
-  console.log(prefectures);
-  const total = 47;
-  const degree = (360 / total) * completed; 
-
-  // conic-gradient で塗り分け
-  const spinnerOuter = document.querySelector('.spinner-outer');
-  spinnerOuter.style.background = `conic-gradient(#F1BDB2 0deg ${degree}deg, #FFF ${degree}deg 360deg)`;
-
-  // 中央の数字を更新
-  const countElement = document.querySelector('.spinner-text .count');
-  countElement.innerHTML = `${completed}<span style="font-size: 27px">/47</span>`;
-}
-
-        let resizeTimeout;
-        window.addEventListener("resize", () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-            drawMap();
-            }, 400);
+    const userId = {{ $user->id ?? 'null' }};
+    fetch(`/prefectures/${userId}/posts`)
+      .then(response => response.json())
+      .then(prefectures => {
+        prefectures.forEach(pref => {
+          const area = document.querySelector(`#pref-${pref.code}`); 
+          if (area && pref.has_post) {
+            area.style.fill = "#F1BDB2";
+          }
         });
 
-     function loadPosts(prefId, prefName) {
-      const bigCard = document.querySelector('.big-card');
-        fetch(`/profile/${userId}/pref/${prefId}`)
-            .then(response => response.json())
-            .then(posts => {
-      const postContainer = document.querySelector('.big-card-body');
-      const prefHeader = document.querySelector('.big-card h1');
-      prefHeader.textContent = prefName;
-      const prefectureEnglishNames = {
-  1: "Hokkaido",
-  2: "Aomori",
-  3: "Iwate",
-  4: "Miyagi",
-  5: "Akita",
-  6: "Yamagata",
-  7: "Fukushima",
-  8: "Ibaraki",
-  9: "Tochigi",
-  10: "Gunma",
-  11: "Saitama",
-  12: "Chiba",
-  13: "Tokyo",
-  14: "Kanagawa",
-  15: "Niigata",
-  16: "Toyama",
-  17: "Ishikawa",
-  18: "Fukui",
-  19: "Yamanashi",
-  20: "Nagano",
-  21: "Gifu",
-  22: "Shizuoka",
-  23: "Aichi",
-  24: "Mie",
-  25: "Shiga",
-  26: "Kyoto",
-  27: "Osaka",
-  28: "Hyogo",
-  29: "Nara",
-  30: "Wakayama",
-  31: "Tottori",
-  32: "Shimane",
-  33: "Okayama",
-  34: "Hiroshima",
-  35: "Yamaguchi",
-  36: "Tokushima",
-  37: "Kagawa",
-  38: "Ehime",
-  39: "Kochi",
-  40: "Fukuoka",
-  41: "Saga",
-  42: "Nagasaki",
-  43: "Kumamoto",
-  44: "Oita",
-  45: "Miyazaki",
-  46: "Kagoshima",
-  47: "Okinawa"
-};
-
-prefHeader.textContent = prefectureEnglishNames[prefId] || prefName;
-
-      if (!posts || posts.length === 0) {
-        postContainer.innerHTML = `<p class="text-center text-muted">There is no post.</p>`;
-      } else {
-        postContainer.innerHTML = `
-  <div class="row">
-    ${posts.map(post => {
-      const base64 = (post.images && post.images.length) ? post.images[0].image : null;
-      const imgSrc = base64 ? `data:image/jpeg;base64,${base64}` : '/images/placeholder.jpg';
-      return `
-        <div class="col-12 col-md-6 mb-3">
-          <div class="card border-0 post-card">
-            <div class="card-header p-0 border-0">
-              <a href="/post/${post.id}/show">
-                <img src="${imgSrc}" alt="${post.user ? post.user.name : ''}" class="p-0 post-image">
-              </a>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('')}
-  </div>
-`;
-
-      }
-
-      bigCard.style.display = 'block';
-      bigCard.classList.add('show');
-      
+      updateSpinner(prefectures);
     })
-    .catch(error => console.error('Error loading posts:', error));
-}
+    .catch(error => console.error('Error loading prefectures:', error));
+
+        drawMap();
+    function updateSpinner(prefectures) {
+        
+      const completed = prefectures.filter(p => p.has_post).length;
+      console.log(prefectures);
+      const total = 47;
+      const degree = (360 / total) * completed; 
+
+      const spinnerOuter = document.querySelector('.spinner-outer');
+      spinnerOuter.style.background = `conic-gradient(#F1BDB2 0deg ${degree}deg, #FFF ${degree}deg 360deg)`;
+
+      const countElement = document.querySelector('.spinner-text .count');
+      countElement.innerHTML = `${completed}<span style="font-size: 27px">/47</span>`;
+    }
+
+            let resizeTimeout;
+            window.addEventListener("resize", () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                drawMap();
+                }, 400);
+            });
+
+        function loadPosts(prefId, prefName) {
+          const bigCard = document.querySelector('.big-card');
+            fetch(`/profile/${userId}/pref/${prefId}`)
+                .then(response => response.json())
+                .then(posts => {
+          const postContainer = document.querySelector('.big-card-body');
+          const prefHeader = document.querySelector('.big-card h1');
+          prefHeader.textContent = prefName;
+          const prefectureEnglishNames = {
+      1: "Hokkaido",
+      2: "Aomori",
+      3: "Iwate",
+      4: "Miyagi",
+      5: "Akita",
+      6: "Yamagata",
+      7: "Fukushima",
+      8: "Ibaraki",
+      9: "Tochigi",
+      10: "Gunma",
+      11: "Saitama",
+      12: "Chiba",
+      13: "Tokyo",
+      14: "Kanagawa",
+      15: "Niigata",
+      16: "Toyama",
+      17: "Ishikawa",
+      18: "Fukui",
+      19: "Yamanashi",
+      20: "Nagano",
+      21: "Gifu",
+      22: "Shizuoka",
+      23: "Aichi",
+      24: "Mie",
+      25: "Shiga",
+      26: "Kyoto",
+      27: "Osaka",
+      28: "Hyogo",
+      29: "Nara",
+      30: "Wakayama",
+      31: "Tottori",
+      32: "Shimane",
+      33: "Okayama",
+      34: "Hiroshima",
+      35: "Yamaguchi",
+      36: "Tokushima",
+      37: "Kagawa",
+      38: "Ehime",
+      39: "Kochi",
+      40: "Fukuoka",
+      41: "Saga",
+      42: "Nagasaki",
+      43: "Kumamoto",
+      44: "Oita",
+      45: "Miyazaki",
+      46: "Kagoshima",
+      47: "Okinawa"
+    };
+
+    prefHeader.textContent = prefectureEnglishNames[prefId] || prefName;
+
+          if (!posts || posts.length === 0) {
+            postContainer.innerHTML = `<p class="text-center text-muted">There is no post.</p>`;
+          } else {
+            postContainer.innerHTML = `
+      <div class="row">
+        ${posts.map(post => {
+          const base64 = (post.images && post.images.length) ? post.images[0].image : null;
+          const imgSrc = base64 ? `data:image/jpeg;base64,${base64}` : '/images/placeholder.jpg';
+          return `
+            <div class="col-12 col-md-6 mb-3">
+              <div class="card border-0 post-card">
+                <div class="card-header p-0 border-0">
+                  <a href="/post/${post.id}/show">
+                    <img src="${imgSrc}" alt="${post.user ? post.user.name : ''}" class="p-0 post-image">
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+
+          }
+
+          bigCard.style.display = 'block';
+          bigCard.classList.add('show');
+          
+        })
+        .catch(error => console.error('Error loading posts:', error));
+    }
 
 
-     };
+   };
 </script>
     
