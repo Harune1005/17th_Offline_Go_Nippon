@@ -222,7 +222,7 @@
                                         <div class="d-flex align-items-center">
                                             <i class="fa-regular fa-star text-brown me-1"></i>
                                         </div>
-                                    </div>q
+                                    </div>
                                 </div>
                                 
                                 <div class="d-flex align-items-center justify-content-end text-brown small mb-3 gap-3">

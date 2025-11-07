@@ -44,144 +44,60 @@
                 <div class="card shadow-sm border-0">
                     <div id="carouselRanking" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
-                            {{-- category carousel --}}
+
+                            {{-- 🏷 Category Ranking --}}
                             <div class="carousel-item active">
                                 <div class="card-header border-0" style="background: rgba(159, 107, 70, 0.3);">
                                     <h5 class="mb-0 fw-bold text-center">🏆 Category Ranking</h5>
                                 </div>
                                 <ul class="list-group list-group-flush mx-5">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span>
-                                            <i class="fa-brands fa-web-awesome"></i> 1. 
-                                            <br>
-                                            &nbsp;
-                                            >>>
-                                            <a href="" class="text-decoration-none">Travel</a>
-                                        </span>
-                                        <div class="badge rounded-pill">
-                                            <span class="" style="background: rgb(236, 239, 255);">123</span>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span>
-                                            <i class="fa-brands fa-web-awesome"></i> 2. 
-                                            <br>
-                                            &nbsp;
-                                            >>>
-                                            <a href="" class="text-decoration-none">Food</a>
-                                        </span>
-                                        <div class="badge rounded-pill">
-                                            <span class="" style="background: rgb(236, 239, 255);">98</span>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span>
-                                            <i class="fa-brands fa-web-awesome"></i> 3. 
-                                            <br>
-                                            &nbsp;
-                                            >>>
-                                            <a href="" class="text-decoration-none">Culture</a>
-                                        </span>
-                                        <div class="badge rounded-pill">
-                                            <span class="" style="background: rgb(236, 239, 255);">78</span>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span>
-                                            <i class="fa-brands fa-web-awesome"></i> 4. 
-                                            <br>
-                                            &nbsp;
-                                            >>>
-                                            <a href="" class="text-decoration-none">Nature</a>
-                                        </span>
-                                        <div class="badge rounded-pill">
-                                            <span class="" style="background: rgb(236, 239, 255);">45</span>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span>
-                                            <i class="fa-brands fa-web-awesome"></i> 5. 
-                                            <br>
-                                            &nbsp;
-                                            >>>
-                                            <a href="" class="text-decoration-none">Shopping</a>
-                                        </span>
-                                        <div class="badge rounded-pill">
-                                            <span class="" style="background: rgb(236, 239, 255);">23</span>
-                                        </div>
-                                    </li>
+                                    @forelse ($categoryRanked as $item)
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>
+                                                <i class="fa-solid fa-crown" style="color:#9F6B46;"></i> {{ $item['rank'] }}.
+                                                <br>
+                                                &nbsp;>>>
+                                                <a href="" 
+                                                class="text-decoration-none">{{ $item['name'] }}</a>
+                                            </span>
+                                            <div class="badge rounded-pill">
+                                                <span style="background: rgb(236, 239, 255);">{{ $item['count'] }}</span>
+                                            </div>
+                                        </li>
+                                    @empty
+                                        <li class="list-group-item text-center text-muted">No data</li>
+                                    @endforelse
                                 </ul>
                             </div>
 
-                            {{-- prefecture carousel --}}
+                            {{-- 🗾 Prefecture Ranking --}}
                             <div class="carousel-item">
-                                <div class="card-header border-0">
+                                <div class="card-header border-0" style="background: rgba(159, 107, 70, 0.3);">
                                     <h5 class="mb-0 fw-bold text-center">🏆 Prefecture Ranking</h5>
                                 </div>
                                 <ul class="list-group list-group-flush mx-5">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span>
-                                            <i class="fa-brands fa-web-awesome"></i> 1. 
-                                            <br>
-                                            &nbsp;
-                                            >>>
-                                            <a href="" class="text-decoration-none">Tokyo</a>
-                                        </span>
-                                        <div class="badge rounded-pill">
-                                            <span class="" style="background: rgb(236, 239, 255);">123</span>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span>
-                                            <i class="fa-brands fa-web-awesome"></i> 2. 
-                                            <br>
-                                            &nbsp;
-                                            >>>
-                                            <a href="" class="text-decoration-none">Kyoto</a>
-                                        </span>
-                                        <div class="badge rounded-pill">
-                                            <span class="" style="background: rgb(236, 239, 255);">66</span>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span>
-                                            <i class="fa-brands fa-web-awesome"></i> 3. 
-                                            <br>
-                                            &nbsp;
-                                            >>>
-                                            <a href="" class="text-decoration-none">Okinawa</a>
-                                        </span>
-                                        <div class="badge rounded-pill">
-                                            <span class="" style="background: rgb(236, 239, 255);">54</span>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span>
-                                            <i class="fa-brands fa-web-awesome"></i> 4. 
-                                            <br>
-                                            &nbsp;
-                                            >>>
-                                            <a href="" class="text-decoration-none">Fukuoka</a>
-                                        </span>
-                                        <div class="badge rounded-pill">
-                                            <span class="" style="background: rgb(236, 239, 255);">45</span>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span>
-                                            <i class="fa-brands fa-web-awesome"></i> 5. 
-                                            <br>
-                                            &nbsp;
-                                            >>>
-                                            <a href="" class="text-decoration-none">Kanagawa</a>
-                                        </span>
-                                        <div class="badge rounded-pill">
-                                            <span class="" style="background: rgb(236, 239, 255);">12</span>
-                                        </div>
-                                    </li>
+                                    @forelse ($prefectureRanked as $item)
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>
+                                                <i class="fa-solid fa-crown" style="color:#9F6B46;"></i> {{ $item['rank'] }}.
+                                                <br>&nbsp;>>>
+                                                <a href="" class="text-decoration-none">
+                                                    {{ $item['prefecture_name'] }}
+                                                </a>
+                                            </span>
+                                            <div class="badge rounded-pill">
+                                                <span style="background: rgb(236, 239, 255);">{{ $item['count'] }}</span>
+                                            </div>
+                                        </li>
+                                    @empty
+                                        <li class="list-group-item text-center text-muted">No data</li>
+                                    @endforelse
                                 </ul>
                             </div>
+
                         </div>
+
+                        {{-- carousel controls --}}
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselRanking" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon"></span>
                         </button>
@@ -191,6 +107,7 @@
                     </div>
                 </div>
             </div>
+
 
             <div class="col-12 col-md-8">
                 <div class="container">
