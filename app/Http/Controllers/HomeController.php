@@ -39,13 +39,12 @@ class HomeController extends Controller
         }
         $categoryRanked = array_slice($categoryRanked, 0, 5);
 
-
-       $prefectureCounts = DB::table('posts')
-        ->join('prefectures', 'posts.prefecture_id', '=', 'prefectures.id')
-        ->select('prefectures.id as prefecture_id', 'prefectures.name as prefecture_name', DB::raw('COUNT(posts.id) as count'))
-        ->groupBy('prefectures.id', 'prefectures.name')
-        ->orderByDesc('count')
-        ->get();
+        $prefectureCounts = DB::table('posts')
+            ->join('prefectures', 'posts.prefecture_id', '=', 'prefectures.id')
+            ->select('prefectures.id as prefecture_id', 'prefectures.name as prefecture_name', DB::raw('COUNT(posts.id) as count'))
+            ->groupBy('prefectures.id', 'prefectures.name')
+            ->orderByDesc('count')
+            ->get();
 
         $prefectureRanked = [];
         $currentRank = 0;
@@ -64,7 +63,6 @@ class HomeController extends Controller
         }
         $prefectureRanked = array_slice($prefectureRanked, 0, 5);
 
-        
         return view('home', compact('posts', 'categoryRanked', 'prefectureRanked'));
     }
 }
