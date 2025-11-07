@@ -144,8 +144,8 @@
                 <div class="card-body bg-white p-0">
                     <div class="row g-0">
                        <div class="col-md-7">
-                         @php
-                                        $images = is_string($post->image) ? json_decode($post->image, true) : $post->image;
+                                   @php
+                                    $images = is_string($post->image) ? json_decode($post->image, true) : $post->image;
                                     @endphp
 
                                     @if ($images && count($images) > 1)
@@ -222,7 +222,7 @@
                                         <div class="d-flex align-items-center">
                                             <i class="fa-regular fa-star text-brown me-1"></i>
                                         </div>
-                                    </div>
+                                    </div>q
                                 </div>
                                 
                                 <div class="d-flex align-items-center justify-content-end text-brown small mb-3 gap-3">

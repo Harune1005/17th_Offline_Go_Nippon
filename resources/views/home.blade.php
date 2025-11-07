@@ -209,17 +209,30 @@
                         </ul>
                     </div>
 
-                     {{-- Posts --}}
+                     Posts
                 <div class="row g-4 mt-3">
                     @forelse ($posts as $post)
                         <div class="col-12 col-md-6 d-flex justify-content-center">
                             <div class="card border-0 shadow-sm w-100">
                                 <div class="card-body p-0">
 
-                                   @php
-                        
-                                    $images = is_array($post->image) ? $post->image : json_decode($post->image, true);
+                                @php
+                                   
+                                    if (is_string($post->image)) {
+                                        $decoded = json_decode($post->image, true);
+                                        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                            $images = $decoded;
+                                        } else {
+                                            $images = [$post->image]; 
+                                        }
+                                    } elseif (is_array($post->image)) {
+                                        $images = $post->image;
+                                    } else {
+                                        $images = [];
+                                    }
                                 @endphp
+                                {{-- @php dump($images); @endphp --}}
+
 
                                 @if (!empty($images) && count($images) > 0)
                                     @if (count($images) > 1)
@@ -235,11 +248,11 @@
                                                                     alt="Post Image {{ $index + 1 }}">
                                                             </div>
                                                         </a>
+                                                        
                                                     </div>
                                                 @endforeach
                                             </div>
-
-                                         
+    
                                             <button class="carousel-control-prev" type="button"
                                                     data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="prev">
                                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>

@@ -39,8 +39,7 @@ class PostController extends Controller
             'category.*' => 'nullable|integer|exists:categories,id',
             'prefecture_id' => 'required|integer|exists:prefectures,id',
             'cost' => 'nullable|integer|min:0|max:10000',
-            'image' => 'nullable',
-            'image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $visitedAt = $validated['date'].' '.
@@ -52,7 +51,7 @@ class PostController extends Controller
             foreach ($request->file('image') as $image) {
                 $base64Images[] = base64_encode(file_get_contents($image));
             }
-            $validated['image'] = $base64Images;
+            $validated['image'] = json_encode($base64Images, JSON_UNESCAPED_SLASHES);
         }
 
         $post = new Post([
@@ -62,7 +61,8 @@ class PostController extends Controller
             'prefecture_id' => $validated['prefecture_id'],
             'visited_at' => $visitedAt,
             'cost' => $validated['cost'] ?? 0,
-            'image' => $base64Images,
+            // 'image' => $base64Images,
+            'image' => $validated['image'] ?? null,
             'time_hour' => $validated['time_hour'],
             'time_min' => $validated['time_min'],
         ]);
@@ -121,18 +121,16 @@ class PostController extends Controller
             'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $imagePaths = is_string($post->image) ? json_decode($post->image, true) : $post->image;
-        $imagePaths = $imagePaths ?? [];
+        $base64Images = is_string($post->image) ? json_decode($post->image, true) : [];
 
         if ($request->hasFile('image')) {
-            foreach ($request->file('image') as $file) {
-                if ($file->isValid()) {
-                    $path = $file->store('image', 'public');
-                    $imagePaths[] = $path;
+            foreach ($request->file('image') as $image) {
+                if ($image->isValid()) {
+                    $base64Images[] = base64_encode(file_get_contents($image));
                 }
             }
-            // 最大3枚に制限
-            $imagePaths = array_slice($imagePaths, 0, 3);
+
+            $base64Images = array_slice($base64Images, 0, 3);
         }
 
         $visitedAt = $validated['date'].' '.
@@ -145,7 +143,7 @@ class PostController extends Controller
             'prefecture_id' => $validated['prefecture_id'],
             'visited_at' => $visitedAt,
             'cost' => $validated['cost'] ?? 0,
-            'image' => ($imagePaths),
+            'image' => json_encode($base64Images, JSON_UNESCAPED_SLASHES),
         ]);
 
         if (! empty($validated['category'])) {
