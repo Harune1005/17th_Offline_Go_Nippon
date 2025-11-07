@@ -114,7 +114,7 @@
                                 <div class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-2"
                                     aria-labelledby="account-dropdown">
                                     {{-- @can('admin') --}}
-                                        <a href="#" class="dropdown-item"><i class="fa-solid fa-lock me-2"></i></i>Admin</a>
+                                        <a href="{{ route('admin.users') }}" class="dropdown-item"><i class="fa-solid fa-lock me-2"></i></i>Admin</a>
                                     {{-- @endcan --}}
 
                                     <hr class="dropdown-divider">
@@ -126,7 +126,12 @@
                                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                             @csrf
                                             </form>
-                                    <a href="#" class="dropdown-item"><i class="fa-solid fa-toggle-on me-2"></i>Notification</a>
+                                    <a href="#" class="dropdown-item"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#notificationModal"
+                                        id="notificationBtn">
+                                        <i class="fa-solid fa-toggle-on me-3"></i> Notification
+                                    </a>
                                 </div>
                             </li>
                         @endguest
@@ -187,7 +192,7 @@
                         </a>
                     </li>
                     <li class="mb-3">
-                        <a href="" class="menu-link nav-text-brown">
+                        <a href="" class="notificationBtn menu-link nav-text-brown">
                             <i class="fa-regular fa-heart me-3"></i> Notifications
                         </a>
                     </li>
@@ -202,7 +207,7 @@
                         </a>
                     </li>
                     <li class="mb-3">
-                        <a href="" class="menu-link nav-text-brown">
+                        <a href="#" class="notificationBtn menu-link nav-text-brown">
                             <i class="fa-solid fa-toggle-on me-3"></i> Notification
                         </a>
                     </li>
@@ -232,5 +237,57 @@
     @yield('scripts')
 
     @stack('scripts')
+
+    <!-- 通知モーダル -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3">
+        <h5 class="mb-3">Notifications</h5>
+        <div id="notificationList">
+            <p>Loading...</p>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- 🧠 JavaScript -->
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // IDではなくクラスでも取得できるように
+        const notificationBtns = document.querySelectorAll(".notificationBtn, #notificationBtn");
+        const notificationList = document.getElementById("notificationList");
+
+        notificationBtns.forEach(btn => {
+            btn.addEventListener("click", async () => {
+                notificationList.innerHTML = "<p>Loading...</p>";
+
+                try {
+                    const res = await fetch("/notifications");
+                    const notifications = await res.json();
+
+                    let html = "";
+                    notifications.forEach(n => {
+                        html += `
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="${n.image || 'https://via.placeholder.com/50'}"
+                                    alt="" class="rounded-circle me-3" width="50" height="50">
+                                <div>
+                                    <strong>${n.user}</strong><br>
+                                    <small>${n.action}</small><br>
+                                    <span class="text-muted">${n.time}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    notificationList.innerHTML = html;
+                } catch (error) {
+                    console.error(error);
+                    notificationList.innerHTML = "<p>Error loading notifications.</p>";
+                }
+            });
+        });
+    });
+    </script>
 </body>
 </html>

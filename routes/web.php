@@ -9,6 +9,7 @@ use App\Http\Controllers\FollowController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MapController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
@@ -96,4 +97,5 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/follow/{user_id}/search', 'search')->name('follow.search');
     });
 
+    Route::get('/notifications', [NotificationController::class, 'index']);
 });
