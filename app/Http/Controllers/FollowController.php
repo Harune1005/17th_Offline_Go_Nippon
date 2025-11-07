@@ -118,7 +118,7 @@ class FollowController extends Controller
 
         $suggested_users = $this->getSuggestedUsers();
 
-        return view('followers_followings', [
+        return view('users.profile.followers_followings', [
             'user' => $user,
             'searchResults' => $searchResults,
             'tab' => $tab,

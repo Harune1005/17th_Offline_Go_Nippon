@@ -20,18 +20,14 @@
                         <div class="row mb-4 align-items-center">
                             <div class="col-auto me-4">
                                 @if ($user->avatar)
-                                    <img id="avatar-preview-existing" src="{{ asset($user->avatar) }}" 
-                                        alt="{{ $user->name }}" 
-                                        class="rounded-circle shadow-sm mb-3"
+                                    <img id="avatar-preview-existing" src="{{ asset($user->avatar) }}" alt="{{ $user->name }}" class="rounded-circle shadow-sm mb-3"
                                         style="width:120px; height:120px; object-fit:cover; border:4px solid #C8A27A;">
                                 @else
-                                    <i id="avatar-preview-existing" class="fa-solid fa-circle-user mb-3" 
-                                        style="font-size:120px; color:#9F6B46; text-shadow: 3px 3px 6px rgba(0,0,0,0.3);"></i>
+                                    <i id="avatar-preview-existing" class="fa-solid fa-circle-user mb-3" style="font-size:120px; color:#9F6B46; text-shadow: 3px 3px 6px rgba(0,0,0,0.3);"></i>
                                 @endif
                             </div>
                             <div class="col">
-                                <input type="file" name="avatar" id="avatar" 
-                                        class="form-control shadow-sm border-0 w-75" accept="image/*">
+                                <input type="file" name="avatar" id="avatar" class="form-control shadow-sm border-0 w-75" accept="image/*">
                                 <div class="form-text small mt-1" style="color:#9F6B46;">
                                     Acceptable formats: jpeg, jpg, png, gif <br>
                                     Max file size: 1048kb
@@ -85,8 +81,7 @@
 
                         <div class="mb-4">
                             <label for="introduction" class="form-label fw-bold" style="color:#9F6B46;">Introduction</label>
-                            <textarea name="introduction" id="introduction" rows="5" 
-                                        class="form-control shadow-sm border-0" 
+                            <textarea name="introduction" id="introduction" rows="5" class="form-control shadow-sm border-0" 
                                         placeholder="Describe yourself">{{ old('introduction', $user->introduction) }}</textarea>
                             @error('introduction')
                                 <div class="text-danger small">{{ $message }}</div>
@@ -100,15 +95,9 @@
                             <div>
                                 @foreach ($categories as $category)
                                     <div class="form-check form-check-inline">
-                                        <input 
-                                            type="checkbox"
-                                            name="category[]"
-                                            id="category-{{ $category->id }}"
-                                            value="{{ $category->id }}"
-                                            class="form-check-input accent-color"
-                                            style="border-color: #776B5D"
+                                        <input type="checkbox" name="category[]" id="category-{{ $category->id }}" value="{{ $category->id }}"
+                                            class="form-check-input accent-color" style="border-color: #776B5D"
                                             {{ in_array($category->id, old('category', $user->categories->pluck('id')->toArray())) ? 'checked' : '' }}>
-
                                         <label for="category-{{ $category->id }}" class="form-check-label">
                                             {{ $category->name }}
                                         </label>
@@ -117,8 +106,7 @@
                             </div>
                         </div>
 
-                            <label for="current_password" class="form-label fw-bold" style="color:#9F6B46;">Change Password</label>
-
+                        <label for="current_password" class="form-label fw-bold" style="color:#9F6B46;">Change Password</label>
                         <div class="mb-4">             
                             <input type="password" name="current_password" id="current_password" 
                                 class="form-control shadow-sm border-0" placeholder="Current Password">
@@ -144,15 +132,13 @@
                            <a href="{{ route('profile.show', $user->id) }}" 
                                 class="btn editbtn shadow-sm me-3"
                                 style="min-width:150px; border:2px solid #B0B0B0; color:white; font-weight:bold; background-color:#B0B0B0; transition:0.3s;"
-                                onmouseover="this.style.backgroundColor='white'; this.style.color='#B0B0B0';"
-                                onmouseout="this.style.backgroundColor='#B0B0B0'; this.style.color='white';">
+                                onmouseover="this.style.backgroundColor='white'; this.style.color='#B0B0B0';" onmouseout="this.style.backgroundColor='#B0B0B0'; this.style.color='white';">
                                 Cancel
                             </a>
 
                             <button type="submit" class="btn editbtn shadow-sm"
                                 style="min-width:150px; background-color:#F1BDB2; color:white; font-weight:bold; border:2px solid #F1BDB2; transition:0.3s;"
-                                onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
-                                onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
+                                onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';" onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
                                 Save
                             </button>
                         </div>

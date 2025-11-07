@@ -144,7 +144,7 @@ class ProfileController extends Controller
                 return $pref;
             });
 
-        return view('followers_followings', compact('user', 'suggested_users', 'activeTab', 'prefectures'));
+        return view('users.profile.followers_followings', compact('user', 'suggested_users', 'activeTab', 'prefectures'));
     }
 
     public function following($id, Request $request)
@@ -167,7 +167,7 @@ class ProfileController extends Controller
                 return $pref;
             });
 
-        return view('followers_followings', compact('user', 'suggested_users', 'activeTab', 'prefectures'));
+        return view('users.profile.followers_followings', compact('user', 'suggested_users', 'activeTab', 'prefectures'));
     }
 
     public function showPref($id)

@@ -225,7 +225,7 @@
                         </a>
                     </div>
                     <div class="col-auto">
-                        <a href="#" 
+                        <a href="{{ route('favorite') }}" 
                             class="btn shadow-sm"
                             style="background-color:white; color:#F1BDB2; font-weight:bold; width:190px; border:2px solid #F1BDB2; transition:0.3s;"
                             onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
@@ -376,7 +376,7 @@
 
                         @if (isset($searchResults) && $activeTab === 'followers')
                             <div class="search-result-container">
-                                @include('search_result', ['searchResults' => $searchResults])
+                                @include('users.profile.search_result', ['searchResults' => $searchResults])
                             </div>
                         @endif
                     </div>
@@ -431,7 +431,7 @@
 
                         @if (isset($searchResults) && $activeTab === 'following')
                             <div class="search-result-container">
-                                @include('search_result', ['searchResults' => $searchResults])
+                                @include('users.profile.search_result', ['searchResults' => $searchResults])
                             </div>
                         @endif
                     </div>
