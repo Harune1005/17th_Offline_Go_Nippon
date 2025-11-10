@@ -44,8 +44,7 @@
                 <div class="card shadow-sm border-0">
                     <div id="carouselRanking" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
-
-                            {{-- 🏷 Category Ranking --}}
+                            {{-- Category Ranking --}}
                             <div class="carousel-item active">
                                 <div class="card-header border-0" style="background: rgba(159, 107, 70, 0.3);">
                                     <h5 class="mb-0 fw-bold text-center">🏆 Category Ranking</h5>
@@ -57,8 +56,9 @@
                                                 <i class="fa-solid fa-crown" style="color:#9F6B46;"></i> {{ $item['rank'] }}.
                                                 <br>
                                                 &nbsp;>>>
-                                                <a href="" 
-                                                class="text-decoration-none">{{ $item['name'] }}</a>
+                                                <a href="{{ route('ranking.post', ['category_id' => $item['id']]) }}" class="text-decoration-none">
+                                                    {{ $item['name'] }}
+                                                </a>
                                             </span>
                                             <div class="badge rounded-pill">
                                                 <span style="background: rgb(236, 239, 255);">{{ $item['count'] }}</span>
@@ -70,7 +70,7 @@
                                 </ul>
                             </div>
 
-                            {{-- 🗾 Prefecture Ranking --}}
+                            {{-- Prefecture Ranking --}}
                             <div class="carousel-item">
                                 <div class="card-header border-0" style="background: rgba(159, 107, 70, 0.3);">
                                     <h5 class="mb-0 fw-bold text-center">🏆 Prefecture Ranking</h5>
@@ -81,7 +81,7 @@
                                             <span>
                                                 <i class="fa-solid fa-crown" style="color:#9F6B46;"></i> {{ $item['rank'] }}.
                                                 <br>&nbsp;>>>
-                                                <a href="" class="text-decoration-none">
+                                                <a href="{{ route('ranking.post', ['prefecture_id' => $item['prefecture_id']]) }}" class="text-decoration-none">
                                                     {{ $item['prefecture_name'] }}
                                                 </a>
                                             </span>
@@ -107,7 +107,6 @@
                     </div>
                 </div>
             </div>
-
 
             <div class="col-12 col-md-8">
                 <div class="container">

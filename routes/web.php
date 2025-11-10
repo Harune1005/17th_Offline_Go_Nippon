@@ -79,7 +79,10 @@ Route::delete('/post/{id}/destroy', [PostController::class, 'destroy'])->name('p
 
 Route::group(['middleware' => 'auth'], function () {
 
-    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::controller(HomeController::class)->group(function (){
+        Route::get('/', 'index')->name('home');
+        Route::get('/rankingpost', 'rankingPost')->name('ranking.post');
+    });
 
     // PROFILE
     Route::controller(ProfileController::class)->group(function () {
