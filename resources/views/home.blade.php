@@ -113,16 +113,15 @@
                     {{-- sort --}}
                     <div class="sort mb-4">
                         <ul class="nav nav-tabs">
-                            <li class="nav-item text-center border topround custom-tab">
-                                <button class="btn m-0">Recommend</button>
+                            <li class="nav-item text-center border  custom-tab tab-topround">
+                                <a href="{{ route('home', ['order' => 'recommend'])}}" class="btn m-0 tab-btn {{ request('order') === 'recommend' ? 'active' : '' }}">Recommend</a>
                             </li>
-                            <li class="nav-item text-center border topround custom-tab">
-                                <button class="btn m-0">Most liked</button>
+                            <li class="nav-item text-center border  custom-tab tab-topround">
+                                <a href="{{ route('home', ['order' => 'most_liked'])}}" class="btn m-0 tab-btn {{ request('order') === 'most_liked' ? 'active' : '' }}">Most liked</a>
                             </li>
-                            <li class="nav-item text-center border topround custom-tab">
-                                <button class="btn m-0">Newest</button>
-                            </li>
-                        </ul>
+                            <li class="nav-item text-center border custom-tab tab-topround">
+                                <a href="{{ route('home', ['order' => 'newest'])}}" class="btn m-0 tab-btn {{ request('order') === 'newest' ? 'active' : '' }}">Newest</a>
+                            </ul>
                     </div>
 
                    

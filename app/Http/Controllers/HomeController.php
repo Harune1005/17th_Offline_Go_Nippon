@@ -13,11 +13,19 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::with(['categories'])->latest()->get();
+        $order = $request->get('order', 'newest');
+
+        $posts = Post::with(['categories'])
+            ->withCount('likes')
+            ->when($order === 'most_liked', fn($q) => $q->orderByDesc('likes_count'))
+            ->when($order === 'recommend', fn($q) => $q->orderByDesc('visited_at'))
+            ->when($order === 'newest', fn($q) => $q->orderByDesc('created_at'))
+            ->get();
 
        $categoryCounts = DB::table('category_posts')
             ->join('categories', 'category_posts.category_id', '=', 'categories.id')
@@ -67,7 +75,7 @@ class HomeController extends Controller
         }
         $prefectureRanked = array_slice($prefectureRanked, 0, 5);
 
-        return view('home', compact('posts', 'categoryRanked', 'prefectureRanked'));
+        return view('home', compact('posts', 'categoryRanked', 'prefectureRanked', 'order'));
     }
 
     public function rankingPost(Request $request)
