@@ -7,7 +7,6 @@ use App\Models\Post;
 use App\Models\Prefecture;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -52,9 +51,9 @@ class PostController extends Controller
         ]);
 
         // 訪問日時をまとめて作成
-        $visitedAt = $validated['date'] . ' ' .
-            str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT) . ':' .
-            str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT) . ':00';
+        $visitedAt = $validated['date'].' '.
+            str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT).':'.
+            str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT).':00';
 
         // 投稿作成
         $post = Post::create([
@@ -69,7 +68,7 @@ class PostController extends Controller
         ]);
 
         // カテゴリ紐付け
-        if (!empty($validated['category'])) {
+        if (! empty($validated['category'])) {
             $post->categories()->attach(array_filter($validated['category']));
         }
 
@@ -155,7 +154,7 @@ class PostController extends Controller
         ]);
 
         // カテゴリ同期
-        if (!empty($validated['category'])) {
+        if (! empty($validated['category'])) {
             $post->categories()->sync(array_filter($validated['category']));
         }
 
