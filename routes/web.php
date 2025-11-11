@@ -13,8 +13,13 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
+use Laravel\SerializableClosure\Serializers\Signed;
+use Symfony\Component\Mime\Email;
 
 Auth::routes();
 
@@ -57,9 +62,6 @@ Route::get('/followers', function () {
     return view('followers_followings');
 });
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // Profile
 Route::get('/profile/{id}/trip-map', [MapController::class, 'show'])->name('map.show');
@@ -78,7 +80,7 @@ Route::get('/post/{id}/edit', [PostController::class, 'edit'])->name('post.edit'
 Route::patch('/post/{id}/update', [PostController::class, 'update'])->name('post.update');
 Route::delete('/post/{id}/destroy', [PostController::class, 'destroy'])->name('post.destroy');
 
-Route::group(['middleware' => 'auth'], function () {
+Route::middleware('auth')->group(function () {
 
     Route::controller(HomeController::class)->group(function (){
         Route::get('/', 'index')->name('home');
@@ -112,6 +114,21 @@ Route::group(['middleware' => 'auth'], function () {
 
 });
 
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', function () {
+        return view('auth.verify');
+    })->name('verification.notice');
+
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect('/');
+    })->name('verification.verify');
+
+    Route::post('/email/verification-notification', function (HttpRequest $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('message', 'Verification email has been sent.');
+    })->name('verification.send');
+});
 // comment
 Route::post('/comment/{post_id}/store', [CommentController::class, 'store'])->name('comment.store');
 Route::delete('/comment/{id}/destroy', [CommentController::class, 'destroy'])->name('comment.destroy');
