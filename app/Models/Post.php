@@ -55,7 +55,7 @@ class Post extends Model
 
     public function views()
     {
-        return $this->hasMany(PostView::class);
+        return $this->hasMany(PostView::class, 'post_id', 'id');
     }
 
     public function likes()
