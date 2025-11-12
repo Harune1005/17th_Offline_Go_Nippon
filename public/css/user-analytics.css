@@ -1,21 +1,7 @@
-/* User analytics */
-/* ================================
-   全体設定
-=============================== */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Helvetica Neue', sans-serif;
-  background-color: #FFFFFF;
-  color: #9F6B46;
-}
 
 /* ------------------------------
    メイン全体
 ------------------------------ */
-main {
-  padding: 40px 60px;
-}
 
 .filter {
   display: flex;
@@ -48,7 +34,7 @@ select {
 .card {
   border: 1px solid #9F6B46;
   border-radius: 5px;
-  padding: 40px;
+  padding: 20px 10px;
   box-sizing: border-box;
   width: 100%;
   background-color: #FFFFFF;
@@ -74,6 +60,14 @@ select {
   font-weight: bold;
   margin-bottom: 20px;
   color: #9F6B46;
+}
+
+div > .text-followers {
+  color: #F1BDB2;
+}
+
+div > .text-nonfollowers {
+  color: #9F6B46
 }
 
 /* ------------------------------

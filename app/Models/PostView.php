@@ -11,7 +11,7 @@ class PostView extends Model
 
     protected $fillable = [
         'post_id',
-        'user_id',
+        'viewer_id',
         'is_follower',
     ];
 
@@ -20,8 +20,8 @@ class PostView extends Model
         return $this->belongsTo(Post::class);
     }
 
-    public function user()
+    public function viewer()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'viewer_id');
     }
 }
