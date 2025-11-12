@@ -13,13 +13,11 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SocialAuthController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
-use Laravel\SerializableClosure\Serializers\Signed;
-use Symfony\Component\Mime\Email;
 
 Auth::routes();
 
@@ -54,34 +52,21 @@ Route::get('/message/board', function () {
     return view('messages.chat');
 });
 
-Route::get('/favorites', [FavoriteController::class, 'show'])->name('favorite');
-Route::post('/favorite/{post_id}/store', [FavoriteController::class, 'store'])->name('favorite.store');
-Route::delete('/favorite/{post_id}/destroy', [FavoriteController::class, 'destroy'])->name('favorite.destroy');
-
-
-
-// Profile
-Route::get('/profile/{id}/trip-map', [MapController::class, 'show'])->name('map.show');
-Route::get('/profile/{id}/pref/{pref_id}', [MapController::class, 'showPost'])->name('map.showPost');
-Route::get('/prefectures/{id}/posts', [MapController::class, 'getPost'])->name('map.getPost');
-
-// Like
-Route::post('/like/{post_id}/store', [LikeController::class, 'store'])->name('like.store');
-Route::delete('/like/{post_id}/destroy', [LikeController::class, 'destroy'])->name('like.destroy');
-
-// Post
-Route::get('/post/create', [PostController::class, 'create'])->name('post.create');
-Route::post('/post/store', [PostController::class, 'store'])->name('post.store');
-Route::get('/post/{id}/show', [PostController::class, 'show'])->name('post.show');
-Route::get('/post/{id}/edit', [PostController::class, 'edit'])->name('post.edit');
-Route::patch('/post/{id}/update', [PostController::class, 'update'])->name('post.update');
-Route::delete('/post/{id}/destroy', [PostController::class, 'destroy'])->name('post.destroy');
-
 Route::middleware('auth')->group(function () {
 
-    Route::controller(HomeController::class)->group(function (){
+    Route::controller(HomeController::class)->group(function () {
         Route::get('/', 'index')->name('home');
         Route::get('/rankingpost', 'rankingPost')->name('ranking.post');
+    });
+
+    // Post
+    Route::controller(PostController::class)->group(function () {
+        Route::get('/post/create', 'create')->name('post.create');
+        Route::post('/post/store', 'store')->name('post.store');
+        Route::get('/post/{id}/show', 'show')->name('post.show');
+        Route::get('/post/{id}/edit', 'edit')->name('post.edit');
+        Route::patch('/post/{id}/update', 'update')->name('post.update');
+        Route::delete('/post/{id}/destroy', 'destroy')->name('post.destroy');
     });
 
     // PROFILE
@@ -93,6 +78,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/profile/{id}/following', 'following')->name('profile.following');
     });
 
+    // Map
+    Route::controller(MapController::class)->group(function () {
+        Route::get('/profile/{id}/trip-map', 'show')->name('map.show');
+        Route::get('/profile/{id}/pref/{pref_id}', 'showPost')->name('map.showPost');
+        Route::get('/prefectures/{id}/posts', 'getPost')->name('map.getPost');
+    });
+
     // follow
     Route::controller(FollowController::class)->group(function () {
         Route::post('/follow/{user_id}/store', 'store')->name('follow.store');
@@ -100,8 +92,26 @@ Route::middleware('auth')->group(function () {
         Route::get('/follow/{user_id}/search', 'search')->name('follow.search');
     });
 
-    Route::get('/notifications', [NotificationController::class, 'index']);
+    // Like
+    Route::controller(LikeController::class)->group(function () {
+        Route::post('/like/{post_id}/store', 'store')->name('like.store');
+        Route::delete('/like/{post_id}/destroy', 'destroy')->name('like.destroy');
+    });
 
+    // Comment
+    Route::controller(CommentController::class)->group(function () {
+        Route::post('/comment/{post_id}/store', 'store')->name('comment.store');
+        Route::delete('/comment/{id}/destroy', 'destroy')->name('comment.destroy');
+    });
+
+    // favorite
+    Route::controller(FavoriteController::class)->group(function () {
+        Route::get('/favorites', 'show')->name('favorite');
+        Route::post('/favorite/{post_id}/store', 'store')->name('favorite.store');
+        Route::delete('/favorite/{post_id}/destroy', 'destroy')->name('favorite.destroy');
+    });
+
+    Route::get('/notifications', [NotificationController::class, 'index']);
 
 });
 
@@ -112,14 +122,19 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
         $request->fulfill();
+
         return redirect('/');
     })->name('verification.verify');
 
     Route::post('/email/verification-notification', function (HttpRequest $request) {
         $request->user()->sendEmailVerificationNotification();
+
         return back()->with('message', 'Verification email has been sent.');
     })->name('verification.send');
 });
+
+Route::get('auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
+Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
 // comment
 Route::post('/comment/{post_id}/store', [CommentController::class, 'store'])->name('comment.store');
 Route::delete('/comment/{id}/destroy', [CommentController::class, 'destroy'])->name('comment.destroy');

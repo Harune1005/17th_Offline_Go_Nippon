@@ -262,8 +262,7 @@
                             <form action="{{ route('follow.store', $user->id) }}" method="post" class="d-inline">
                                 @csrf
                                 <input type="hidden" name="return_url" value="{{ url()->current() }}">
-                                <button type="submit" 
-                                        class="btn shadow-sm"
+                                <button type="submit" class="btn shadow-sm"
                                         style="background-color:#F1BDB2; color:white; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
                                         onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
                                         onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
@@ -273,8 +272,7 @@
                         @endif
                     </div>
                     <div class="col-auto">
-                        <a href="#" 
-                            class="btn shadow-sm"
+                        <a href="#" class="btn shadow-sm"
                             style="background-color:white; color:#F1BDB2; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
                             onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
                             onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
@@ -288,9 +286,9 @@
             <div class="row">
                 <p class="fw-bold h5 click-map text-center">Click map <span>to view full map</span></p>
                 <div class="map-container">
-<a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
-                   <div id="map" style="width: 100%; height: 350px;"></div>
-                   </a>
+                  <a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
+                    <div id="map" style="width: 100%; height: 350px;"></div>
+                  </a>
                     <div class="spinner-wrapper">
                         <div class="spinner-outer">
                             <div class="spinner-fill"></div>

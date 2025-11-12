@@ -30,7 +30,6 @@ class AnalyticsController extends Controller
         $viewsFollowers = (clone $views)->where('is_follower', true)->count();
         $viewsNonFollowers = $viewsTotal - $viewsFollowers;
 
-
         $topViewedPosts = Post::whereIn('id', $postIds)
             ->withCount(['views' => function ($q) use ($since) {
                 $q->where('created_at', '>=', $since);
