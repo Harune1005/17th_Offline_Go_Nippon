@@ -132,10 +132,10 @@
                             <div class="card border-0 shadow-sm w-100">
                                 <div class="card-body p-0">
 
-                                @php
-                                    // hasMany で取得した Image モデルの image カラムだけを取り出す
-                                    $images = $post->images->pluck('image')->toArray();
-                                @endphp
+                               @php
+                                    $images = $post->images->pluck('image')->take(3)->toArray();
+                               @endphp
+
 
                                 @if (count($images) > 0)
 
@@ -143,20 +143,19 @@
                                     @if (count($images) > 1)
                                         <div id="carouselPost{{ $post->id }}" class="carousel slide" data-bs-ride="carousel">
                                             <div class="carousel-inner">
-
                                                 @foreach ($images as $index => $image)
-                                                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                                        <a href="{{ route('post.show', $post->id) }}">
-                                                            <div class="ratio ratio-1x1">
-                                                                <img 
-                                                                    src="data:image/jpeg;base64,{{ $image }}"
-                                                                    class="d-block w-100 h-100"
-                                                                    style="object-fit: cover; border-radius: 10px;"
-                                                                    alt="Post Image {{ $index + 1 }}">
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                @endforeach
+                                                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                                    <a href="{{ route('post.show', $post->id) }}">
+                                                        <div class="ratio ratio-1x1">
+                                                            <img 
+                                                                src="{{ asset('storage/' . $image) }}" 
+                                                                class="d-block w-100 h-100"
+                                                                style="object-fit: cover; border-radius: 10px;"
+                                                                alt="Post Image {{ $index + 1 }}">
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            @endforeach
 
                                             </div>
 
@@ -188,11 +187,11 @@
                                         </div>
 
                                     {{-- 1枚のみ --}}
-                                    @else
+                                    @elseif(count($images) === 1)
                                         <a href="{{ route('post.show', $post->id) }}">
                                             <div class="ratio ratio-1x1">
                                                 <img 
-                                                    src="data:image/jpeg;base64,{{ $images[0] }}"
+                                                    src="{{ asset('storage/' . $images[0]) }}"
                                                     class="d-block w-100 h-100"
                                                     style="object-fit: cover; border-radius: 10px;"
                                                     alt="Post Image">

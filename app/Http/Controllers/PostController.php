@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Prefecture;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -15,7 +16,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        // Eager load で categories, user, images をまとめて取得
+       
         $posts = Post::with(['categories', 'user', 'images'])->latest()->get();
 
         return view('home', compact('posts'));
@@ -47,15 +48,14 @@ class PostController extends Controller
             'category.*' => 'nullable|integer|exists:categories,id',
             'prefecture_id' => 'required|integer|exists:prefectures,id',
             'cost' => 'nullable|integer|min:0|max:10000',
-            'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+           'image' => 'required|array|max:2048',
+           'image.*' => 'required|image|mimes:jpeg,png,jpg,gif',
         ]);
 
-        // 訪問日時をまとめて作成
         $visitedAt = $validated['date'].' '.
             str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT).':'.
             str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT).':00';
 
-        // 投稿作成
         $post = Post::create([
             'user_id' => Auth::id(),
             'title' => $validated['title'],
@@ -67,21 +67,21 @@ class PostController extends Controller
             'time_min' => $validated['time_min'],
         ]);
 
-        // カテゴリ紐付け
         if (! empty($validated['category'])) {
             $post->categories()->attach(array_filter($validated['category']));
         }
 
-        // 画像保存（images テーブル）
-        if ($request->hasFile('image')) {
+         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $img) {
-                if ($img->isValid()) {
+                if ($img && $img->isValid()) {
+                    $path = $img->store('images/posts', 'public'); 
                     $post->images()->create([
-                        'image' => base64_encode(file_get_contents($img)),
+                        'image' => $path, 
                     ]);
                 }
             }
         }
+
 
         return redirect()->route('home')->with('success', 'Post created successfully!');
     }
@@ -153,21 +153,24 @@ class PostController extends Controller
             'time_min' => $validated['time_min'],
         ]);
 
-        // カテゴリ同期
+        
         if (! empty($validated['category'])) {
             $post->categories()->sync(array_filter($validated['category']));
         }
 
-        // 追加画像保存
+
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $img) {
-                if ($img->isValid()) {
+                if ($img && $img->isValid()) {
+                    $path = $img->store('images/posts', 'public'); 
                     $post->images()->create([
-                        'image' => base64_encode(file_get_contents($img)),
+                        'image' => $path, 
                     ]);
                 }
             }
         }
+
+
 
         return redirect()->route('post.show', $post->id)->with('success', 'Post updated successfully!');
     }
@@ -183,7 +186,6 @@ class PostController extends Controller
             return redirect()->route('home')->with('error', 'Unauthorized');
         }
 
-        // images テーブルの画像は自動的に削除される場合、Post モデルに cascade 設定推奨
         $post->images()->delete();
 
         $post->delete();

@@ -161,7 +161,8 @@
                                             <div class="carousel-inner">
                                                 @foreach ($images as $index => $img)
                                                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                                        <img src="data:image/jpeg;base64,{{ $img }}" 
+                                                        <img 
+                                                            src="{{ asset('storage/' . $img) }}" 
                                                             class="d-block uniform-img" 
                                                             alt="Post image {{ $index + 1 }}">
                                                     </div>
@@ -177,7 +178,8 @@
 
                                     @elseif ($images && count($images) === 1)
                                       
-                                        <img src="data:image/jpeg;base64,{{ $images[0] }}"
+                                        <img 
+                                            src="{{ asset('storage/' . $images[0]) }}"
                                             alt="Post image" 
                                             class="uniform-img">
 

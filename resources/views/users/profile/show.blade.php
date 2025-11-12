@@ -324,8 +324,8 @@
                                                             <div class="carousel-inner">
                                                                 @foreach ($post->images as $key => $image)
                                                                     <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
-                                                                        <img src="data:image/jpeg;base64,{{ $image->image }}" 
-                                                                            alt="Post image {{ $post->id }}" 
+                                                                     <img  src="{{ asset('storage/' . $image->image) }}"
+                                                                                   alt="Post image {{ $post->id }}" 
                                                                             class="d-block w-100 post-image"
                                                                             style="width: 100%; height: auto; object-fit: cover;">
                                                                     </div>
@@ -342,7 +342,7 @@
                                                             </button>
                                                         </div>
                                                     @else
-                                                        <img src="data:image/jpeg;base64,{{ $post->images->first()->image }}" 
+                                                       <img src="{{ asset('storage/' . $post->images->first()->image) }}" 
                                                             alt="Post image {{ $post->id }}" 
                                                             class="post-image"
                                                             style="width: 100%; height: auto; object-fit: cover;">
