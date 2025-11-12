@@ -107,14 +107,38 @@
         <div class="sub-section">
           <h4>Followers Trend</h4>
 
-          <!-- Chart.js 読み込み -->
-          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
           <!-- 折れ線グラフ（カードにちょうどいいサイズ） -->
           <div style="width: 100%; max-width: 800px; margin: 0 auto;">
             <canvas id="followersChangeChart" style="width: 100%; height:300px;"></canvas>
           </div>
+          
 
+
+          <br>
+
+          <h4>Top countries</h4>
+          <div class="country-list">
+            @foreach($countryStats as $country)
+              @php
+                $maxCount = $countryStats->first()->count ?? 1;
+                $percent = round(($country->count / $maxCount) * 100);
+              @endphp
+              <div class="country">
+                {{ $country->country ?? 'Unknown' }} {{ $percent }} % 
+                <div class="bar" style="width:{{ $percent }}%;"></div>
+              </div>
+            @endforeach
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+            <!-- Chart.js 読み込み -->
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
           <script>
               // Views donut
               new Chart(document.getElementById('viewsDonutChart'), {
@@ -203,33 +227,4 @@
               }
             });
           </script>
-
-          <br>
-
-          <h4>Top countries</h4>
-          <div class="country-list">
-            <div class="country">Taiwan 13.3%<div class="bar" style="width:80%;"></div></div>
-            <div class="country">South Korea 4.8%<div class="bar" style="width:40%;"></div></div>
-            <div class="country">China 3.7%<div class="bar" style="width:30%;"></div></div>
-            <div class="country">Vietnam 3.1%<div class="bar" style="width:25%;"></div></div>
-            
-
-            @foreach($countryStats as $country)
-              @php
-                $maxCount = $countryStats->first()->count ?? 1;
-                $percent = round(($country->count / $maxCount) * 100);
-              @endphp
-              <div class="country">
-                {{ $country->country ?? 'Unknown' }} {{ $percent }} % 
-                <div class="bar" style="width:{{ $percent }}%;"></div>
-              </div>
-            @endforeach
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </main>
-</body>
-</html>
 @endsection

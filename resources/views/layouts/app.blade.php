@@ -115,11 +115,11 @@
                                 <div class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-2"
                                     aria-labelledby="account-dropdown">
                                     {{-- @can('admin') --}}
-                                        <a href="{{ route('admin.users') }}" class="dropdown-item"><i class="fa-solid fa-lock me-2"></i></i>Admin</a>
+                                        <a href="{{ route('admin.users') }}" class="dropdown-item"><i class="fa-solid fa-lock me-2"></i></i> Admin</a>
                                     {{-- @endcan --}}
 
                                     <hr class="dropdown-divider">
-                                    <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-user me-2"></i>Profile</a>
+                                    <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-user me-2"></i> Profile</a>
                                     <a href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
                                                         document.getElementById('logout-form').submit();" class="dropdown-item text-danger"><i
@@ -131,8 +131,9 @@
                                         data-bs-toggle="modal"
                                         data-bs-target="#notificationModal"
                                         id="notificationBtn">
-                                        <i class="fa-solid fa-toggle-on me-3"></i> Notification
+                                        <i class="fa-solid fa-toggle-on me-2"></i>Notification
                                     </a>
+                                    <a href="{{ route('analytics.index', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-chart-line me-2"></i>Analytics</a>
                                 </div>
                             </li>
                         @endguest
