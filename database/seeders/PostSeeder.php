@@ -37,7 +37,7 @@ class PostSeeder extends Seeder
                 'image_files' => ['sample3.jpeg'],
                 'content' => 'Fukuoka food trip!',
             ],
-            //[
+            // [
             //     'title' => '福岡旅行',
             //     'prefecture_id' => 40,
             //     'visited_at' => Carbon::now()->subDays(2),

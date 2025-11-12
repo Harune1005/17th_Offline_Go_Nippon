@@ -8,7 +8,6 @@ use App\Models\PostView;
 use App\Models\Prefecture;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -17,7 +16,7 @@ class PostController extends Controller
      */
     public function index()
     {
-       
+
         $posts = Post::with(['categories', 'user', 'images'])->latest()->get();
 
         return view('home', compact('posts'));
@@ -49,8 +48,8 @@ class PostController extends Controller
             'category.*' => 'nullable|integer|exists:categories,id',
             'prefecture_id' => 'required|integer|exists:prefectures,id',
             'cost' => 'nullable|integer|min:0|max:10000',
-           'image' => 'required|array|max:2048',
-           'image.*' => 'required|image|mimes:jpeg,png,jpg,gif',
+            'image' => 'required|array|max:2048',
+            'image.*' => 'required|image|mimes:jpeg,png,jpg,gif',
         ]);
 
         $visitedAt = $validated['date'].' '.
@@ -72,17 +71,16 @@ class PostController extends Controller
             $post->categories()->attach(array_filter($validated['category']));
         }
 
-         if ($request->hasFile('image')) {
+        if ($request->hasFile('image')) {
             foreach ($request->file('image') as $img) {
                 if ($img && $img->isValid()) {
-                    $path = $img->store('images/posts', 'public'); 
+                    $path = $img->store('images/posts', 'public');
                     $post->images()->create([
-                        'image' => $path, 
+                        'image' => $path,
                     ]);
                 }
             }
         }
-
 
         return redirect()->route('home')->with('success', 'Post created successfully!');
     }
@@ -181,24 +179,20 @@ class PostController extends Controller
             'time_min' => $validated['time_min'],
         ]);
 
-        
         if (! empty($validated['category'])) {
             $post->categories()->sync(array_filter($validated['category']));
         }
 
-
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $img) {
                 if ($img && $img->isValid()) {
-                    $path = $img->store('images/posts', 'public'); 
+                    $path = $img->store('images/posts', 'public');
                     $post->images()->create([
-                        'image' => $path, 
+                        'image' => $path,
                     ]);
                 }
             }
         }
-
-
 
         return redirect()->route('post.show', $post->id)->with('success', 'Post updated successfully!');
     }

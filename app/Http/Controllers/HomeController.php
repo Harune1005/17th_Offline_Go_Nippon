@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\Prefecture;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
-        
+
     }
 
     public function index(Request $request)
@@ -24,15 +24,15 @@ class HomeController extends Controller
 
         $posts = Post::with(['categories'])
             ->withCount('likes')
-            ->when($order === 'most_liked', fn($q) => $q->orderByDesc('likes_count'))
-            ->when($order === 'recommend', fn($q) => $q->orderByDesc('visited_at'))
-            ->when($order === 'newest', fn($q) => $q->orderByDesc('created_at'))
+            ->when($order === 'most_liked', fn ($q) => $q->orderByDesc('likes_count'))
+            ->when($order === 'recommend', fn ($q) => $q->orderByDesc('visited_at'))
+            ->when($order === 'newest', fn ($q) => $q->orderByDesc('created_at'))
             ->paginate(30)
             ->appends(['order' => $order]);
 
-       $categoryCounts = DB::table('category_posts')
+        $categoryCounts = DB::table('category_posts')
             ->join('categories', 'category_posts.category_id', '=', 'categories.id')
-            ->select('categories.id', 'categories.name', DB::raw('COUNT(category_posts.post_id) as count')) 
+            ->select('categories.id', 'categories.name', DB::raw('COUNT(category_posts.post_id) as count'))
             ->groupBy('categories.id', 'categories.name')
             ->orderByDesc('count')
             ->get();
@@ -94,17 +94,17 @@ class HomeController extends Controller
                 $query->where('prefecture_id', $prefecture->id);
                 $titleParts[] = $prefecture->name;
 
-                $imagePath = 'images/prefectures/' . strtolower($prefecture->name) . '.jpg';
+                $imagePath = 'images/prefectures/'.strtolower($prefecture->name).'.jpg';
                 if (file_exists(public_path($imagePath))) {
                     $headerImage = $imagePath;
                 }
             }
         }
-      
+
         if ($request->filled('category_id')) {
             $category = Category::find($request->category_id);
             if ($category) {
-                $query->whereHas('categories', fn($q) => $q->where('id', $category->id));
+                $query->whereHas('categories', fn ($q) => $q->where('id', $category->id));
                 $titleParts[] = $category->name;
             }
         }
@@ -113,9 +113,9 @@ class HomeController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('content', 'like', "%{$search}%");
+                    ->orWhere('content', 'like', "%{$search}%");
             });
-            $titleParts[] = '' . $search . '';
+            $titleParts[] = ''.$search.'';
         }
 
         $title = implode(' × ', $titleParts) ?: 'RANKING';
@@ -123,5 +123,4 @@ class HomeController extends Controller
 
         return view('users.posts.rank', compact('posts', 'title', 'headerImage'));
     }
-
 }

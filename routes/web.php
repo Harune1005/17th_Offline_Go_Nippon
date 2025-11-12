@@ -17,10 +17,7 @@ use App\Http\Controllers\SocialAuthController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
-use Laravel\SerializableClosure\Serializers\Signed;
-use Symfony\Component\Mime\Email;
 
 Auth::routes();
 
@@ -55,16 +52,15 @@ Route::get('/message/board', function () {
     return view('messages.chat');
 });
 
-
 Route::middleware('auth')->group(function () {
 
-    Route::controller(HomeController::class)->group(function (){
+    Route::controller(HomeController::class)->group(function () {
         Route::get('/', 'index')->name('home');
         Route::get('/rankingpost', 'rankingPost')->name('ranking.post');
     });
 
     // Post
-    Route::controller(PostController::class)->group(function (){
+    Route::controller(PostController::class)->group(function () {
         Route::get('/post/create', 'create')->name('post.create');
         Route::post('/post/store', 'store')->name('post.store');
         Route::get('/post/{id}/show', 'show')->name('post.show');
@@ -83,9 +79,9 @@ Route::middleware('auth')->group(function () {
     });
 
     // Map
-    Route::controller(MapController::class)->group(function (){
+    Route::controller(MapController::class)->group(function () {
         Route::get('/profile/{id}/trip-map', 'show')->name('map.show');
-        Route::get('/profile/{id}/pref/{pref_id}','showPost')->name('map.showPost');
+        Route::get('/profile/{id}/pref/{pref_id}', 'showPost')->name('map.showPost');
         Route::get('/prefectures/{id}/posts', 'getPost')->name('map.getPost');
     });
 
@@ -97,19 +93,19 @@ Route::middleware('auth')->group(function () {
     });
 
     // Like
-    Route::controller(LikeController::class)->group(function (){
+    Route::controller(LikeController::class)->group(function () {
         Route::post('/like/{post_id}/store', 'store')->name('like.store');
         Route::delete('/like/{post_id}/destroy', 'destroy')->name('like.destroy');
     });
 
     // Comment
-    Route::controller(CommentController::class)->group(function (){
+    Route::controller(CommentController::class)->group(function () {
         Route::post('/comment/{post_id}/store', 'store')->name('comment.store');
         Route::delete('/comment/{id}/destroy', 'destroy')->name('comment.destroy');
     });
 
     // favorite
-    Route::controller(FavoriteController::class)->group(function (){
+    Route::controller(FavoriteController::class)->group(function () {
         Route::get('/favorites', 'show')->name('favorite');
         Route::post('/favorite/{post_id}/store', 'store')->name('favorite.store');
         Route::delete('/favorite/{post_id}/destroy', 'destroy')->name('favorite.destroy');
@@ -126,11 +122,13 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
         $request->fulfill();
+
         return redirect('/');
     })->name('verification.verify');
 
     Route::post('/email/verification-notification', function (HttpRequest $request) {
         $request->user()->sendEmailVerificationNotification();
+
         return back()->with('message', 'Verification email has been sent.');
     })->name('verification.send');
 });
