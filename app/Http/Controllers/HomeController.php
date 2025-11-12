@@ -80,9 +80,9 @@ class HomeController extends Controller
         return view('home', compact('posts', 'categoryRanked', 'prefectureRanked', 'order', 'categories', 'prefectures'));
     }
 
-   public function rankingPost(Request $request)
+    public function rankingPost(Request $request)
     {
-        $query = Post::with(['categories', 'prefecture'])->latest();
+        $query = Post::with(['categories', 'prefecture', 'images'])->latest();
 
         $titleParts = [];
         $headerImage = 'images/default.jpg';
