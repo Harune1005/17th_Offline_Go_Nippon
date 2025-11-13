@@ -8,6 +8,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InterestController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\NotificationController;
@@ -18,6 +19,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use PHPUnit\Metadata\Group;
 
 Auth::routes();
 
@@ -123,7 +125,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
         $request->fulfill();
 
-        return redirect('/');
+        return redirect('/interests/select');
     })->name('verification.verify');
 
     Route::post('/email/verification-notification', function (HttpRequest $request) {
@@ -135,3 +137,9 @@ Route::middleware('auth')->group(function () {
 
 Route::get('auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
+
+// interest
+Route::controller(InterestController::class)->group(function () {
+    Route::get('/interests/select', 'index')->name('interests.select');
+    Route::post('/interests/store', 'store')->name('interests.store');
+});
