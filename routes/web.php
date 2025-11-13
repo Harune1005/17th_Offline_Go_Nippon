@@ -137,9 +137,6 @@ Route::middleware('auth')->group(function () {
 
 Route::get('auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
-// comment
-Route::post('/comment/{post_id}/store', [CommentController::class, 'store'])->name('comment.store');
-Route::delete('/comment/{id}/destroy', [CommentController::class, 'destroy'])->name('comment.destroy');
 
 // interest
 Route::controller(InterestController::class)->group(function () {

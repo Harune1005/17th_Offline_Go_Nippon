@@ -62,7 +62,7 @@
                                                 </a>
                                             </span>
                                             <div class="badge rounded-pill">
-                                                <span style="background: rgb(236, 239, 255);">{{ $item['count'] }}</span>
+                                               <span style="font-weight: bold; font-size: 1.5em;">{{ $item['count'] }}</span>
                                             </div>
                                         </li>
                                     @empty
@@ -87,7 +87,7 @@
                                                 </a>
                                             </span>
                                             <div class="badge rounded-pill">
-                                                <span style="background: rgb(236, 239, 255);">{{ $item['count'] }}</span>
+                                                <span style="font-weight: bold; font-size: 1.5em;">{{ $item['count'] }}</span>
                                             </div>
                                         </li>
                                     @empty

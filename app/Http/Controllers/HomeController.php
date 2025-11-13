@@ -86,7 +86,7 @@ class HomeController extends Controller
         $query = Post::with(['categories', 'prefecture', 'images'])->latest();
 
         $titleParts = [];
-        $headerImage = 'images/default.jpg';
+        $headerImage = 'images/default.jpeg';
 
         if ($request->filled('prefecture_id')) {
             $prefecture = Prefecture::find($request->prefecture_id);
@@ -94,10 +94,11 @@ class HomeController extends Controller
                 $query->where('prefecture_id', $prefecture->id);
                 $titleParts[] = $prefecture->name;
 
-                $imagePath = 'images/prefectures/'.strtolower($prefecture->name).'.jpg';
-                if (file_exists(public_path($imagePath))) {
-                    $headerImage = $imagePath;
-                }
+                $headerImage = $prefecture->image ?? 'images_default.jpeg';
+                // $imagePath = 'images/prefectures/'.strtolower($prefecture->name).'.jpg';
+                // if (file_exists(public_path($imagePath))) {
+                //     $headerImage = $imagePath;
+                // }
             }
         }
 
@@ -106,6 +107,8 @@ class HomeController extends Controller
             if ($category) {
                 $query->whereHas('categories', fn ($q) => $q->where('id', $category->id));
                 $titleParts[] = $category->name;
+                $headerImage = $category->image ?? 'images_default.jpeg';
+
             }
         }
 

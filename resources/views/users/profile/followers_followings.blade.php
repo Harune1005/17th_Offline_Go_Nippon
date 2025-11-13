@@ -307,20 +307,23 @@
                 <div class="mx-auto w-100 mb-2">
                     <ul class="nav nav-tabs border-bottom-0 justify-contenr-center" id="followTabs" role="tablist" style="height: 50px;">
                         <li class="nav-item text-center flex-fill follow-tab" role="presentation">
-                            <button class="nav-link h-100 w-100 {{ $activeTab === 'followers' ? 'active' : '' }}"
-                                id="followers-tab" data-bs-toggle="tab" data-bs-target="#followers" type="button" role="tab" aria-controls="followers"
-                                aria-selected="{{ $activeTab === 'followers' ? 'true' : 'false' }}">
+                            <a href="{{ route('profile.followers', $user->id) }}" 
+                            class="nav-link h-100 w-100 {{ $activeTab === 'followers' ? 'active' : '' }}"
+                            role="tab" aria-controls="followers"
+                            aria-selected="{{ $activeTab === 'followers' ? 'true' : 'false' }}">
                                 Followers
-                            </button>
+                            </a>
                         </li>
                         <li class="nav-item text-center flex-fill follow-tab" role="presentation">
-                            <button class="nav-link h-100 w-100 {{ $activeTab === 'following' ? 'active' : '' }}"
-                                id="followings-tab" data-bs-toggle="tab" data-bs-target="#followings" type="button" role="tab" aria-controls="followings"
-                                aria-selected="{{ $activeTab === 'following' ? 'true' : 'false' }}">
+                            <a href="{{ route('profile.following', $user->id) }}"
+                            class="nav-link h-100 w-100 {{ $activeTab === 'following' ? 'active' : '' }}"
+                            role="tab" aria-controls="following"
+                            aria-selected="{{ $activeTab === 'following' ? 'true' : 'false' }}">
                                 Followings
-                            </button>
+                            </a>
                         </li>
                     </ul>
+
                 </div>
 
                 {{-- content of tabs --}}
@@ -358,15 +361,19 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <input type="hidden" name="tab" value="followers">
+                                                    <input type="hidden" name="return_url" value="{{ url()->full() }}"> {{-- ★追加 --}}
                                                     <button type="submit" class="btn m-0 following-btn">Following</button>
                                                 </form>
+
 
                                             @else
                                                 <form action="{{ route('follow.store', $follower->id) }}" method="post">
                                                     @csrf
                                                     <input type="hidden" name="tab" value="followers">
+                                                    <input type="hidden" name="return_url" value="{{ url()->full() }}"> {{-- ★追加 --}}
                                                     <button type="submit" class="btn m-0 follow-btn">Follow</button>
                                                 </form>
+
                                             @endif
                                         @endif
                                     </div>

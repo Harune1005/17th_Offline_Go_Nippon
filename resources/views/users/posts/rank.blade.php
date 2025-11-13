@@ -6,7 +6,7 @@
 <div class="container-fluid p-0 mt-0">
     <div class="row align-items-center justify-content-center text-center mb-5"
         style="
-            background-image: url('{{ asset($headerImage ?? 'images/default.jpg') }}');
+            background-image: url('{{ asset($headerImage ?? 'default.jpeg') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -35,10 +35,63 @@
             <div class="col-12 col-md-4 d-flex justify-content-center mb-4">
                 <div class="card border-0 shadow-sm w-100">
                     <div class="card-body p-0">
-                        <img src="{{ asset($post->image_path ?? 'images/たぬきち.png') }}" 
-                             alt="{{ $post->title }}" 
-                             class="d-block w-100 h-100"
-                             style="object-fit: cover;">
+                        @php
+                            $images = $post->images->pluck('image')->take(3)->toArray();
+                        @endphp
+                        @if (count($images) > 1)
+                            <div id="carouselPost{{ $post->id }}" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    @foreach ($images as $index => $image)
+                                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                            <a href="{{ route('post.show', $post->id) }}">
+                                                <div class="ratio ratio-1x1">
+                                                    <img 
+                                                        src="{{ asset('storage/' . $image) }}" 
+                                                        class="d-block w-100 h-100"
+                                                        style="object-fit: cover;"
+                                                        alt="Post Image {{ $index + 1 }}">
+                                                </div>
+                                            </a>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <button class="carousel-control-prev" type="button"
+                                        data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+
+                                <button class="carousel-control-next" type="button"
+                                        data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+
+                                <div class="carousel-indicators">
+                                    @foreach ($images as $index => $image)
+                                        <button type="button"
+                                                data-bs-target="#carouselPost{{ $post->id }}"
+                                                data-bs-slide-to="{{ $index }}"
+                                                class="{{ $index === 0 ? 'active' : '' }}"
+                                                aria-current="{{ $index === 0 ? 'true' : 'false' }}"
+                                                aria-label="Slide {{ $index + 1 }}">
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                        @elseif(count($images) === 1)
+                            <a href="{{ route('post.show', $post->id) }}">
+                                <div class="ratio ratio-1x1">
+                                    <img 
+                                        src="{{ asset('storage/' . $images[0]) }}"
+                                        class="d-block w-100 h-100"
+                                        style="object-fit: cover;"
+                                        alt="Post Image">
+                                </div>
+                            </a>
+                        @endif
                     </div>
 
                     <div class="card-footer bg-white border-0">

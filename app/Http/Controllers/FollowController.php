@@ -30,36 +30,20 @@ class FollowController extends Controller
         $this->follow->following_id = $user_id;
         $this->follow->save();
 
-        $tab = $request->input('tab');
-        $returnUrl = $request->input('return_url');
-
-        if ($returnUrl) {
-            return redirect($returnUrl);
+        if ($request->has('return_url')) {
+            return redirect($request->input('return_url'));
         }
 
+        $tab = $request->input('tab');
         $currentUser = Auth::user();
+
         if ($tab === 'following') {
             return redirect()->route('profile.following', $currentUser->id);
         } elseif ($tab === 'followers') {
             return redirect()->route('profile.followers', $currentUser->id);
         }
 
-        $user = $this->user->findOrFail($user_id);
-        $prefecture_ids = Post::where('user_id', $user->id)
-            ->pluck('prefecture_id')
-            ->unique();
-
-        $prefectures = Prefecture::select('id', 'name', 'code')
-            ->get()
-            ->map(function ($pref) use ($prefecture_ids) {
-                $pref->has_post = $prefecture_ids->contains($pref->id);
-
-                return $pref;
-            });
-
-        return redirect()->route('profile.show', $user_id)
-            ->with('user', $user)
-            ->with('prefecture', $prefectures);
+        return redirect()->route('profile.show', $user_id);
     }
 
     public function destroy(Request $request, $user_id)
@@ -69,14 +53,13 @@ class FollowController extends Controller
             ->where('following_id', $user_id)
             ->delete();
 
-        $tab = $request->input('tab');
-        $returnUrl = $request->input('return_url');
-
-        if ($returnUrl) {
-            return redirect($returnUrl);
+        if ($request->has('return_url')) {
+            return redirect($request->input('return_url'));
         }
 
+        $tab = $request->input('tab');
         $currentUser = Auth::user();
+
         if ($tab === 'following') {
             return redirect()->route('profile.following', $currentUser->id);
         } elseif ($tab === 'followers') {

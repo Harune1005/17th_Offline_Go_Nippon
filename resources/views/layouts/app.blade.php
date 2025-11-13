@@ -81,7 +81,7 @@
                         @else
                                 <li class="nav-item">
                                 <a href="{{ route('post.create') }}" class="nav-link fs-2" style="color:#9F6B46;">
-                                    <i class="fa-solid fa-circle-plus"></i>
+                                    <i class="fa-solid fa-circle-plus" ></i>
                                 </a>
                             </li>
 
