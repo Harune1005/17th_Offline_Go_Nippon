@@ -94,7 +94,7 @@ class HomeController extends Controller
                 $query->where('prefecture_id', $prefecture->id);
                 $titleParts[] = $prefecture->name;
 
-                $headerImage = $prefecture ->image ?? 'images_default.jpeg';
+                $headerImage = $prefecture->image ?? 'images_default.jpeg';
                 // $imagePath = 'images/prefectures/'.strtolower($prefecture->name).'.jpg';
                 // if (file_exists(public_path($imagePath))) {
                 //     $headerImage = $imagePath;
@@ -107,7 +107,7 @@ class HomeController extends Controller
             if ($category) {
                 $query->whereHas('categories', fn ($q) => $q->where('id', $category->id));
                 $titleParts[] = $category->name;
-                $headerImage = $category ->image ?? 'images_default.jpeg';
+                $headerImage = $category->image ?? 'images_default.jpeg';
 
             }
         }
