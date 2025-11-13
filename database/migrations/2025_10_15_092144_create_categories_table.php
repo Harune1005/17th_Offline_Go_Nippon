@@ -6,20 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    // public function up(): void
-    // {
-    //     Schema::create('categories', function (Blueprint $table) {
-    //         $table->id();
-    //         $table->string('name', 50)->unique();
-    //         $table->timestamps();
-    //     });
-
-    // }
-
     public function up(): void
     {
-        Schema::table('categories', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 50)->unique();
+            $table->timestamps();
         });
+
     }
 
     /**
@@ -27,16 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('categories', function (Blueprint $table) {
-        });
+        Schema::dropIfExists('categories');
     }
-
-    // /**
-    //  * Reverse the migrations.
-    //  */
-    // public function down(): void
-    // {
-    //     Schema::dropIfExists('categories');
-    // }
 };
 
