@@ -4,6 +4,23 @@
 
 @section('content')
 <style>
+:root {
+  --main-brown: #9F6B46;
+  --accent-beige: #FFFBEB;
+  --highlight: #F1BDB2;
+  --background: #E6F4FA;
+  --shadow: rgba(0, 0, 0, 0.15);
+}
+
+.card, .big-card, .post-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px var(--shadow);
+}
 
 .trip-map-page main.py-4 {
     display: flex;
@@ -631,17 +648,15 @@ prefHeader.textContent = prefectureEnglishNames[prefId] || prefName;
       } else {
         postContainer.innerHTML = `
   <div class="row">
-    ${posts.map(post => {
-      const base64 = (post.images && post.images.length) ? post.images[0].image : null;
-      const imgSrc = base64 ? `data:image/jpeg;base64,${base64}` : '/images/placeholder.jpg';
+${posts.map(post => {
+      const imagePath = (post.images && post.images.length) ? `/storage/${post.images[0].image}` : '/images/placeholder.jpg';
       return `
         <div class="col-12 col-md-6 mb-3">
           <div class="card border-0 post-card">
             <div class="card-header p-0 border-0">
               <a href="/post/${post.id}/show">
-                <img src="${imgSrc}" alt="${post.user ? post.user.name : ''}" class="p-0 post-image">
-              </a>
-            </div>
+                <img src="${imagePath}" alt="${post.user ? post.user.name : ''}" class="p-0 post-image">
+              </a>            </div>
           </div>
         </div>
       `;

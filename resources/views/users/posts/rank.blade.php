@@ -6,7 +6,7 @@
 <div class="container-fluid p-0 mt-0">
     <div class="row align-items-center justify-content-center text-center mb-5"
         style="
-            background-image: url('{{ asset($headerImage ?? 'default.jpg') }}');
+            background-image: url('{{ asset($headerImage ?? 'default.jpeg') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
