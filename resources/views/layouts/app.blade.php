@@ -189,7 +189,7 @@
                         </a>
                     </li>
                     <li class="mb-3">
-                        <a href="" class="menu-link nav-text-brown">
+                        <a href="{{ route('post.create') }}" class="menu-link nav-text-brown">
                             <i class="fa-solid fa-circle-plus me-3"></i> Create Post
                         </a>
                     </li>

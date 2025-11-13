@@ -265,9 +265,10 @@
                 </div>
 
                 <div class="d-grid mb-4">
-                    <button type="button" class="btn google-sign-up-btn">
-                       <i class="fa-brands fa-google"></i> Sign up with Google
-                    </button>
+                    <a href="{{ route('social.redirect', 'google') }}" 
+                    class="btn google-sign-up-btn d-flex justify-content-center align-items-center">
+                        <i class="fa-brands fa-google me-2"></i> Sign up with Google
+                    </a>
                 </div>
             </div>
             

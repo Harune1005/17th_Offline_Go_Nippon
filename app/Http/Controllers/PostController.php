@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\PostView;
 use App\Models\Prefecture;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ class PostController extends Controller
      */
     public function index()
     {
-       
+
         $posts = Post::with(['categories', 'user', 'images'])->latest()->get();
 
         return view('home', compact('posts'));
@@ -73,17 +74,16 @@ class PostController extends Controller
             $post->categories()->attach(array_filter($validated['category']));
         }
 
-         if ($request->hasFile('image')) {
+        if ($request->hasFile('image')) {
             foreach ($request->file('image') as $img) {
                 if ($img && $img->isValid()) {
-                    $path = $img->store('images/posts', 'public'); 
+                    $path = $img->store('images/posts', 'public');
                     $post->images()->create([
-                        'image' => $path, 
+                        'image' => $path,
                     ]);
                 }
             }
         }
-
 
         return redirect()->route('home')->with('success', 'Post created successfully!');
     }
@@ -94,6 +94,33 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::with(['categories', 'user', 'images', 'comments.user'])->findOrFail($id);
+
+        $viewer = Auth::user();
+
+        // Analytics viewer
+        if ($viewer) {
+            $alreadyViewed = PostView::where('post_id', $post->id)
+                ->where('viewer_id', $viewer->id)
+                ->whereDate('created_at', now()->toDateString())
+                ->exists();
+
+            if (! $alreadyViewed) {
+                PostView::create([
+                    'post_id' => $post->id,
+                    'viewer_id' => $viewer->id,
+                    'is_follower' => $post->user->followers()
+                        ->where('follower_id', $viewer->id)
+                        ->exists(),
+                ]);
+            }
+        } else {
+            // 未ログイン閲覧者もカウントしたい場合
+            PostView::create([
+                'post_id' => $post->id,
+                'viewer_id' => null,
+                'is_follower' => false,
+            ]);
+        }
 
         return view('users.posts.show', compact('post'));
     }

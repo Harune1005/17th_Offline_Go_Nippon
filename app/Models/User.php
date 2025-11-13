@@ -96,7 +96,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isFollowing($user)
     {
-        return $this->following()->where('following_id', $user->id)->exists();
+        $userId = is_object($user) ? $user->id : $user;
+
+        return $this->following()->where('following_id', $userId)->exists();
     }
 
     // use HasFactory, SoftDeletes;
