@@ -3,9 +3,6 @@
 @section('title', 'User Analytics') 
 
 @section('content')
-
-@vite(['public/css/user-analytics.css'])
-
 <div class="container">
   <div class="mb-4 d-flex justify-content-between">
     <div class="my-2">
@@ -23,9 +20,9 @@
       <div class="card h-100">
         <div class="card-body">
           <h3 class="card-title text-center">~ Views ~</h3>
-          <h2 class="display-6">
+          <h4 class="fs-3 text-center">
             {{ number_format($viewsTotal) }}
-          </h2>
+          </h4>
 
           <div class="mb-1" style="height:180px;">
             <canvas id="viewsDonutChart" class="w-100 h-100"></canvas>
@@ -60,7 +57,7 @@
 
           <h6 class="text-decoration-underline">Profile activity</h6>
           <div class="d-flex justify-content-between">
-            <span>Profile visits:</span>
+            <span class="text-dark">Profile visits:</span>
             <span>
               {{ number_format($profileVisitsNow) }}
               <span class="{{ $profileVisitChange >= 0 ? 'text-success' : 'text-danger' }}">
@@ -77,7 +74,7 @@
       <div class="card h-100">
         <div class="card-body">
           <h3 class="card-title text-center">~ Interactions ~</h3>
-          <h2 class="display-6">{{ number_format($interactionsTotal) }}</h2>
+          <h4 class="fs-3 text-center">{{ number_format($interactionsTotal) }}</h4>
 
           <div class="mb-1" style="height:180px;">
             <canvas id="interactionsDonutChart" class="w-100 h-100"></canvas>
@@ -127,7 +124,7 @@
       <div class="card h-100">
         <div class="card-body">
           <h3 class="card-titl text-center">~ Followers ~</h3>
-          <h2 class="display-6">{{ number_format($followersNow) }}</h2>
+          <h4 class="fs-3 text-center">{{ number_format($followersNow) }}</h4>
           <div class="text-center text-danger mb-3">
             {{ $followersPercent >= 0 ? '+' : '' }}{{ $followersPercent }}% vs last month
           </div>
@@ -142,11 +139,12 @@
             @foreach($countryStats as $country)
               @php
                 $maxCount = $countryStats->first()->count ?? 1;
+                $count = $country->count;
                 $percent = round(($country->count / $maxCount) * 100);
               @endphp
               <div class="list-group-item p-1">
-                <div class="d-flex justify-content-between">
-                  <span>{{ $country->country ?? 'Unknown' }}</span>
+                <div class="d-flex justify-content-between country-name">
+                  <span>{{ $country->country ?? 'Unknown' }} ({{ $count }})</span>
                   <span>{{ $percent }}%</span>
                 </div>
                 <div class="progress" style="height: 5px;">

@@ -120,20 +120,20 @@
 
                                     <hr class="dropdown-divider">
                                     <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-user me-2"></i> Profile</a>
-                                    <a href="{{ route('logout') }}"
-                                        onclick="event.preventDefault();
-                                                        document.getElementById('logout-form').submit();" class="dropdown-item text-danger"><i
-                                            class="fa-solid fa-right-from-bracket me-2"></i> {{ __('Logout') }}</a>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                            @csrf
-                                            </form>
+
                                     <a href="#" class="dropdown-item"
                                         data-bs-toggle="modal"
                                         data-bs-target="#notificationModal"
                                         id="notificationBtn">
                                         <i class="fa-solid fa-toggle-on me-2"></i>Notification
                                     </a>
+
                                     <a href="{{ route('analytics.index', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-chart-line me-2"></i>Analytics</a>
+
+                                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> {{ __('Logout') }}</a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
                                 </div>
                             </li>
                         @endguest

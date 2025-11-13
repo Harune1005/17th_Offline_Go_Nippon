@@ -72,3 +72,25 @@ h5, span, label {
 .edit-profile-page .form-control::placeholder {
     color: #C9A28C !important;
 }
+
+/* analytics */
+.card {
+  border: 1px solid #9F6B46;
+  background-color: #FFFFFF;
+}
+
+.card h4  {
+  color: #F1BDB2;
+}
+
+div > .text-followers {
+  color: #F1BDB2;
+}
+
+div > .text-nonfollowers {
+  color: #9F6B46
+}
+
+.country-name > span {
+  color: #000;
+}
