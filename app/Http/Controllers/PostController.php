@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Image;
 use App\Models\Post;
 use App\Models\PostView;
 use App\Models\Prefecture;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Image;
 
 class PostController extends Controller
 {
@@ -125,18 +125,18 @@ class PostController extends Controller
         return view('users.posts.show', compact('post'));
     }
 
-   public function edit($id)
-{
-    $post = Post::with('categories')->findOrFail($id);
-    $all_categories = Category::all();
-    $prefectures = Prefecture::all();
-    $selected_categories = $post->categories->pluck('id')->toArray();
+    public function edit($id)
+    {
+        $post = Post::with('categories')->findOrFail($id);
+        $all_categories = Category::all();
+        $prefectures = Prefecture::all();
+        $selected_categories = $post->categories->pluck('id')->toArray();
 
-    return view(
-        'users.posts.edit', 
-        compact('post', 'all_categories', 'prefectures', 'selected_categories')
-    );
-}
+        return view(
+            'users.posts.edit',
+            compact('post', 'all_categories', 'prefectures', 'selected_categories')
+        );
+    }
 
     // --- 更新処理（upload） ---
     public function update(Request $request, $id)
@@ -153,36 +153,36 @@ class PostController extends Controller
             'category.*' => 'integer|exists:categories,id',
             'prefecture_id' => 'required|integer|exists:prefectures,id',
             'cost' => 'nullable|integer|min:0|max:10000',
-            'deleted_images'  => 'nullable|array',
+            'deleted_images' => 'nullable|array',
             'deleted_images.*' => 'exists:images,id',
-            'new_image'       => 'nullable|array|max:3',
-            'new_image.*'     => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'new_image' => 'nullable|array|max:3',
+            'new_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // 現在の画像の数をカウント
         $currentImageCount = $post->images->count();
-        
+
         // 削除予定の画像を考慮に入れた後の残りの画像数
         $deletedCount = count($request->deleted_images ?? []);
         $remainingCount = $currentImageCount - $deletedCount;
-        
+
         // 新規追加される画像数
         $newImageCount = count($request->file('new_image') ?? []);
-        
+
         // 画像の総数が3枚を超えないかチェック
         if ($remainingCount + $newImageCount > 3) {
-             return redirect()->back()->withInput()->withErrors(['new_image' => 'You can have a maximum of 3 images total (current remaining + new uploads).']);
+            return redirect()->back()->withInput()->withErrors(['new_image' => 'You can have a maximum of 3 images total (current remaining + new uploads).']);
         }
 
-            $post->title = $validated['title'];
-            $post->content = $validated['content'];
-            $post->prefecture_id = $validated['prefecture_id'];
-            $post->cost = $validated['cost'] ?? 0;
-            $post->time_hour = $validated['time_hour'];
-            $post->time_min = $validated['time_min'];
-            $post->save();
+        $post->title = $validated['title'];
+        $post->content = $validated['content'];
+        $post->prefecture_id = $validated['prefecture_id'];
+        $post->cost = $validated['cost'] ?? 0;
+        $post->time_hour = $validated['time_hour'];
+        $post->time_min = $validated['time_min'];
+        $post->save();
 
-            if (!empty($validated['date']) && isset($validated['time_hour'], $validated['time_min'])) {
+        if (! empty($validated['date']) && isset($validated['time_hour'], $validated['time_min'])) {
             $post->visited_at = sprintf(
                 '%s %02d:%02d:00',
                 $validated['date'],
@@ -191,14 +191,13 @@ class PostController extends Controller
             );
         }
 
-
         if (isset($validated['category'])) {
             $post->categories()->sync($validated['category']);
         } else {
             $post->categories()->detach();
         }
 
-       // 4. 既存画像の削除
+        // 4. 既存画像の削除
         if ($request->has('deleted_images')) {
             $deletedImageIds = $request->deleted_images;
             $imagesToDelete = Image::whereIn('id', $deletedImageIds)->where('post_id', $post->id)->get();
@@ -210,8 +209,7 @@ class PostController extends Controller
             }
         }
 
-      
-   // 5. 新規画像のアップロード
+        // 5. 新規画像のアップロード
         if ($request->hasFile('new_image')) {
             foreach ($request->file('new_image') as $newImageFile) {
                 // ファイルを保存し、そのパスを取得
@@ -240,11 +238,10 @@ class PostController extends Controller
             return redirect()->route('home')->with('error', 'Unauthorized');
         }
 
-       foreach ($post->images as $image) {
+        foreach ($post->images as $image) {
             Storage::disk('public')->delete($image->image);
         }
         $post->images()->delete();
-
 
         $post->delete();
 
