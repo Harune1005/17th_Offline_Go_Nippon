@@ -6,7 +6,7 @@
 <div class="container">
   <div class="mb-4 d-flex justify-content-between">
     <div class="my-2">
-        <a href="{{ route('home') }}">Top</a> > Analytics
+        <a href="{{ route('home') }}" class="text-decoration-none"><< back</a>
     </div>
 
     <select class="form-select w-auto">
@@ -45,11 +45,13 @@
           <div class="d-flex flex-wrap gap-2 mb-5">
             @foreach($topViewedPosts as $post)
               <div class="mx-auto text-center">
-                @if ($post->images->first())
-                  <img src="data:image/jpeg;base64,{{ $post->images->first()->image }}" class="img-thumbnail" style="width:110px; height:110px;">
-                @else
-                  <img src="/no-image.png" class="img-thumbnail" style="width:110px; height:110px;">
-                @endif
+                <a href="{{ route('post.show', $post->id) }}">
+                  @if ($post->images->first())
+                    <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail" style="width:110px; height:110px;">
+                  @else
+                    <img src="/no-image.png" class="img-thumbnail" style="width:110px; height:110px;">
+                  @endif
+                </a>
                 <div class="small">{{ number_format($post->views_count) }} views</div>
               </div>
             @endforeach
@@ -93,11 +95,13 @@
           <div class="d-flex flex-wrap gap-2 mb-5">
             @foreach($topInteractionPosts as $post)
             <div class="mx-auto text-center">
-              @if ($post->images->first())
-                <img src="data:image/jpeg;base64,{{ $post->images->first()->image }}" class="img-thumbnail" style="width:110px; height:110px;">
-              @else
-                <img src="/no-image.png" class="img-thumbnail" style="width:110px; height:110px;">
-              @endif
+              <a href="{{ route('post.show', $post->id) }}">
+                @if ($post->images->first())
+                  <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail" style="width:110px; height:110px;">
+                @else
+                  <img src="/no-image.png" class="img-thumbnail" style="width:110px; height:110px;">
+                @endif
+              </a>
               <div class="small">{{ $post->created_at->format('M j') }}</div>
             </div>
             @endforeach

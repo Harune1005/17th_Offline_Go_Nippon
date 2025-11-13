@@ -82,7 +82,7 @@
 
     <div class="container mt-5">
         <div class="justify-content-center">
-            <a href="{{ url('/') }}" class="text-decoration-none text-brown mb-2 d-inline-block">
+            <a href="{{ url()->previous() ?? url('/') }}" class="text-decoration-none text-brown mb-2 d-inline-block">
                 <i class="fa-solid fa-angles-left"></i> back
             </a>
 
