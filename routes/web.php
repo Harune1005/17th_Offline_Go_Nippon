@@ -43,9 +43,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::delete('/categories/{id}/delete', [CategoriesController::class, 'delete'])->name('categories.delete');
 });
 
-// Analytics
-Route::get('/users/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
-
 Route::get('/message', function () {
     return view('messages.message');
 });
@@ -54,7 +51,7 @@ Route::get('/message/board', function () {
     return view('messages.chat');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::controller(HomeController::class)->group(function () {
         Route::get('/', 'index')->name('home');
@@ -113,6 +110,15 @@ Route::middleware('auth')->group(function () {
         Route::delete('/favorite/{post_id}/destroy', 'destroy')->name('favorite.destroy');
     });
 
+    // interest
+    Route::controller(InterestController::class)->group(function () {
+        Route::get('/interests/select', 'index')->name('interests.select');
+        Route::post('/interests/store', 'store')->name('interests.store');
+    });
+
+    // Analytics
+    Route::get('/users/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+
     Route::get('/notifications', [NotificationController::class, 'index']);
 
 });
@@ -137,9 +143,3 @@ Route::middleware('auth')->group(function () {
 
 Route::get('auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
-
-// interest
-Route::controller(InterestController::class)->group(function () {
-    Route::get('/interests/select', 'index')->name('interests.select');
-    Route::post('/interests/store', 'store')->name('interests.store');
-});

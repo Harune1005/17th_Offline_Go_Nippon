@@ -11,11 +11,15 @@
 
         <div class="row g-3">
             @foreach($categories as $category)
+            @php
+                $imageName = $category->name . '.jpeg';
+                $imagePath = asset("images/categories/{$imageName}");
+            @endphp
                 <div class="col-md-4">
                     <div class="form-check border rounded p-3 h-100">
                         <input type="checkbox" name="categories[]" value="{{ $category->id }}" id="cat{{ $category->id }}" class="form-check-input category-checkbox">
-                        <label for="cat{{ $category->id }}" class="form-check-label ms-2 fw-semibold">
-                            {{ $category->name }}
+                        <label for="cat{{ $category->id }}" class="form-check-label ms-2 text-light fw-semibold category-label" style="background-image: url('{{ $imagePath }}')">
+                            <div class="bg-dark bg-opacity-50 px-3 py-2 rounded">{{ $category->name }}</div>
                         </label>
                     </div>
                 </div>
