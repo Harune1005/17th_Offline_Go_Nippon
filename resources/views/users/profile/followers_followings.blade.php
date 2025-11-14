@@ -2,9 +2,6 @@
 
 @section('content')
 <style>
-    .col-md-4{
-        font-family: 'Source Serif Pro', serif;
-    }
     div{
         color:#9F6B46;
     }
@@ -22,14 +19,15 @@
         oblect-fit:cover;
     }
 
-
     @media (max-width: 600px) {
         html, body {
         overflow-x: hidden; /* 横スクロール禁止 */
     }
 
-    .col-md-4{
-        padding-right:0;
+    .col-12.col-md-4 {
+        margin-left: 0 !important;
+        margin-right: auto !important;
+        margin-left: auto !important;
     }
 
     .trip-map-a{
@@ -43,7 +41,6 @@
         padding-right: 10 !important;
         margin-left: auto !important;
         margin-right: auto !important;
-        
     }
 
     /* ボタンのマージン調整 */
@@ -109,9 +106,6 @@
     path:hover {
         fill: #F1BDB2;
     }
-
-
-
 
     /* 外円 */
     .spinner-outer {
@@ -305,10 +299,10 @@
 
                 {{-- tabs --}}
                 <div class="mx-auto w-100 mb-2">
-                    <ul class="nav nav-tabs border-bottom-0 justify-contenr-center" id="followTabs" role="tablist" style="height: 50px;">
+                    <ul class="nav nav-tabs border-bottom-0 justify-content-center" id="followTabs" role="tablist" style="height: 50px;">
                         <li class="nav-item text-center flex-fill follow-tab" role="presentation">
                             <a href="{{ route('profile.followers', $user->id) }}" 
-                            class="nav-link h-100 w-100 {{ $activeTab === 'followers' ? 'active' : '' }}"
+                            class="nav-link d-flex align-items-center justify-content-center h-100 w-100 {{ $activeTab === 'followers' ? 'active' : '' }}"
                             role="tab" aria-controls="followers"
                             aria-selected="{{ $activeTab === 'followers' ? 'true' : 'false' }}">
                                 Followers
@@ -316,14 +310,13 @@
                         </li>
                         <li class="nav-item text-center flex-fill follow-tab" role="presentation">
                             <a href="{{ route('profile.following', $user->id) }}"
-                            class="nav-link h-100 w-100 {{ $activeTab === 'following' ? 'active' : '' }}"
+                            class="nav-link d-flex align-items-center justify-content-center h-100 w-100 {{ $activeTab === 'following' ? 'active' : '' }}"
                             role="tab" aria-controls="following"
                             aria-selected="{{ $activeTab === 'following' ? 'true' : 'false' }}">
                                 Followings
                             </a>
                         </li>
                     </ul>
-
                 </div>
 
                 {{-- content of tabs --}}
@@ -361,7 +354,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <input type="hidden" name="tab" value="followers">
-                                                    <input type="hidden" name="return_url" value="{{ url()->full() }}"> {{-- ★追加 --}}
+                                                    <input type="hidden" name="return_url" value="{{ url()->full() }}">
                                                     <button type="submit" class="btn m-0 following-btn">Following</button>
                                                 </form>
 
@@ -370,7 +363,7 @@
                                                 <form action="{{ route('follow.store', $follower->id) }}" method="post">
                                                     @csrf
                                                     <input type="hidden" name="tab" value="followers">
-                                                    <input type="hidden" name="return_url" value="{{ url()->full() }}"> {{-- ★追加 --}}
+                                                    <input type="hidden" name="return_url" value="{{ url()->full() }}">
                                                     <button type="submit" class="btn m-0 follow-btn">Follow</button>
                                                 </form>
 

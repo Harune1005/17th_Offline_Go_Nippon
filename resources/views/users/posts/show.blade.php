@@ -61,10 +61,6 @@
         background-color: #FFFBEB!important;
     }
 
-    body {
-        font-family: 'Source Serif Pro', serif;
-    }
-
     .comment-section-wrapper {
         display: flex;
         flex-direction: column;
@@ -80,9 +76,9 @@
 
 </style>
 
-    <div class="container mt-5">
+    <div class="container mt-3">
         <div class="justify-content-center">
-            <a href="{{ url()->previous() ?? url('/') }}" class="text-decoration-none text-brown mb-2 d-inline-block">
+            <a href="{{ url()->previous() ?? url('/') }}" class="text-decoration-none text-brown mb-3 d-inline-block">
                 <i class="fa-solid fa-angles-left"></i> back
             </a>
 
@@ -129,13 +125,13 @@
 
                         {{-- 投稿者本人以外ならフォロー／フォロー解除 --}}
                         @elseif (auth()->check() && auth()->id() !== $post->user_id)
-                            @if (auth()->user()->isFollowing($post->user_id)) {{-- フォロー中なら --}}
+                            @if (auth()->user()->isFollowing($post->user_id))
                                 <form action="{{ route('follow.destroy', $post->user_id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-outline-pink btn-md fw-bold">Following</button>
                                 </form>
-                            @else {{-- 未フォローなら --}}
+                            @else 
                                 <form action="{{ route('follow.store', $post->user_id) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn btn-pink btn-md fw-bold">Follow</button>

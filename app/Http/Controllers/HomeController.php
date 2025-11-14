@@ -83,7 +83,9 @@ class HomeController extends Controller
 
     public function rankingPost(Request $request)
     {
-        $query = Post::with(['categories', 'prefecture', 'images'])->latest();
+        $order = $request->get('order', 'newest');
+
+        $query = Post::with(['categories', 'prefecture', 'images']);
 
         $titleParts = [];
         $headerImage = 'images/default.jpeg';
@@ -121,9 +123,14 @@ class HomeController extends Controller
             $titleParts[] = ''.$search.'';
         }
 
+        $query->withCount(['likes', 'favorites'])
+            ->when($order === 'most_liked', fn ($q) => $q->orderByDesc('likes_count'))
+            ->when($order === 'recommend', fn ($q) => $q->orderByDesc('favorites_count'))
+            ->when($order === 'newest', fn ($q) => $q->orderByDesc('created_at'));
+
         $title = implode(' × ', $titleParts) ?: 'RANKING';
         $posts = $query->get();
 
-        return view('users.posts.rank', compact('posts', 'title', 'headerImage'));
+        return view('users.posts.rank', compact('posts', 'title', 'headerImage', 'order'));
     }
 }

@@ -30,7 +30,38 @@
 </div>
 
 <div class="container">
-    <div class="row">
+    <div class="mx-auto mb-3">
+        <div class="nav-tabs-wrapper">
+            <ul class="nav nav-tabs d-flex flex-nowrap custom-tabs text-center">
+
+                @php $query = request()->all(); @endphp
+
+                <li class="nav-item tab-item">
+                    <a href="{{ route('ranking.post', array_merge($query, ['order' => 'newest'])) }}"
+                    class="tab-btn {{ $order === 'newest' ? 'active' : '' }}">
+                        Newest
+                    </a>
+                </li>
+
+                <li class="nav-item tab-item">
+                    <a href="{{ route('ranking.post', array_merge($query, ['order' => 'most_liked'])) }}"
+                    class="tab-btn {{ $order === 'most_liked' ? 'active' : '' }}">
+                        Most liked
+                    </a>
+                </li>
+
+                <li class="nav-item tab-item">
+                    <a href="{{ route('ranking.post', array_merge($query, ['order' => 'recommend'])) }}"
+                    class="tab-btn {{ $order === 'recommend' ? 'active' : '' }}">
+                        Recommend
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">      
         @forelse ($posts as $post)
             <div class="col-12 col-md-4 d-flex justify-content-center mb-4">
                 <div class="card border-0 shadow-sm w-100">
@@ -48,7 +79,7 @@
                                                     <img 
                                                         src="{{ asset('storage/' . $image) }}" 
                                                         class="d-block w-100 h-100"
-                                                        style="object-fit: cover;"
+                                                        style="object-fit: cover;border-top-left-radius: 5px; border-top-right-radius: 5px;"
                                                         alt="Post Image {{ $index + 1 }}">
                                                 </div>
                                             </a>
@@ -87,7 +118,7 @@
                                     <img 
                                         src="{{ asset('storage/' . $images[0]) }}"
                                         class="d-block w-100 h-100"
-                                        style="object-fit: cover;"
+                                        style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
                                         alt="Post Image">
                                 </div>
                             </a>
