@@ -2,9 +2,6 @@
 
 @section('content')
 <style>
-    .col-md-4{
-        font-family: 'Source Serif Pro', serif;
-    }
     div{
         color:#9F6B46;
     }
@@ -22,14 +19,15 @@
         oblect-fit:cover;
     }
 
-
     @media (max-width: 600px) {
         html, body {
         overflow-x: hidden; /* 横スクロール禁止 */
     }
 
-    .col-md-4{
-        padding-right:0;
+    .col-12.col-md-4 {
+        margin-left: 0 !important;
+        margin-right: auto !important;
+        margin-left: auto !important;
     }
 
     .trip-map-a{
@@ -43,7 +41,6 @@
         padding-right: 10 !important;
         margin-left: auto !important;
         margin-right: auto !important;
-        
     }
 
     /* ボタンのマージン調整 */
@@ -109,9 +106,6 @@
     path:hover {
         fill: #F1BDB2;
     }
-
-
-
 
     /* 外円 */
     .spinner-outer {
@@ -305,20 +299,22 @@
 
                 {{-- tabs --}}
                 <div class="mx-auto w-100 mb-2">
-                    <ul class="nav nav-tabs border-bottom-0 justify-contenr-center" id="followTabs" role="tablist" style="height: 50px;">
+                    <ul class="nav nav-tabs border-bottom-0 justify-content-center" id="followTabs" role="tablist" style="height: 50px;">
                         <li class="nav-item text-center flex-fill follow-tab" role="presentation">
-                            <button class="nav-link h-100 w-100 {{ $activeTab === 'followers' ? 'active' : '' }}"
-                                id="followers-tab" data-bs-toggle="tab" data-bs-target="#followers" type="button" role="tab" aria-controls="followers"
-                                aria-selected="{{ $activeTab === 'followers' ? 'true' : 'false' }}">
+                            <a href="{{ route('profile.followers', $user->id) }}" 
+                            class="nav-link d-flex align-items-center justify-content-center h-100 w-100 {{ $activeTab === 'followers' ? 'active' : '' }}"
+                            role="tab" aria-controls="followers"
+                            aria-selected="{{ $activeTab === 'followers' ? 'true' : 'false' }}">
                                 Followers
-                            </button>
+                            </a>
                         </li>
                         <li class="nav-item text-center flex-fill follow-tab" role="presentation">
-                            <button class="nav-link h-100 w-100 {{ $activeTab === 'following' ? 'active' : '' }}"
-                                id="followings-tab" data-bs-toggle="tab" data-bs-target="#followings" type="button" role="tab" aria-controls="followings"
-                                aria-selected="{{ $activeTab === 'following' ? 'true' : 'false' }}">
+                            <a href="{{ route('profile.following', $user->id) }}"
+                            class="nav-link d-flex align-items-center justify-content-center h-100 w-100 {{ $activeTab === 'following' ? 'active' : '' }}"
+                            role="tab" aria-controls="following"
+                            aria-selected="{{ $activeTab === 'following' ? 'true' : 'false' }}">
                                 Followings
-                            </button>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -358,15 +354,19 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <input type="hidden" name="tab" value="followers">
+                                                    <input type="hidden" name="return_url" value="{{ url()->full() }}">
                                                     <button type="submit" class="btn m-0 following-btn">Following</button>
                                                 </form>
+
 
                                             @else
                                                 <form action="{{ route('follow.store', $follower->id) }}" method="post">
                                                     @csrf
                                                     <input type="hidden" name="tab" value="followers">
+                                                    <input type="hidden" name="return_url" value="{{ url()->full() }}">
                                                     <button type="submit" class="btn m-0 follow-btn">Follow</button>
                                                 </form>
+
                                             @endif
                                         @endif
                                     </div>
@@ -448,11 +448,11 @@
                 </div>
 
                 @if ($suggested_users->isNotEmpty())
-                    @foreach ($suggested_users as $user)
+                    @foreach ($suggested_users as $user_suggested)
                         <div class="d-flex align-items-center rounded-3 p-3" style="height: 100px;">
-                            <a href="{{ route('profile.show', $user->id) }}" class="text-decoration-none">
-                                @if ($user->avatar)
-                                    <img src="{{ $user->avatar }}" alt="{{ $user->name }}"
+                            <a href="{{ route('profile.show', $user_suggested->id) }}" class="text-decoration-none">
+                                @if ( $user_suggested->avatar)
+                                    <img src="{{  $user_suggested->avatar }}" alt="{{  $user_suggested->name }}"
                                         class="rounded-circle me-4 align-items-center" style="width:60px; height:60px;">
                                 @else
                                     <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4" style="font-size:60px;"></i>
@@ -460,11 +460,11 @@
                             </a>
 
                             <div class="d-flex flex-column align-items-start">
-                                <h6 class="mb-0 fw-bold">{{ $user->name }}</h6>
+                                <h6 class="mb-0 fw-bold">{{  $user_suggested->name }}</h6>
                             </div>
 
                             <div class="d-flex align-items-center justify-content-center ms-auto">
-                                <form action="{{ route('follow.store', $user->id) }}" method="post">
+                                <form action="{{ route('follow.store', $user_suggested->id) }}" method="post">
                                     @csrf
                                     <input type="hidden" name="tab" id="current-tab" value="{{ $activeTab ?? 'followers' }}">
                                     <button type="submit" class="btn m-0 follow-btn">Follow</button>
@@ -484,12 +484,62 @@
 @endsection
 
 <script>
-    const prefectures = @json($prefectures ?? []); // ← LaravelからJSへ渡す
+    const prefectures = @json($prefectures ?? []); 
 </script>
 
 
 
 <script>
+const prefectureNameMap = {
+  "北海道": "Hokkaido",
+  "青森県": "Aomori",
+  "岩手県": "Iwate",
+  "宮城県": "Miyagi",
+  "秋田県": "Akita",
+  "山形県": "Yamagata",
+  "福島県": "Fukushima",
+  "茨城県": "Ibaraki",
+  "栃木県": "Tochigi",
+  "群馬県": "Gunma",
+  "埼玉県": "Saitama",
+  "千葉県": "Chiba",
+  "東京都": "Tokyo",
+  "神奈川県": "Kanagawa",
+  "新潟県": "Niigata",
+  "富山県": "Toyama",
+  "石川県": "Ishikawa",
+  "福井県": "Fukui",
+  "山梨県": "Yamanashi",
+  "長野県": "Nagano",
+  "岐阜県": "Gifu",
+  "静岡県": "Shizuoka",
+  "愛知県": "Aichi",
+  "三重県": "Mie",
+  "滋賀県": "Shiga",
+  "京都府": "Kyoto",
+  "大阪府": "Osaka",
+  "兵庫県": "Hyogo",
+  "奈良県": "Nara",
+  "和歌山県": "Wakayama",
+  "鳥取県": "Tottori",
+  "島根県": "Shimane",
+  "岡山県": "Okayama",
+  "広島県": "Hiroshima",
+  "山口県": "Yamaguchi",
+  "徳島県": "Tokushima",
+  "香川県": "Kagawa",
+  "愛媛県": "Ehime",
+  "高知県": "Kochi",
+  "福岡県": "Fukuoka",
+  "佐賀県": "Saga",
+  "長崎県": "Nagasaki",
+  "熊本県": "Kumamoto",
+  "大分県": "Oita",
+  "宮崎県": "Miyazaki",
+  "鹿児島県": "Kagoshima",
+  "沖縄県": "Okinawa"
+};
+
      const userId = {{ $user->id ?? 'null' }};
     window.onload = function() {
       const baseWidth = 675;
@@ -497,7 +547,7 @@
       let svg;
     
       const projection = d3.geoMercator()
-        .center([133, 42]) // 日本の中心
+        .center([133, 42]) 
         .translate([baseWidth / 2, baseHeight / 2]);
     
       const path = d3.geoPath().projection(projection);
@@ -508,24 +558,25 @@
       const ch = container.clientHeight;
       const scaleFactor = Math.min(cw / baseWidth, ch / baseHeight);
       let baseScale = 3000 * scaleFactor;
-        if (window.innerWidth < 600) {
-            const xOffset = Math.round(Math.max(40, cw * 0.3)); 
-            const yOffset = Math.round(Math.max(40, ch * 0.4)); 
 
-            baseScale *= 2;
+      if (window.innerWidth < 600) {
+        // スマホ
+        projection
+          .center([133.0, 43.0]) 
+          .scale(baseScale * 1.0) 
+          .translate([cw / 2, ch / 2.3]); 
 
-            projection
-            .scale(baseScale)
-            .translate([cw / 2 + xOffset, ch / 2 + yOffset]);
-        } else {
-            projection
-            .scale(baseScale)
-            .translate([cw / 2, ch / 2]);
-        }
+      } else {
+        //  PC
+        projection
+          .center([133.0, 42.0]) 
+          .scale(baseScale)
+          .translate([cw / 2, ch / 2]);
       }
+    }
     
       function renderMap(data) {
-        //本州のpath描画
+
         svg.selectAll(".prefecture")
           .data(data.features.filter(d => d.properties.nam_ja !== "沖縄県"))
           .enter()
@@ -533,21 +584,24 @@
           .attr("class", "prefecture")
           .attr("d", path)
           .attr("id", d => {
-            const prefData = prefectures.find(p => p.name === d.properties.nam_ja);
+            const engName = prefectureNameMap[d.properties.nam_ja];
+            const prefData = prefectures.find(p => p.name === engName);
             return prefData ? `pref-${prefData.code}` : null;
           })
-          .attr("fill", d =>{
-            const prefData = prefectures.find(p => p.name === d.properties.nam_ja);
+          .attr("fill", d => {
+            const engName = prefectureNameMap[d.properties.nam_ja];
+            const prefData = prefectures.find(p => p.name === engName);
             return prefData && prefData.has_post ? "#F1BDB2" : "#dcdcdc";
-          })
+          })          
           .attr("stroke", "#333")
           .on("mouseover", function() { d3.select(this).attr("fill", "#ff7f50"); })
           .on("mouseout", function() { d3.select(this).attr("fill", "#dcdcdc"); })
           .on("click", function(event, d) {
             const prefName = d.properties.nam_ja;
-            const prefData = prefectures.find(p => p.name === prefName);
+            const engName = prefectureNameMap[prefName];
+            const prefData = prefectures.find(p => p.name === engName);
             if(prefData){
-                loadPosts(prefData.id, prefName);
+              loadPosts(prefData.id, engName);
             }
           });
     
@@ -565,7 +619,8 @@
           .attr("class", "okinawa")
           .attr("d", okinawaPath)
           .attr("id", d => {
-            const prefData = prefectures.find(p => p.name === d.properties.nam_ja);
+            const engName = prefectureNameMap[d.properties.nam_ja];
+            const prefData = prefectures.find(p => p.name === engName);
             return prefData ? `pref-${prefData.code}` : null;
           })
           .attr("fill", "#ffdcb2")
@@ -608,7 +663,6 @@
       }
     
       function drawMap() {
-        // 一旦削除しないといけない
         d3.select("#map").selectAll("*").remove();
         svg = d3.select("#map")
           .append("svg")
@@ -621,167 +675,157 @@
     
         d3.json("{{ asset('geojson/japan.geojson') }}").then(renderMap);
       }
+
       function updateSpinner(prefectures) {
-  const completed = prefectures.filter(p => p.has_post).length;
-  console.log(completed);
-  const total = 47;
-  const degree = (360 / total) * completed;
+      const completed = prefectures.filter(p => p.has_post).length;
+      console.log(completed);
+      const total = 47;
+      const degree = (360 / total) * completed;
 
-  const spinnerFill = document.querySelector('.spinner-fill');
-  if(spinnerFill){
-    spinnerFill.style.transform = `rotate(${degree - 90}deg)`; 
-  }
-
-  const countElement = document.querySelector('.spinner-text .count');
-  if(countElement){
-    countElement.innerHTML = `${completed}<span style="font-size:27px">/47</span>`;
-  }
-}
-
-
-// 地図を描画したあとにスピナー更新
-
-
-const userId = {{ $user->id ?? 'null' }};
-drawMap();
-updateSpinner(prefectures);
-
-// 投稿情報を取得してスピナー更新
-fetch(`/prefectures/${userId}/posts`)
-  .then(response => response.json())
-  .then(prefectures => {
-    // 投稿済み都道府県を塗る
-    prefectures.forEach(pref => {
-      const area = document.querySelector(`#pref-${pref.code}`); 
-      if (area && pref.has_post) {
-        area.style.fill = "#F1BDB2";
+      const spinnerFill = document.querySelector('.spinner-fill');
+      if(spinnerFill){
+        spinnerFill.style.transform = `rotate(${degree - 90}deg)`; 
       }
-    });
 
-    // スピナー更新呼び出し
-    updateSpinner(prefectures);
-  })
-  .catch(error => console.error('Error loading prefectures:', error));
+      const countElement = document.querySelector('.spinner-text .count');
+      if(countElement){
+        countElement.innerHTML = `${completed}<span style="font-size:27px">/47</span>`;
+      }
+    }
+    drawMap();
 
-    //   drawMap();
-      // 投稿済み都道府県に応じてスピナーを更新
-function updateSpinner(prefectures) {
+    const userId = {{ $user->id ?? 'null' }};
     
-  const completed = prefectures.filter(p => p.has_post).length;
-  console.log(prefectures);
-  const total = 47;
-  const degree = (360 / total) * completed; 
-
-  // conic-gradient で塗り分け
-  const spinnerOuter = document.querySelector('.spinner-outer');
-  spinnerOuter.style.background = `conic-gradient(#F1BDB2 0deg ${degree}deg, #FFF ${degree}deg 360deg)`;
-
-  // 中央の数字を更新
-  const countElement = document.querySelector('.spinner-text .count');
-  countElement.innerHTML = `${completed}<span style="font-size: 27px">/47</span>`;
-}
-
-        let resizeTimeout;
-        window.addEventListener("resize", () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-            drawMap();
-            }, 400);
+    fetch(`/prefectures/${userId}/posts`)
+      .then(response => response.json())
+      .then(prefectures => {
+        prefectures.forEach(pref => {
+          const area = document.querySelector(`#pref-${pref.code}`); 
+          if (area && pref.has_post) {
+            area.style.fill = "#F1BDB2";
+          }
         });
 
-     function loadPosts(prefId, prefName) {
-      const bigCard = document.querySelector('.big-card');
-        fetch(`/profile/${userId}/pref/${prefId}`)
-            .then(response => response.json())
-            .then(posts => {
-      const postContainer = document.querySelector('.big-card-body');
-      const prefHeader = document.querySelector('.big-card h1');
-      prefHeader.textContent = prefName;
-      const prefectureEnglishNames = {
-  1: "Hokkaido",
-  2: "Aomori",
-  3: "Iwate",
-  4: "Miyagi",
-  5: "Akita",
-  6: "Yamagata",
-  7: "Fukushima",
-  8: "Ibaraki",
-  9: "Tochigi",
-  10: "Gunma",
-  11: "Saitama",
-  12: "Chiba",
-  13: "Tokyo",
-  14: "Kanagawa",
-  15: "Niigata",
-  16: "Toyama",
-  17: "Ishikawa",
-  18: "Fukui",
-  19: "Yamanashi",
-  20: "Nagano",
-  21: "Gifu",
-  22: "Shizuoka",
-  23: "Aichi",
-  24: "Mie",
-  25: "Shiga",
-  26: "Kyoto",
-  27: "Osaka",
-  28: "Hyogo",
-  29: "Nara",
-  30: "Wakayama",
-  31: "Tottori",
-  32: "Shimane",
-  33: "Okayama",
-  34: "Hiroshima",
-  35: "Yamaguchi",
-  36: "Tokushima",
-  37: "Kagawa",
-  38: "Ehime",
-  39: "Kochi",
-  40: "Fukuoka",
-  41: "Saga",
-  42: "Nagasaki",
-  43: "Kumamoto",
-  44: "Oita",
-  45: "Miyazaki",
-  46: "Kagoshima",
-  47: "Okinawa"
+      updateSpinner(prefectures);
+    })
+    .catch(error => console.error('Error loading prefectures:', error));
+
+        drawMap();
+    function updateSpinner(prefectures) {
+        
+      const completed = prefectures.filter(p => p.has_post).length;
+      console.log(prefectures);
+      const total = 47;
+      const degree = (360 / total) * completed; 
+
+      const spinnerOuter = document.querySelector('.spinner-outer');
+      spinnerOuter.style.background = `conic-gradient(#F1BDB2 0deg ${degree}deg, #FFF ${degree}deg 360deg)`;
+
+      const countElement = document.querySelector('.spinner-text .count');
+      countElement.innerHTML = `${completed}<span style="font-size: 27px">/47</span>`;
+    }
+
+            let resizeTimeout;
+            window.addEventListener("resize", () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                drawMap();
+                }, 400);
+            });
+
+        function loadPosts(prefId, prefName) {
+          const bigCard = document.querySelector('.big-card');
+            fetch(`/profile/${userId}/pref/${prefId}`)
+                .then(response => response.json())
+                .then(posts => {
+          const postContainer = document.querySelector('.big-card-body');
+          const prefHeader = document.querySelector('.big-card h1');
+          prefHeader.textContent = prefName;
+          const prefectureNameMap = {
+  "北海道": "Hokkaido",
+  "青森県": "Aomori",
+  "岩手県": "Iwate",
+  "宮城県": "Miyagi",
+  "秋田県": "Akita",
+  "山形県": "Yamagata",
+  "福島県": "Fukushima",
+  "茨城県": "Ibaraki",
+  "栃木県": "Tochigi",
+  "群馬県": "Gunma",
+  "埼玉県": "Saitama",
+  "千葉県": "Chiba",
+  "東京都": "Tokyo",
+  "神奈川県": "Kanagawa",
+  "新潟県": "Niigata",
+  "富山県": "Toyama",
+  "石川県": "Ishikawa",
+  "福井県": "Fukui",
+  "山梨県": "Yamanashi",
+  "長野県": "Nagano",
+  "岐阜県": "Gifu",
+  "静岡県": "Shizuoka",
+  "愛知県": "Aichi",
+  "三重県": "Mie",
+  "滋賀県": "Shiga",
+  "京都府": "Kyoto",
+  "大阪府": "Osaka",
+  "兵庫県": "Hyogo",
+  "奈良県": "Nara",
+  "和歌山県": "Wakayama",
+  "鳥取県": "Tottori",
+  "島根県": "Shimane",
+  "岡山県": "Okayama",
+  "広島県": "Hiroshima",
+  "山口県": "Yamaguchi",
+  "徳島県": "Tokushima",
+  "香川県": "Kagawa",
+  "愛媛県": "Ehime",
+  "高知県": "Kochi",
+  "福岡県": "Fukuoka",
+  "佐賀県": "Saga",
+  "長崎県": "Nagasaki",
+  "熊本県": "Kumamoto",
+  "大分県": "Oita",
+  "宮崎県": "Miyazaki",
+  "鹿児島県": "Kagoshima",
+  "沖縄県": "Okinawa"
 };
 
-prefHeader.textContent = prefectureEnglishNames[prefId] || prefName;
+    prefHeader.textContent = prefectureEnglishNames[prefId] || prefName;
 
-      if (!posts || posts.length === 0) {
-        postContainer.innerHTML = `<p class="text-center text-muted">There is no post.</p>`;
-      } else {
-        postContainer.innerHTML = `
-  <div class="row">
-    ${posts.map(post => {
-      const base64 = (post.images && post.images.length) ? post.images[0].image : null;
-      const imgSrc = base64 ? `data:image/jpeg;base64,${base64}` : '/images/placeholder.jpg';
-      return `
-        <div class="col-12 col-md-6 mb-3">
-          <div class="card border-0 post-card">
-            <div class="card-header p-0 border-0">
-              <a href="/post/${post.id}/show">
-                <img src="${imgSrc}" alt="${post.user ? post.user.name : ''}" class="p-0 post-image">
-              </a>
+          if (!posts || posts.length === 0) {
+            postContainer.innerHTML = `<p class="text-center text-muted">There is no post.</p>`;
+          } else {
+            postContainer.innerHTML = `
+      <div class="row">
+        ${posts.map(post => {
+          const base64 = (post.images && post.images.length) ? post.images[0].image : null;
+          const imgSrc = base64 ? `data:image/jpeg;base64,${base64}` : '/images/placeholder.jpg';
+          return `
+            <div class="col-12 col-md-6 mb-3">
+              <div class="card border-0 post-card">
+                <div class="card-header p-0 border-0">
+                  <a href="/post/${post.id}/show">
+                    <img src="${imgSrc}" alt="${post.user ? post.user.name : ''}" class="p-0 post-image">
+                  </a>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      `;
-    }).join('')}
-  </div>
-`;
+          `;
+        }).join('')}
+      </div>
+    `;
 
-      }
+          }
 
-      bigCard.style.display = 'block';
-      bigCard.classList.add('show');
-      
-    })
-    .catch(error => console.error('Error loading posts:', error));
-}
+          bigCard.style.display = 'block';
+          bigCard.classList.add('show');
+          
+        })
+        .catch(error => console.error('Error loading posts:', error));
+    }
 
 
-     };
+   };
 </script>
-         
+    

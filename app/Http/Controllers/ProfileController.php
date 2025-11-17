@@ -50,6 +50,11 @@ class ProfileController extends Controller
             ]);
         }
 
+        $posts = $this->post->where('user_id', $user->id)
+            ->with(['images'])
+            ->latest()
+            ->get();
+
         $prefecture_ids = Post::where('user_id', $user->id)
             ->pluck('prefecture_id')
             ->unique();
@@ -64,7 +69,8 @@ class ProfileController extends Controller
 
         return view('users.profile.show')
             ->with('user', $user)
-            ->with('prefectures', $prefectures);
+            ->with('prefectures', $prefectures)
+            ->with('posts', $posts);
 
     }
 

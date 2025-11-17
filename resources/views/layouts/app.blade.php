@@ -19,6 +19,7 @@
         {{-- FontAwesome --}}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+        
 
         <!-- Font Awesome -->
     <link
@@ -80,7 +81,7 @@
                         @else
                                 <li class="nav-item">
                                 <a href="{{ route('post.create') }}" class="nav-link fs-2" style="color:#9F6B46;">
-                                    <i class="fa-solid fa-circle-plus"></i>
+                                    <i class="fa-solid fa-circle-plus" ></i>
                                 </a>
                             </li>
 
@@ -104,7 +105,7 @@
                                         <img src="{{ Auth::user()->avatar }}" 
                                             alt="{{ Auth::user()->name }}" 
                                             class="rounded-circle" 
-                                            style="width: 40px; height: 40px; object-fit: cover;">
+                                            style="width: 40px; height: 40px; object-fit: cover;  flex-shrink: 0;">
                                     @else
                                         <i class="fa-solid fa-circle-user text-secondary" 
                                         style="font-size: 40px;"></i>
@@ -114,24 +115,25 @@
                                 <div class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-2"
                                     aria-labelledby="account-dropdown">
                                     {{-- @can('admin') --}}
-                                        <a href="{{ route('admin.users') }}" class="dropdown-item"><i class="fa-solid fa-lock me-2"></i></i>Admin</a>
+                                        <a href="{{ route('admin.users') }}" class="dropdown-item"><i class="fa-solid fa-lock me-2"></i></i> Admin</a>
                                     {{-- @endcan --}}
 
                                     <hr class="dropdown-divider">
-                                    <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-user me-2"></i>Profile</a>
-                                    <a href="{{ route('logout') }}"
-                                        onclick="event.preventDefault();
-                                                        document.getElementById('logout-form').submit();" class="dropdown-item text-danger"><i
-                                            class="fa-solid fa-right-from-bracket me-2"></i> {{ __('Logout') }}</a>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                            @csrf
-                                            </form>
+                                    <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-user me-2"></i> Profile</a>
+
                                     <a href="#" class="dropdown-item"
                                         data-bs-toggle="modal"
                                         data-bs-target="#notificationModal"
                                         id="notificationBtn">
-                                        <i class="fa-solid fa-toggle-on me-3"></i> Notification
+                                        <i class="fa-solid fa-toggle-on me-2"></i>Notification
                                     </a>
+
+                                    <a href="{{ route('analytics.index', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-chart-line me-2"></i>Analytics</a>
+
+                                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> {{ __('Logout') }}</a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
                                 </div>
                             </li>
                         @endguest
@@ -187,7 +189,7 @@
                         </a>
                     </li>
                     <li class="mb-3">
-                        <a href="" class="menu-link nav-text-brown">
+                        <a href="{{ route('post.create') }}" class="menu-link nav-text-brown">
                             <i class="fa-solid fa-circle-plus me-3"></i> Create Post
                         </a>
                     </li>

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Image;
 use App\Models\Post;
+use App\Models\PostView;
 use App\Models\Prefecture;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,13 +13,20 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
+    /**
+     * 投稿一覧ページ
+     */
     public function index()
     {
-        $post = Post::with('categories', 'user')->latest()->get();
+
+        $posts = Post::with(['categories', 'user', 'images'])->latest()->get();
 
         return view('home', compact('posts'));
     }
 
+    /**
+     * 投稿作成フォーム
+     */
     public function create()
     {
         $all_categories = Category::all();
@@ -26,88 +35,11 @@ class PostController extends Controller
         return view('users.posts.create', compact('all_categories', 'prefectures'));
     }
 
+    /**
+     * 投稿保存
+     */
     public function store(Request $request)
     {
-
-        $validated = $request->validate([
-            'title' => 'string|max:255',
-            'content' => 'string',
-            'date' => 'required|date',
-            'time_hour' => 'required|min:0|max:23',
-            'time_min' => 'required|min:0|max:59',
-            'category' => 'required|array|max:3',
-            'category.*' => 'nullable|integer|exists:categories,id',
-            'prefecture_id' => 'required|integer|exists:prefectures,id',
-            'cost' => 'nullable|integer|min:0|max:10000',
-            'image' => 'nullable',
-            'image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        $visitedAt = $validated['date'].' '.
-            str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT).':'.
-            str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT).':00';
-
-        if ($request->hasFile('image')) {
-            $base64Images = [];
-            foreach ($request->file('image') as $image) {
-                $base64Images[] = base64_encode(file_get_contents($image));
-            }
-            $validated['image'] = $base64Images;
-        }
-
-        $post = new Post([
-            'user_id' => Auth::id(),
-            'title' => $validated['title'],
-            'content' => $validated['content'],
-            'prefecture_id' => $validated['prefecture_id'],
-            'visited_at' => $visitedAt,
-            'cost' => $validated['cost'] ?? 0,
-            'image' => $base64Images,
-            'time_hour' => $validated['time_hour'],
-            'time_min' => $validated['time_min'],
-        ]);
-
-        $post->save();
-
-        if (! empty($validated['category'])) {
-            $post->categories()->attach(array_filter($validated['category']));
-        }
-
-        return redirect()->route('home')->with('success');
-    }
-
-    public function show($id)
-    {
-        $post = Post::with('categories', 'user', 'comments.user')->findOrFail($id);
-
-        return view('users.posts.show', compact('post'));
-
-    }
-
-    public function edit($id)
-    {
-        $post = Post::findOrFail($id);
-
-        if (Auth::id() != $post->user_id) {
-            return redirect()->route('posts.index')->with('error');
-        }
-
-        $all_categories = Category::all();
-        $prefectures = Prefecture::all();
-        $selected_categories = $post->categories->pluck('id')->toArray();
-
-        return view('users.posts.edit', compact('post', 'all_categories', 'selected_categories', 'prefectures'));
-
-    }
-
-    public function update(Request $request, $id)
-    {
-        $post = Post::findOrFail($id);
-
-        if (Auth::id() != $post->user_id) {
-            return redirect()->route('posts.index')->with('error');
-        }
-
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -118,59 +50,201 @@ class PostController extends Controller
             'category.*' => 'nullable|integer|exists:categories,id',
             'prefecture_id' => 'required|integer|exists:prefectures,id',
             'cost' => 'nullable|integer|min:0|max:10000',
-            'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|array|max:3',
+            'image.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+
         ]);
-
-        $imagePaths = is_string($post->image) ? json_decode($post->image, true) : $post->image;
-        $imagePaths = $imagePaths ?? [];
-
-        if ($request->hasFile('image')) {
-            foreach ($request->file('image') as $file) {
-                if ($file->isValid()) {
-                    $path = $file->store('image', 'public');
-                    $imagePaths[] = $path;
-                }
-            }
-            // 最大3枚に制限
-            $imagePaths = array_slice($imagePaths, 0, 3);
-        }
 
         $visitedAt = $validated['date'].' '.
             str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT).':'.
             str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT).':00';
 
-        $post->update([
+        $post = Post::create([
+            'user_id' => Auth::id(),
             'title' => $validated['title'],
             'content' => $validated['content'],
             'prefecture_id' => $validated['prefecture_id'],
             'visited_at' => $visitedAt,
             'cost' => $validated['cost'] ?? 0,
-            'image' => ($imagePaths),
+            'time_hour' => $validated['time_hour'],
+            'time_min' => $validated['time_min'],
         ]);
 
         if (! empty($validated['category'])) {
-            $post->categories()->sync(array_filter($validated['category']));
+            $post->categories()->attach(array_filter($validated['category']));
         }
 
-        return redirect()->route('post.show', $post->id)->with('success');
+        if ($request->hasFile('image')) {
+            foreach ($request->file('image') as $img) {
+                if ($img && $img->isValid()) {
+                    $path = $img->store('images/posts', 'public');
+                    $post->images()->create([
+                        'image' => $path,
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('home')->with('success', 'Post created successfully!');
     }
 
+    /**
+     * 投稿詳細
+     */
+    public function show($id)
+    {
+        $post = Post::with(['categories', 'user', 'images', 'comments.user'])->findOrFail($id);
+
+        $viewer = Auth::user();
+
+        // Analytics viewer
+        if ($viewer) {
+            $alreadyViewed = PostView::where('post_id', $post->id)
+                ->where('viewer_id', $viewer->id)
+                ->whereDate('created_at', now()->toDateString())
+                ->exists();
+
+            if (! $alreadyViewed) {
+                PostView::create([
+                    'post_id' => $post->id,
+                    'viewer_id' => $viewer->id,
+                    'is_follower' => $post->user->followers()
+                        ->where('follower_id', $viewer->id)
+                        ->exists(),
+                ]);
+            }
+        } else {
+
+            PostView::create([
+                'post_id' => $post->id,
+                'viewer_id' => null,
+                'is_follower' => false,
+            ]);
+        }
+
+        return view('users.posts.show', compact('post'));
+    }
+
+    public function edit($id)
+    {
+        $post = Post::with('categories')->findOrFail($id);
+        $all_categories = Category::all();
+        $prefectures = Prefecture::all();
+        $selected_categories = $post->categories->pluck('id')->toArray();
+
+        return view(
+            'users.posts.edit',
+            compact('post', 'all_categories', 'prefectures', 'selected_categories')
+        );
+    }
+
+    // --- 更新処理（upload） ---
+    public function update(Request $request, $id)
+    {
+        $post = Post::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'date' => 'nullable|date',
+            'time_hour' => 'nullable|integer|min:0|max:23',
+            'time_min' => 'nullable|integer|min:0|max:59',
+            'category' => 'nullable|array|max:3',
+            'category.*' => 'integer|exists:categories,id',
+            'prefecture_id' => 'required|integer|exists:prefectures,id',
+            'cost' => 'nullable|integer|min:0|max:10000',
+            'deleted_images' => 'nullable|array',
+            'deleted_images.*' => 'exists:images,id',
+            'new_image' => 'nullable|array|max:3',
+            'new_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // 現在の画像の数をカウント
+        $currentImageCount = $post->images->count();
+
+        // 削除予定の画像を考慮に入れた後の残りの画像数
+        $deletedCount = count($request->deleted_images ?? []);
+        $remainingCount = $currentImageCount - $deletedCount;
+
+        // 新規追加される画像数
+        $newImageCount = count($request->file('new_image') ?? []);
+
+        // 画像の総数が3枚を超えないかチェック
+        if ($remainingCount + $newImageCount > 3) {
+            return redirect()->back()->withInput()->withErrors(['new_image' => 'You can have a maximum of 3 images total (current remaining + new uploads).']);
+        }
+
+        $post->title = $validated['title'];
+        $post->content = $validated['content'];
+        $post->prefecture_id = $validated['prefecture_id'];
+        $post->cost = $validated['cost'] ?? 0;
+        $post->time_hour = $validated['time_hour'];
+        $post->time_min = $validated['time_min'];
+        $post->save();
+
+        if (! empty($validated['date']) && isset($validated['time_hour'], $validated['time_min'])) {
+            $post->visited_at = sprintf(
+                '%s %02d:%02d:00',
+                $validated['date'],
+                $validated['time_hour'],
+                $validated['time_min']
+            );
+        }
+
+        if (isset($validated['category'])) {
+            $post->categories()->sync($validated['category']);
+        } else {
+            $post->categories()->detach();
+        }
+
+        // 4. 既存画像の削除
+        if ($request->has('deleted_images')) {
+            $deletedImageIds = $request->deleted_images;
+            $imagesToDelete = Image::whereIn('id', $deletedImageIds)->where('post_id', $post->id)->get();
+
+            foreach ($imagesToDelete as $image) {
+                // S3やローカルストレージからファイルを削除
+                Storage::disk('public')->delete($image->image);
+                $image->delete();
+            }
+        }
+
+        // 5. 新規画像のアップロード
+        if ($request->hasFile('new_image')) {
+            foreach ($request->file('new_image') as $newImageFile) {
+                // ファイルを保存し、そのパスを取得
+                $path = $newImageFile->store('images/posts', 'public');
+
+                // Imageモデルを作成し、関連付け
+                $post->images()->create([
+                    'image' => $path,
+                ]);
+            }
+        }
+
+        return redirect()
+            ->route('post.show', $post->id)
+            ->with('success', 'Post updated successfully!');
+    }
+
+    /**
+     * 投稿削除
+     */
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
 
         if (Auth::id() != $post->user_id) {
-            return redirect()->route('posts.index')->with('error');
+            return redirect()->route('home')->with('error', 'Unauthorized');
         }
 
-        if ($post->image) {
-            foreach (json_decode($post->image, true) as $path) {
-                Storage::disk('public')->delete($path);
-            }
+        foreach ($post->images as $image) {
+            Storage::disk('public')->delete($image->image);
         }
+        $post->images()->delete();
 
         $post->delete();
 
-        return redirect()->route('posts.index')->with('success');
+        return redirect()->route('home')->with('success', 'Post deleted successfully!');
     }
 }

@@ -4,6 +4,23 @@
 
 @section('content')
 <style>
+:root {
+  --main-brown: #9F6B46;
+  --accent-beige: #FFFBEB;
+  --highlight: #F1BDB2;
+  --background: #E6F4FA;
+  --shadow: rgba(0, 0, 0, 0.15);
+}
+
+.card, .big-card, .post-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px var(--shadow);
+}
 
 .trip-map-page main.py-4 {
     display: flex;
@@ -316,6 +333,56 @@ div{
 
 
 <script>
+  const prefectureNameMap = {
+  "北海道": "Hokkaido",
+  "青森県": "Aomori",
+  "岩手県": "Iwate",
+  "宮城県": "Miyagi",
+  "秋田県": "Akita",
+  "山形県": "Yamagata",
+  "福島県": "Fukushima",
+  "茨城県": "Ibaraki",
+  "栃木県": "Tochigi",
+  "群馬県": "Gunma",
+  "埼玉県": "Saitama",
+  "千葉県": "Chiba",
+  "東京都": "Tokyo",
+  "神奈川県": "Kanagawa",
+  "新潟県": "Niigata",
+  "富山県": "Toyama",
+  "石川県": "Ishikawa",
+  "福井県": "Fukui",
+  "山梨県": "Yamanashi",
+  "長野県": "Nagano",
+  "岐阜県": "Gifu",
+  "静岡県": "Shizuoka",
+  "愛知県": "Aichi",
+  "三重県": "Mie",
+  "滋賀県": "Shiga",
+  "京都府": "Kyoto",
+  "大阪府": "Osaka",
+  "兵庫県": "Hyogo",
+  "奈良県": "Nara",
+  "和歌山県": "Wakayama",
+  "鳥取県": "Tottori",
+  "島根県": "Shimane",
+  "岡山県": "Okayama",
+  "広島県": "Hiroshima",
+  "山口県": "Yamaguchi",
+  "徳島県": "Tokushima",
+  "香川県": "Kagawa",
+  "愛媛県": "Ehime",
+  "高知県": "Kochi",
+  "福岡県": "Fukuoka",
+  "佐賀県": "Saga",
+  "長崎県": "Nagasaki",
+  "熊本県": "Kumamoto",
+  "大分県": "Oita",
+  "宮崎県": "Miyazaki",
+  "鹿児島県": "Kagoshima",
+  "沖縄県": "Okinawa"
+};
+
      const userId = {{ $user->id ?? 'null' }};
     window.onload = function() {
       const baseWidth = 675;
@@ -361,25 +428,32 @@ div{
           .attr("class", "prefecture")
           .attr("d", path)
           .attr("id", d => {
-            const prefData = prefectures.find(p => p.name === d.properties.nam_ja);
+          const engName = prefectureNameMap[d.properties.nam_ja];
+            const prefData = prefectures.find(p => p.name === engName);
             return prefData ? `pref-${prefData.code}` : null;
           })
-          .attr("fill", d =>{
-            const prefData = prefectures.find(p => p.name === d.properties.nam_ja);
+          .attr("fill", d => {
+            const engName = prefectureNameMap[d.properties.nam_ja];
+            const prefData = prefectures.find(p => p.name === engName);
             return prefData && prefData.has_post ? "#F1BDB2" : "#dcdcdc";
-          })
+          })          
+
           .attr("stroke", "#333")
           .on("mouseover", function() { d3.select(this).attr("fill", "#ff7f50"); })
           .on("mouseout", function() { d3.select(this).attr("fill", "#dcdcdc"); })
+
           .on("click", function(event, d) {
-            const prefName = d.properties.nam_ja;
-            const prefData = prefectures.find(p => p.name === prefName);
-            if(prefData){
-                loadPosts(prefData.id, prefName);
+            const prefNameJa = d.properties.nam_ja;
+            const engName = prefectureNameMap[prefNameJa];
+            const prefData = prefectures.find(p => p.name === engName);
+
+            if (prefData) {
+              loadPosts(prefData.id, prefNameJa);
+            } else {
+              console.warn("There is no post yet.:", prefNameJa);
             }
           });
-    
-        // 沖縄のpath描画
+          // 沖縄のpath描画
         const okinawaProjection = d3.geoMercator()
           .center([127.6, 26.2])
           .scale(4500)
@@ -393,7 +467,8 @@ div{
           .attr("class", "okinawa")
           .attr("d", okinawaPath)
           .attr("id", d => {
-            const prefData = prefectures.find(p => p.name === d.properties.nam_ja);
+            const engName = prefectureNameMap[d.properties.nam_ja];
+            const prefData = prefectures.find(p => p.name === engName);
             return prefData ? `pref-${prefData.code}` : null;
           })
           .attr("fill", "#ffdcb2")
@@ -402,10 +477,14 @@ div{
           .on("mouseover", function() { d3.select(this).attr("fill", "#ffb37f"); })
           .on("mouseout", function() { d3.select(this).attr("fill", "#ffdcb2"); })
           .on("click", function(event, d) {
-            const prefName = d.properties.nam_ja;
-            const prefData = prefectures.find(p => p.name === prefName);
-            if(prefData){
-                loadPosts(prefData.id, prefName);
+            const prefNameJa = d.properties.nam_ja;
+            const engName = prefectureNameMap[prefNameJa];
+            const prefData = prefectures.find(p => p.name === engName);
+
+            if (prefData) {
+              loadPosts(prefData.id, prefNameJa);
+            } else {
+              console.warn("There is no post yet.:", prefNameJa);
             }
           });
           prefectures.forEach(pref => {
@@ -569,17 +648,15 @@ prefHeader.textContent = prefectureEnglishNames[prefId] || prefName;
       } else {
         postContainer.innerHTML = `
   <div class="row">
-    ${posts.map(post => {
-      const base64 = (post.images && post.images.length) ? post.images[0].image : null;
-      const imgSrc = base64 ? `data:image/jpeg;base64,${base64}` : '/images/placeholder.jpg';
+${posts.map(post => {
+      const imagePath = (post.images && post.images.length) ? `/storage/${post.images[0].image}` : '/images/placeholder.jpg';
       return `
         <div class="col-12 col-md-6 mb-3">
           <div class="card border-0 post-card">
             <div class="card-header p-0 border-0">
               <a href="/post/${post.id}/show">
-                <img src="${imgSrc}" alt="${post.user ? post.user.name : ''}" class="p-0 post-image">
-              </a>
-            </div>
+                <img src="${imagePath}" alt="${post.user ? post.user.name : ''}" class="p-0 post-image">
+              </a>            </div>
           </div>
         </div>
       `;

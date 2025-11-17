@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Image;
 use App\Models\Post;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
@@ -17,7 +18,7 @@ class PostSeeder extends Seeder
                 'prefecture_id' => 1,
                 'visited_at' => Carbon::now()->subDays(10),
                 'cost' => '10000',
-                'image_files' => ['sample1.jpg', 'sample1-2.jpg'],
+                'image_files' => ['sample1.jpeg'],
                 'content' => 'Tokyo trip memories!',
             ],
             [
@@ -25,7 +26,7 @@ class PostSeeder extends Seeder
                 'prefecture_id' => 27,
                 'visited_at' => Carbon::now()->subDays(5),
                 'cost' => '8000',
-                'image_files' => ['sample2.jpg', 'sample2-2.jpg'],
+                'image_files' => ['sample2.jpeg'],
                 'content' => 'Exciting Osaka Expo!',
             ],
             [
@@ -33,38 +34,38 @@ class PostSeeder extends Seeder
                 'prefecture_id' => 40,
                 'visited_at' => Carbon::now()->subDays(2),
                 'cost' => '12000',
-                'image_files' => ['sample3.jpg', 'sample3-2.jpg', 'sample3-3.jpg'],
+                'image_files' => ['sample3.jpeg'],
                 'content' => 'Fukuoka food trip!',
             ],
-            [
-                'title' => '福岡旅行',
-                'prefecture_id' => 40,
-                'visited_at' => Carbon::now()->subDays(2),
-                'cost' => '12000',
-                'image_files' => ['sample3.jpeg'],
-                'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
-            ],
-            [
-                'title' => 'Kyoto',
-                'prefecture_id' => 26,
-                'visited_at' => Carbon::now()->subDays(2),
-                'cost' => '2000',
-                'image_files' => ['sample4.jpeg'],
-                'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
-            ],
-            [
-                'title' => 'Kanagawa',
-                'prefecture_id' => 14,
-                'visited_at' => Carbon::now()->subDays(2),
-                'cost' => '112000',
-                'image_files' => ['sample5.jpeg'],
-                'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
-            ],
+            // [
+            //     'title' => '福岡旅行',
+            //     'prefecture_id' => 40,
+            //     'visited_at' => Carbon::now()->subDays(2),
+            //     'cost' => '12000',
+            //     'image_files' => ['sample3.jpeg'],
+            //     'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
+            // ],
+            // [
+            //     'title' => 'Kyoto',
+            //     'prefecture_id' => 26,
+            //     'visited_at' => Carbon::now()->subDays(2),
+            //     'cost' => '2000',
+            //     'image_files' => ['sample4.jpeg'],
+            //     'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
+            // ],
+            // [
+            //     'title' => 'Kanagawa',
+            //     'prefecture_id' => 14,
+            //     'visited_at' => Carbon::now()->subDays(2),
+            //     'cost' => '112000',
+            //     'image_files' => ['sample5.jpeg'],
+            //     'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
+            // ],
         ];
 
         foreach ($posts as $data) {
             $post = Post::create([
-                'user_id' => 2,
+                'user_id' => User::first()->id,
                 'title' => $data['title'],
                 'prefecture_id' => $data['prefecture_id'],
                 'visited_at' => $data['visited_at'],
@@ -73,7 +74,7 @@ class PostSeeder extends Seeder
             ]);
 
             foreach ($data['image_files'] as $fileName) {
-                $path = storage_path('app/public/images/'.$fileName);
+                $path = public_path('images/'.$fileName);
 
                 if (file_exists($path)) {
                     $base64 = base64_encode(file_get_contents($path));

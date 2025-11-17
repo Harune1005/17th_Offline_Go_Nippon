@@ -73,8 +73,16 @@
           <tr>
             <td>{{ $post->id }}</td>
             <td>
+              @php
+                  $images = is_string($post->image) ? json_decode($post->image, true) : $post->image;
+              @endphp
+
               <a href="{{ route('post.show', $post->id) }}">
-                <img src="{{ $post->image }}" alt="{{ $post->id }}" class="image-lg">
+                  @if ($images && count($images) > 0)
+                      <img src="data:image/jpeg;base64,{{ $images[0] }}" alt="{{ $post->id }}" class="table-post-image">
+                  @else
+                      <img src="{{ asset('images/no-image.png') }}" alt="No image" class="table-post-image">
+                  @endif
               </a>
             </td>
             <td>
@@ -128,7 +136,7 @@
     <!-- === ページネーション === -->
     <div class="d-flex justify-content-center">
         {{ $all_posts->links('vendor.pagination.custom') }}
-    </div> 
+    </div>
   </main>
 </div>
 @endsection

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Schema\Blueprint;
@@ -11,7 +13,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Schema;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     // use SoftDeletes;
 
@@ -78,7 +80,7 @@ class User extends Authenticatable
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'category_user');
+        return $this->belongsToMany(Category::class, 'category_user')->withTimestamps();
     }
 
     public function favorites()
@@ -94,7 +96,9 @@ class User extends Authenticatable
 
     public function isFollowing($user)
     {
-        return $this->following()->where('following_id', $user->id)->exists();
+        $userId = is_object($user) ? $user->id : $user;
+
+        return $this->following()->where('following_id', $userId)->exists();
     }
 
     // use HasFactory, SoftDeletes;

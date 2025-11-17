@@ -44,7 +44,7 @@
         <td>{{ $user->id }}</td>
         <td>
           @if ($user->avatar)
-          <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="rounded-circle d-block mx-auto">
+          <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="avatar rounded-circle d-block mx-auto">
           @else
           <i class="fa-solid fa-circle-user fa-2x d-block text-center icon-md m-auto"></i>
           @endif

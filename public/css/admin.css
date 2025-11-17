@@ -39,12 +39,20 @@
     text-decoration: none;
     transition: color 0.2s ease;
   }
-
+  
+  /* avatar */
+  .avatar {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%; 
+  }
 
     /* === アイコン部分 === */
     .icons {
       display: flex;
       align-items: center;
+
       gap: 20px;
     }
 
@@ -348,6 +356,14 @@
 
     .modal-body, .modal-head, .modal-content{
       color: #9F6B46;
+    }
+
+    /* 投稿一覧テーブル用の画像 */
+    .table-post-image {
+      width: 80px;       /* 幅を指定 */
+      height: 80px;      /* 高さを指定 */
+      object-fit: cover; /* はみ出す部分をトリミング */
+      border-radius: 6px; /* 角丸 */
     }
 
 

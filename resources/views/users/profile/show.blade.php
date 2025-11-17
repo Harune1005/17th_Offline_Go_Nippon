@@ -262,8 +262,7 @@
                             <form action="{{ route('follow.store', $user->id) }}" method="post" class="d-inline">
                                 @csrf
                                 <input type="hidden" name="return_url" value="{{ url()->current() }}">
-                                <button type="submit" 
-                                        class="btn shadow-sm"
+                                <button type="submit" class="btn shadow-sm"
                                         style="background-color:#F1BDB2; color:white; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
                                         onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
                                         onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
@@ -273,8 +272,7 @@
                         @endif
                     </div>
                     <div class="col-auto">
-                        <a href="#" 
-                            class="btn shadow-sm"
+                        <a href="#" class="btn shadow-sm"
                             style="background-color:white; color:#F1BDB2; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
                             onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
                             onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
@@ -288,9 +286,9 @@
             <div class="row">
                 <p class="fw-bold h5 click-map text-center">Click map <span>to view full map</span></p>
                 <div class="map-container">
-<a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
-                   <div id="map" style="width: 100%; height: 350px;"></div>
-                   </a>
+                  <a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
+                    <div id="map" style="width: 100%; height: 350px;"></div>
+                  </a>
                     <div class="spinner-wrapper">
                         <div class="spinner-outer">
                             <div class="spinner-fill"></div>
@@ -305,12 +303,13 @@
         </div>
 
         {{-- Post area --}}
+      
         <div class="col-md-8">
             <div class="row mt-3 mb-2">
                 <div class="col-12">
-                    @if ($user->posts->isNotEmpty())
+                    @if ($posts->isNotEmpty())
                         <div class="row g-3">
-                            @foreach ($user->posts as $post)
+                            @foreach ($posts as $post)
                                 @if ($post->images->isNotEmpty())
                                     <div class="col-4 col-sm-4 col-md-4 col-lg-4">
                                         <div class="card border-0 p-0 shadow-sm rounded-2 overflow-hidden">
@@ -323,8 +322,8 @@
                                                             <div class="carousel-inner">
                                                                 @foreach ($post->images as $key => $image)
                                                                     <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
-                                                                        <img src="data:image/jpeg;base64,{{ $image->image }}" 
-                                                                            alt="Post image {{ $post->id }}" 
+                                                                     <img  src="{{ asset('storage/' . $image->image) }}"
+                                                                                   alt="Post image {{ $post->id }}" 
                                                                             class="d-block w-100 post-image"
                                                                             style="width: 100%; height: auto; object-fit: cover;">
                                                                     </div>
@@ -341,7 +340,7 @@
                                                             </button>
                                                         </div>
                                                     @else
-                                                        <img src="data:image/jpeg;base64,{{ $post->images->first()->image }}" 
+                                                       <img src="{{ asset('storage/' . $post->images->first()->image) }}" 
                                                             alt="Post image {{ $post->id }}" 
                                                             class="post-image"
                                                             style="width: 100%; height: auto; object-fit: cover;">
@@ -374,6 +373,56 @@
 
 
 <script>
+const prefectureNameMap = {
+  "北海道": "Hokkaido",
+  "青森県": "Aomori",
+  "岩手県": "Iwate",
+  "宮城県": "Miyagi",
+  "秋田県": "Akita",
+  "山形県": "Yamagata",
+  "福島県": "Fukushima",
+  "茨城県": "Ibaraki",
+  "栃木県": "Tochigi",
+  "群馬県": "Gunma",
+  "埼玉県": "Saitama",
+  "千葉県": "Chiba",
+  "東京都": "Tokyo",
+  "神奈川県": "Kanagawa",
+  "新潟県": "Niigata",
+  "富山県": "Toyama",
+  "石川県": "Ishikawa",
+  "福井県": "Fukui",
+  "山梨県": "Yamanashi",
+  "長野県": "Nagano",
+  "岐阜県": "Gifu",
+  "静岡県": "Shizuoka",
+  "愛知県": "Aichi",
+  "三重県": "Mie",
+  "滋賀県": "Shiga",
+  "京都府": "Kyoto",
+  "大阪府": "Osaka",
+  "兵庫県": "Hyogo",
+  "奈良県": "Nara",
+  "和歌山県": "Wakayama",
+  "鳥取県": "Tottori",
+  "島根県": "Shimane",
+  "岡山県": "Okayama",
+  "広島県": "Hiroshima",
+  "山口県": "Yamaguchi",
+  "徳島県": "Tokushima",
+  "香川県": "Kagawa",
+  "愛媛県": "Ehime",
+  "高知県": "Kochi",
+  "福岡県": "Fukuoka",
+  "佐賀県": "Saga",
+  "長崎県": "Nagasaki",
+  "熊本県": "Kumamoto",
+  "大分県": "Oita",
+  "宮崎県": "Miyazaki",
+  "鹿児島県": "Kagoshima",
+  "沖縄県": "Okinawa"
+};
+
      const userId = {{ $user->id ?? 'null' }};
     window.onload = function() {
       const baseWidth = 675;
@@ -418,21 +467,24 @@
           .attr("class", "prefecture")
           .attr("d", path)
           .attr("id", d => {
-            const prefData = prefectures.find(p => p.name === d.properties.nam_ja);
+            const engName = prefectureNameMap[d.properties.nam_ja];
+            const prefData = prefectures.find(p => p.name === engName);
             return prefData ? `pref-${prefData.code}` : null;
           })
-          .attr("fill", d =>{
-            const prefData = prefectures.find(p => p.name === d.properties.nam_ja);
+          .attr("fill", d => {
+            const engName = prefectureNameMap[d.properties.nam_ja];
+            const prefData = prefectures.find(p => p.name === engName);
             return prefData && prefData.has_post ? "#F1BDB2" : "#dcdcdc";
-          })
+          })          
           .attr("stroke", "#333")
           .on("mouseover", function() { d3.select(this).attr("fill", "#ff7f50"); })
           .on("mouseout", function() { d3.select(this).attr("fill", "#dcdcdc"); })
           .on("click", function(event, d) {
             const prefName = d.properties.nam_ja;
-            const prefData = prefectures.find(p => p.name === prefName);
+            const engName = prefectureNameMap[prefName];
+            const prefData = prefectures.find(p => p.name === engName);
             if(prefData){
-                loadPosts(prefData.id, prefName);
+              loadPosts(prefData.id, engName);
             }
           });
     
@@ -450,7 +502,8 @@
           .attr("class", "okinawa")
           .attr("d", okinawaPath)
           .attr("id", d => {
-            const prefData = prefectures.find(p => p.name === d.properties.nam_ja);
+            const engName = prefectureNameMap[d.properties.nam_ja];
+            const prefData = prefectures.find(p => p.name === engName);
             return prefData ? `pref-${prefData.code}` : null;
           })
           .attr("fill", "#ffdcb2")
@@ -525,6 +578,7 @@
     drawMap();
 
     const userId = {{ $user->id ?? 'null' }};
+    
     fetch(`/prefectures/${userId}/posts`)
       .then(response => response.json())
       .then(prefectures => {
@@ -570,55 +624,55 @@
           const postContainer = document.querySelector('.big-card-body');
           const prefHeader = document.querySelector('.big-card h1');
           prefHeader.textContent = prefName;
-          const prefectureEnglishNames = {
-      1: "Hokkaido",
-      2: "Aomori",
-      3: "Iwate",
-      4: "Miyagi",
-      5: "Akita",
-      6: "Yamagata",
-      7: "Fukushima",
-      8: "Ibaraki",
-      9: "Tochigi",
-      10: "Gunma",
-      11: "Saitama",
-      12: "Chiba",
-      13: "Tokyo",
-      14: "Kanagawa",
-      15: "Niigata",
-      16: "Toyama",
-      17: "Ishikawa",
-      18: "Fukui",
-      19: "Yamanashi",
-      20: "Nagano",
-      21: "Gifu",
-      22: "Shizuoka",
-      23: "Aichi",
-      24: "Mie",
-      25: "Shiga",
-      26: "Kyoto",
-      27: "Osaka",
-      28: "Hyogo",
-      29: "Nara",
-      30: "Wakayama",
-      31: "Tottori",
-      32: "Shimane",
-      33: "Okayama",
-      34: "Hiroshima",
-      35: "Yamaguchi",
-      36: "Tokushima",
-      37: "Kagawa",
-      38: "Ehime",
-      39: "Kochi",
-      40: "Fukuoka",
-      41: "Saga",
-      42: "Nagasaki",
-      43: "Kumamoto",
-      44: "Oita",
-      45: "Miyazaki",
-      46: "Kagoshima",
-      47: "Okinawa"
-    };
+          const prefectureNameMap = {
+  "北海道": "Hokkaido",
+  "青森県": "Aomori",
+  "岩手県": "Iwate",
+  "宮城県": "Miyagi",
+  "秋田県": "Akita",
+  "山形県": "Yamagata",
+  "福島県": "Fukushima",
+  "茨城県": "Ibaraki",
+  "栃木県": "Tochigi",
+  "群馬県": "Gunma",
+  "埼玉県": "Saitama",
+  "千葉県": "Chiba",
+  "東京都": "Tokyo",
+  "神奈川県": "Kanagawa",
+  "新潟県": "Niigata",
+  "富山県": "Toyama",
+  "石川県": "Ishikawa",
+  "福井県": "Fukui",
+  "山梨県": "Yamanashi",
+  "長野県": "Nagano",
+  "岐阜県": "Gifu",
+  "静岡県": "Shizuoka",
+  "愛知県": "Aichi",
+  "三重県": "Mie",
+  "滋賀県": "Shiga",
+  "京都府": "Kyoto",
+  "大阪府": "Osaka",
+  "兵庫県": "Hyogo",
+  "奈良県": "Nara",
+  "和歌山県": "Wakayama",
+  "鳥取県": "Tottori",
+  "島根県": "Shimane",
+  "岡山県": "Okayama",
+  "広島県": "Hiroshima",
+  "山口県": "Yamaguchi",
+  "徳島県": "Tokushima",
+  "香川県": "Kagawa",
+  "愛媛県": "Ehime",
+  "高知県": "Kochi",
+  "福岡県": "Fukuoka",
+  "佐賀県": "Saga",
+  "長崎県": "Nagasaki",
+  "熊本県": "Kumamoto",
+  "大分県": "Oita",
+  "宮崎県": "Miyazaki",
+  "鹿児島県": "Kagoshima",
+  "沖縄県": "Okinawa"
+};
 
     prefHeader.textContent = prefectureEnglishNames[prefId] || prefName;
 
