@@ -15,6 +15,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+
 Auth::routes();
 
 // Admin Controllers
@@ -97,5 +98,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/follow/{user_id}/search', 'search')->name('follow.search');
     });
 
-    Route::get('/notifications', [NotificationController::class, 'index']);
+    //Notification
+    Route::get('/notifications', [NotificationController::class, 'index'])
+    ->name('notifications.index')
+    ->middleware('auth');
 });

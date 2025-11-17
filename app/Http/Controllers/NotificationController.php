@@ -1,27 +1,24 @@
 <?php
-
 namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Auth;
 
 class NotificationController extends Controller
 {
     public function index()
     {
-        // 仮のデータ（DBがまだない場合）
-        $notifications = [
-            [
-                'user' => 'Test2',
-                'action' => 'liked your post',
-                'time' => '3h',
-                'image' => 'https://via.placeholder.com/100',
-            ],
-            [
-                'user' => 'Test3',
-                'action' => 'liked your post',
-                'time' => '1d',
-                'image' => 'https://via.placeholder.com/100',
-            ],
-        ];
+        $notifications = Auth::user()->unreadNotifications->map(function($n) {
+            return [
+                'user'  => $n->data['liker_name'] ?? 'Unknown',
+                'action'=> 'liked your post',
+                'time'  => $n->created_at ? $n->created_at->diffForHumans() : '',
+                'image' => $n->data['liker_avatar'] ?? 'https://via.placeholder.com/50',
+            ];
+        });
 
         return response()->json($notifications);
     }
 }
+
+
