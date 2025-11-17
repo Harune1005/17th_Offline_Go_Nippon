@@ -114,7 +114,7 @@ class PostController extends Controller
                 ]);
             }
         } else {
-            // 未ログイン閲覧者もカウントしたい場合
+            
             PostView::create([
                 'post_id' => $post->id,
                 'viewer_id' => null,

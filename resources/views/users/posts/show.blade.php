@@ -91,9 +91,11 @@
                     <div class="row align-items-center justify-content-between">
                         <div class="col-auto d-flex align-items-center">
                             <a href="{{ route('profile.show', $post->user->id) }}">
-                                @if ($post->user->profile_image)
-                                    <img src="{{ asset('storage/' . $post->user->profile_image) }}" 
-                                        alt="{{ $post->user->name }}" class="rounded-circle me-3" width="40" height="40">
+                                 @if (Auth::user()->avatar)
+                                    <img src="{{ Auth::user()->avatar }}" 
+                                        alt="{{ Auth::user()->name }}" 
+                                        class="rounded-circle me-3" 
+                                        style="width:50px; height:50px; object-fit:cover;">
                                 @else
                                     <i class="fa-solid fa-circle-user text-secondary me-3" style="font-size: 2rem;"></i>
                                 @endif
@@ -117,13 +119,14 @@
                                     <a href="{{ route('post.edit', ['id' => $post->id]) }}" class="dropdown-item text-brown">
                                         <i class="fa-regular fa-pen-to-square me-2"></i>Edit
                                     </a>
-                                    <form action="{{ route('post.destroy', $post->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="dropdown-item text-danger">
-                                            <i class="fa-regular fa-trash-can me-2"></i>Delete
-                                        </button>
-                                    </form>
+                                    <form action="{{ route('post.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="fa-regular fa-trash-can me-2"></i>Delete
+                                    </button>
+                                </form>
+
                                 </div>
                             </div>
 
