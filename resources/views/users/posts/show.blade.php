@@ -61,10 +61,6 @@
         background-color: #FFFBEB!important;
     }
 
-    body {
-        font-family: 'Source Serif Pro', serif;
-    }
-
     .comment-section-wrapper {
         display: flex;
         flex-direction: column;
@@ -80,9 +76,9 @@
 
 </style>
 
-    <div class="container mt-5">
+    <div class="container mt-3">
         <div class="justify-content-center">
-            <a href="{{ url()->previous() ?? url('/') }}" class="text-decoration-none text-brown mb-2 d-inline-block">
+            <a href="{{ url()->previous() ?? url('/') }}" class="text-decoration-none text-brown mb-3 d-inline-block">
                 <i class="fa-solid fa-angles-left"></i> back
             </a>
 
@@ -91,17 +87,18 @@
                     <div class="row align-items-center justify-content-between">
                         <div class="col-auto d-flex align-items-center">
                             <a href="{{ route('profile.show', $post->user->id) }}">
-                                @if ($post->user->profile_image)
-                                    <img src="{{ asset('storage/' . $post->user->profile_image) }}" 
-                                        alt="{{ $post->user->name }}" class="rounded-circle me-3" width="40" height="40">
+                                 @if (Auth::user()->avatar)
+                                    <img src="{{ Auth::user()->avatar }}" 
+                                        alt="{{ Auth::user()->name }}" 
+                                        class="rounded-circle me-3" 
+                                        style="width:50px; height:50px; object-fit:cover;">
                                 @else
                                     <i class="fa-solid fa-circle-user text-secondary me-3" style="font-size: 2rem;"></i>
                                 @endif
                             </a>
 
-                            <a href="{{ route('profile.show', $post->user->id) }}"
-                            class="text-decoration-none fw-bold text-brown">
-                            {{ $post->user->name }}
+                            <a href="{{ route('profile.show', $post->user->id) }}" class="text-decoration-none fw-bold text-brown">
+                                {{ $post->user->name }}
                             </a>
 
                         </div>
@@ -117,25 +114,26 @@
                                     <a href="{{ route('post.edit', ['id' => $post->id]) }}" class="dropdown-item text-brown">
                                         <i class="fa-regular fa-pen-to-square me-2"></i>Edit
                                     </a>
-                                    <form action="{{ route('post.destroy', $post->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="dropdown-item text-danger">
-                                            <i class="fa-regular fa-trash-can me-2"></i>Delete
-                                        </button>
-                                    </form>
+                                    <form action="{{ route('post.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="fa-regular fa-trash-can me-2"></i>Delete
+                                    </button>
+                                </form>
+
                                 </div>
                             </div>
 
                         {{-- 投稿者本人以外ならフォロー／フォロー解除 --}}
                         @elseif (auth()->check() && auth()->id() !== $post->user_id)
-                            @if (auth()->user()->isFollowing($post->user_id)) {{-- フォロー中なら --}}
+                            @if (auth()->user()->isFollowing($post->user_id))
                                 <form action="{{ route('follow.destroy', $post->user_id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-outline-pink btn-md fw-bold">Following</button>
                                 </form>
-                            @else {{-- 未フォローなら --}}
+                            @else 
                                 <form action="{{ route('follow.store', $post->user_id) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn btn-pink btn-md fw-bold">Follow</button>
@@ -229,7 +227,22 @@
                                             @endif
                                         </div>
                                         <div class="d-flex align-items-center">
-                                            <i class="fa-regular fa-star text-brown me-1"></i>
+                                            @if ($post->isFavorited())
+                                                <form action="{{ route('favorite.destroy', $post->id) }}" method="post">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm p-0">
+                                                        <i class="fa-solid fa-star text-brown me-1"></i>
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('favorite.store', $post->id) }}" method="post">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm p-0">
+                                                        <i class="fa-regular fa-star text-brown me-1"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

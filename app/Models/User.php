@@ -80,7 +80,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'category_user');
+        return $this->belongsToMany(Category::class, 'category_user')->withTimestamps();
     }
 
     public function favorites()
