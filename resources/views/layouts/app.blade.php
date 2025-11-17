@@ -193,9 +193,21 @@
                             <i class="fa-solid fa-circle-plus me-3"></i> Create Post
                         </a>
                     </li>
-                    <li class="mb-3">
+                    {{-- <li class="mb-3">
                         <a href="" class="notificationBtn menu-link nav-text-brown">
                             <i class="fa-regular fa-heart me-3"></i> Notifications
+                        </a>
+                    </li> --}}
+                    <li class="mb-3">
+                        <a href="#" class="notificationBtn menu-link nav-text-brown position-relative">
+                            <i class="fa-regular fa-bell me-3"></i> Notifications
+
+                            {{-- 未読通知がある場合に赤丸バッジ --}}
+                            @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{ Auth::user()->unreadNotifications->count() }}
+                                </span>
+                            @endif
                         </a>
                     </li>
                     <li class="mb-3">
@@ -240,22 +252,24 @@
 
     @stack('scripts')
 
+
     <!-- 通知モーダル -->
     <div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content p-3">
-        <h5 class="mb-3">Notifications</h5>
-        <div id="notificationList">
-            <p>Loading...</p>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3">
+                <div class="modal-header">
+                    <h5 class="modal-title">Notifications 🔔</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="notificationList">
+                    <p>Loading...</p>
+                </div>
+            </div>
         </div>
-        </div>
-    </div>
     </div>
 
-    <!-- 🧠 JavaScript -->
     <script>
     document.addEventListener("DOMContentLoaded", () => {
-        // IDではなくクラスでも取得できるように
         const notificationBtns = document.querySelectorAll(".notificationBtn, #notificationBtn");
         const notificationList = document.getElementById("notificationList");
 
@@ -267,12 +281,17 @@
                     const res = await fetch("/notifications");
                     const notifications = await res.json();
 
+                    if (!Array.isArray(notifications) || notifications.length === 0) {
+                        notificationList.innerHTML = "<p>No notifications.</p>";
+                        return;
+                    }
+
                     let html = "";
                     notifications.forEach(n => {
                         html += `
                             <div class="d-flex align-items-center mb-3">
                                 <img src="${n.image || 'https://via.placeholder.com/50'}"
-                                    alt="" class="rounded-circle me-3" width="50" height="50">
+                                    alt="${n.user}" class="rounded-circle me-3" width="50" height="50">
                                 <div>
                                     <strong>${n.user}</strong><br>
                                     <small>${n.action}</small><br>
@@ -291,5 +310,6 @@
         });
     });
     </script>
+
 </body>
 </html>
