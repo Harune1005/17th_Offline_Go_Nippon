@@ -27,16 +27,16 @@ class LikeController extends Controller
         $post = Post::find($post_id);
         if ($post && $post->user_id !== $user->id) {
 
-        $avatar = $user->avatar
-            ? asset('storage/' . $user->avatar)
-            : 'https://via.placeholder.com/50';
+            $avatar = $user->avatar
+                ? asset('storage/'.$user->avatar)
+                : 'https://via.placeholder.com/50';
 
-        $post->user->notify(new LikeNotification(
-            $user->name,
-            $avatar,
-            $post->id,
-            $post->title
-        ));
+            $post->user->notify(new LikeNotification(
+                $user->name,
+                $avatar,
+                $post->id,
+                $post->title
+            ));
         }
 
         return redirect()->back();
@@ -54,7 +54,7 @@ class LikeController extends Controller
 
     public function getNotifications()
     {
-        $notifications = Auth::user()->unreadNotifications->map(function($n) {
+        $notifications = Auth::user()->unreadNotifications->map(function ($n) {
             return [
                 'user' => $n->data['liker_name'],
                 'action' => 'liked your post',
