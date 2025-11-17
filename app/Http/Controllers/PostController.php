@@ -114,7 +114,7 @@ class PostController extends Controller
                 ]);
             }
         } else {
-            
+
             PostView::create([
                 'post_id' => $post->id,
                 'viewer_id' => null,
