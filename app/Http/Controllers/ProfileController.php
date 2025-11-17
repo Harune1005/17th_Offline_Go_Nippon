@@ -149,7 +149,6 @@ class ProfileController extends Controller
 
                 return $pref;
             });
-
         return view('users.profile.followers_followings', compact('user', 'suggested_users', 'activeTab', 'prefectures'));
     }
 

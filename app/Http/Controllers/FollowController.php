@@ -58,8 +58,7 @@ class FollowController extends Controller
             });
 
         return redirect()->route('profile.show', $user_id)
-            ->with('user', $user)
-            ->with('prefecture', $prefectures);
+            ->with('user', $user);
     }
 
     public function destroy(Request $request, $user_id)
