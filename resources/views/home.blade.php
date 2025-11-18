@@ -210,7 +210,7 @@
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span class="fs-5 mb-0">{{ $post->title ?? 'Title' }}</span>
                                             <div class="d-flex align-items-center gap-2">
-                                                    @if ($post->isLiked())
+                                                @if ($post->isLiked())
                                                     <form action="{{ route('like.destroy', $post->id) }}" method="post">
                                                         @csrf
                                                         @method('DELETE')

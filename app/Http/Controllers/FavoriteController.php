@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Favorite;
+use App\Models\Post;
 use App\Models\Prefecture;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,22 +26,28 @@ class FavoriteController extends Controller
 
     public function store($post_id)
     {
-        Favorite::firstOrCreate([
-            'user_id' => Auth::id(),
-            'post_id' => $post_id,
+        $this->favorite->user_id = Auth::user()->id;
+        $this->favorite->post_id = $post_id;
+        $this->favorite->save();
+        $post_id = Post::findOrfail($post_id);
+
+        return response()->json([
+            'success' => true,
+            'favorited' => true,
         ]);
-
-        return redirect()->back();
-
     }
 
     public function destroy($post_id)
     {
-        Favorite::where('user_id', Auth::id())
+        $this->favorite->where('user_id', Auth::user()->id)
             ->where('post_id', $post_id)
             ->delete();
+        $post_id = Post::findOrFail($post_id);
 
-        return redirect()->back();
+        return response()->json([
+            'success' => true,
+            'favorited' => false,
+        ]);
     }
 
     public function show(Request $request)

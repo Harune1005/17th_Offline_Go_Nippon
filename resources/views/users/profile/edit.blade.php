@@ -3,16 +3,16 @@
 @section('title', 'Edit Profile')
 
 @section('content')
-    <div class="container mt-3 edit-profile-page">
+    <div class="container mt-3">
         <div class="justify-content-center">  
-            <div class="card shadow border-0 rounded-4 p-4">
+            <div class="card shadow border-0 rounded-4 p-4 mx-auto" style="max-width: 800px;">
                 <div class="card-header bg-transparent">
                     <h2 class="fw-bold mb-4 text-center" style="color:#9F6B46;">
                         <i class="fa-solid fa-pen-to-square"></i> Update Profile
                     </h2>
                 </div>
                 
-                <div class="card-body">
+                <div class="card-body edit-profile-page">
                     <form action="{{ route('profile.update', $user->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('PATCH')
@@ -41,7 +41,7 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="name" class="form-label fw-bold" style="color:#9F6B46;">Name</label>
+                            <label for="name" class="form-label fw-bold">Name</label>
                             <input type="text" name="name" id="name" class="form-control shadow-sm border-0" value="{{ old('name', $user->name) }}" autofocus>
                             @error('name')
                                 <div class="text-danger small">{{ $message }}</div>
@@ -49,7 +49,7 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="email" class="form-label fw-bold" style="color:#9F6B46;">Email</label>
+                            <label for="email" class="form-label fw-bold">Email</label>
                             <input type="email" name="email" id="email" class="form-control shadow-sm border-0" value="{{ old('email', $user->email) }}">
                             @error('email')
                                 <div class="text-danger small">{{ $message }}</div>
@@ -64,7 +64,7 @@
                                 });
                         @endphp
                         <div class="mb-4">
-                            <label for="country" class="form-label fw-bold" style="color:#9F6B46;">Country</label>
+                            <label for="country" class="form-label fw-bold">Country</label>
                             <select name="country" class="form-control shadow-sm border-0 select2">
                                 @foreach ($groupedCountries as $letter => $group)
                                     <optgroup label="{{ $letter }}">
@@ -80,7 +80,7 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="introduction" class="form-label fw-bold" style="color:#9F6B46;">Introduction</label>
+                            <label for="introduction" class="form-label fw-bold">Introduction</label>
                             <textarea name="introduction" id="introduction" rows="5" class="form-control shadow-sm border-0" 
                                         placeholder="Describe yourself">{{ old('introduction', $user->introduction) }}</textarea>
                             @error('introduction')
@@ -89,16 +89,16 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="category" class="form-label fw-bold" style="color:#9F6B46;">
+                            <label for="category" class="form-label fw-bold">
                                 Interest <span class="fw-normal small">(choose up to 3)</span>
                             </label>
                             <div>
                                 @foreach ($categories as $category)
-                                    <div class="form-check form-check-inline">
+                                    <div class="form-check form-check-inline" style="width: 120px">
                                         <input type="checkbox" name="category[]" id="category-{{ $category->id }}" value="{{ $category->id }}"
                                             class="form-check-input accent-color" style="border-color: #776B5D"
                                             {{ in_array($category->id, old('category', $user->categories->pluck('id')->toArray())) ? 'checked' : '' }}>
-                                        <label for="category-{{ $category->id }}" class="form-check-label">
+                                        <label for="category-{{ $category->id }}" style="margin-left: 3px">
                                             {{ $category->name }}
                                         </label>
                                     </div>
@@ -106,7 +106,7 @@
                             </div>
                         </div>
 
-                        <label for="current_password" class="form-label fw-bold" style="color:#9F6B46;">Change Password</label>
+                        <label for="current_password" class="form-label fw-bold">Change Password</label>
                         <div class="mb-4">             
                             <input type="password" name="current_password" id="current_password" 
                                 class="form-control shadow-sm border-0" placeholder="Current Password">
@@ -130,15 +130,14 @@
 
                         <div class="text-end">
                            <a href="{{ route('profile.show', $user->id) }}" 
-                                class="btn editbtn shadow-sm me-3"
+                                class="btn shadow-sm me-3"
                                 style="min-width:150px; border:2px solid #B0B0B0; color:white; font-weight:bold; background-color:#B0B0B0; transition:0.3s;"
                                 onmouseover="this.style.backgroundColor='white'; this.style.color='#B0B0B0';" onmouseout="this.style.backgroundColor='#B0B0B0'; this.style.color='white';">
                                 Cancel
                             </a>
 
-                            <button type="submit" class="btn editbtn shadow-sm"
-                                style="min-width:150px; background-color:#F1BDB2; color:white; font-weight:bold; border:2px solid #F1BDB2; transition:0.3s;"
-                                onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';" onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
+                            <button type="submit" class="btn btn-outline shadow-sm"
+                                style="min-width:150px; font-weight:bold; transition:0.3s;">
                                 Save
                             </button>
                         </div>

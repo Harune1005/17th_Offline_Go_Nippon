@@ -92,7 +92,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <a href="" class="nav-link fs-3" style="color:#9F6B46;">
+                                <a href="{{ route('favorite') }}" class="nav-link fs-3" style="color:#9F6B46;">
                                     <i class="fa-regular fa-heart fa-lg"></i>
                                 </a>
                             </li>

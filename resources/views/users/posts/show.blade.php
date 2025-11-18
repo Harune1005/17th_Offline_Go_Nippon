@@ -100,99 +100,85 @@
                             <a href="{{ route('profile.show', $post->user->id) }}" class="text-decoration-none fw-bold text-brown">
                                 {{ $post->user->name }}
                             </a>
-
                         </div>
 
                         <div class="col-auto d-flex align-items-center">
                            {{-- 投稿者本人なら編集・削除 --}}
-                        @if (auth()->id() === $post->user_id)
-                            <div class="dropdown">
-                                <button class="btn btn-sm shadow-none" data-bs-toggle="dropdown">
-                                    <i class="fa-solid fa-ellipsis text-brown"></i>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-end shadow-sm">
-                                    <a href="{{ route('post.edit', ['id' => $post->id]) }}" class="dropdown-item text-brown">
-                                        <i class="fa-regular fa-pen-to-square me-2"></i>Edit
-                                    </a>
-                                    <form action="{{ route('post.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="dropdown-item text-danger">
-                                        <i class="fa-regular fa-trash-can me-2"></i>Delete
+                            @if (auth()->id() === $post->user_id)
+                                <div class="dropdown">
+                                    <button class="btn btn-sm shadow-none" data-bs-toggle="dropdown">
+                                        <i class="fa-solid fa-ellipsis text-brown"></i>
                                     </button>
-                                </form>
+                                    <div class="dropdown-menu dropdown-menu-end shadow-sm">
+                                        <a href="{{ route('post.edit', ['id' => $post->id]) }}" class="dropdown-item text-brown">
+                                            <i class="fa-regular fa-pen-to-square me-2"></i>Edit
+                                        </a>
+                                        <form action="{{ route('post.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="fa-regular fa-trash-can me-2"></i>Delete
+                                        </button>
+                                    </form>
 
+                                    </div>
                                 </div>
-                            </div>
 
-                        {{-- 投稿者本人以外ならフォロー／フォロー解除 --}}
-                        @elseif (auth()->check() && auth()->id() !== $post->user_id)
-                            @if (auth()->user()->isFollowing($post->user_id))
-                                <form action="{{ route('follow.destroy', $post->user_id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-outline-pink btn-md fw-bold">Following</button>
-                                </form>
-                            @else 
-                                <form action="{{ route('follow.store', $post->user_id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-pink btn-md fw-bold">Follow</button>
-                                </form>
+                            {{-- 投稿者本人以外ならフォロー／フォロー解除 --}}
+                            @elseif (auth()->check() && auth()->id() !== $post->user_id)
+                                @if (auth()->user()->isFollowing($post->user_id))
+                                    <form action="{{ route('follow.destroy', $post->user_id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-outline-pink btn-md fw-bold">Following</button>
+                                    </form>
+                                @else 
+                                    <form action="{{ route('follow.store', $post->user_id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-pink btn-md fw-bold">Follow</button>
+                                    </form>
+                                @endif
                             @endif
-                        @endif
-
                         </div>
                     </div>
                 </div>
 
                 <div class="card-body bg-white p-0">
                     <div class="row g-0">
-                       <div class="col-md-7">
-                                
-                                @php
-                                    $images = $post->images->pluck('image')->toArray();
-                                @endphp
+                       <div class="col-md-7">                              
+                            @php
+                                $images = $post->images->pluck('image')->toArray();
+                            @endphp
 
-                                    @if ($images && count($images) > 1)
-                                        
-                                        <div id="postCarousel" class="carousel slide" data-bs-ride="carousel">
-                                            <div class="carousel-inner">
-                                                @foreach ($images as $index => $img)
-                                                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                                        <img 
-                                                            src="{{ asset('storage/' . $img) }}" 
-                                                            class="d-block uniform-img" 
-                                                            alt="Post image {{ $index + 1 }}">
-                                                    </div>
-                                                @endforeach
+                            @if ($images && count($images) > 1)
+                                <div id="postCarousel" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        @foreach ($images as $index => $img)
+                                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                                <img 
+                                                    src="{{ asset('storage/' . $img) }}" 
+                                                    class="d-block uniform-img" 
+                                                    alt="Post image {{ $index + 1 }}">
                                             </div>
-                                            <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
-                                                <span class="carousel-control-prev-icon"></span>
-                                            </button>
-                                            <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
-                                                <span class="carousel-control-next-icon"></span>
-                                            </button>
-                                        </div>
-
-                                    @elseif ($images && count($images) === 1)
-                                      
-                                        <img 
-                                            src="{{ asset('storage/' . $images[0]) }}"
-                                            alt="Post image" 
-                                            class="uniform-img">
-
-                                    @else
-                                       
-                                        <img src="{{ asset('images/no-image.png') }}" 
-                                            alt="No image" 
-                                            class="uniform-img">
-                                    @endif
-
-                                    @error('image')
-                                        <div class="text-danger small">{{ $message }}</div>
-                                    @enderror
+                                        @endforeach
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon"></span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon"></span>
+                                    </button>
                                 </div>
+                            @elseif ($images && count($images) === 1)
+                                <img src="{{ asset('storage/' . $images[0]) }}" alt="Post image" class="uniform-img">
+                            @else
+                                <img src="{{ asset('images/no-image.png') }}" alt="No image" class="uniform-img">
+                            @endif
 
+                            @error('image')
+                                <div class="text-danger small">{{ $message }}</div>
+                            @enderror
+                        </div>
 
                         <div class="col-md-5 border-start border-brown">
                             <div class="p-4 bg-white h-100 comment-section-wrapper" style="max-height: 600px;">
@@ -281,46 +267,45 @@
                                 </div>
 
                             {{-- コメントフォーム --}}
-                            <form action="{{ route('comment.store', $post->id) }}" method="POST" class="input-group mb-4">
-                                @csrf
-                                <input type="text" 
-                                    name="comment_body{{ $post->id }}" 
-                                    class="form-control border-brown rounded-start @error('comment_body'.$post->id) is-invalid @enderror" 
-                                    placeholder="Add a comment..." 
-                                    value="{{ old('comment_body'.$post->id) }}">
-                                <button class="btn btn-brown rounded-end" type="submit">
-                                    <i class="fa-solid fa-paper-plane"></i>
-                                </button>
-                                @error('comment_body'.$post->id)
-                                    <div class="text-danger small mt-1">{{ $message }}</div>
-                                @enderror
-                            </form>
+                                <form action="{{ route('comment.store', $post->id) }}" method="POST" class="input-group mb-4">
+                                    @csrf
+                                    <input type="text" 
+                                        name="comment_body{{ $post->id }}" 
+                                        class="form-control border-brown rounded-start @error('comment_body'.$post->id) is-invalid @enderror" 
+                                        placeholder="Add a comment..." 
+                                        value="{{ old('comment_body'.$post->id) }}">
+                                    <button class="btn btn-brown rounded-end" type="submit">
+                                        <i class="fa-solid fa-paper-plane"></i>
+                                    </button>
+                                    @error('comment_body'.$post->id)
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
+                                </form>
 
                             {{-- コメント一覧 --}}
-                            <div class="comment-list">
-                                @forelse ($post->comments as $comment)
-                                    <div class="p-2 mb-2 bg-yellow-light rounded-3">
-                                        <strong class="text-brown">{{ $comment->user->name ?? 'User' }}</strong>
-                                      <span class="text-brown small d-block">{{ $comment->content }}</span>
-                                        <div class="text-end small text-secondary">
-                                            {{ $comment->created_at->format('M d, Y') }}
-                                            @if ($comment->user_id === auth()->id())
-                                                <form action="{{ route('comment.destroy', $comment->id) }}" 
-                                                    method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn p-0 bg-transparent border-0">
-                                                        <i class="fa-regular fa-trash-can ms-2 text-danger"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
+                                <div class="comment-list">
+                                    @forelse ($post->comments as $comment)
+                                        <div class="p-2 mb-2 bg-yellow-light rounded-3">
+                                            <strong class="text-brown">{{ $comment->user->name ?? 'User' }}</strong>
+                                        <span class="text-brown small d-block">{{ $comment->content }}</span>
+                                            <div class="text-end small text-secondary">
+                                                {{ $comment->created_at->format('M d, Y') }}
+                                                @if ($comment->user_id === auth()->id())
+                                                    <form action="{{ route('comment.destroy', $comment->id) }}" 
+                                                        method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button class="btn p-0 bg-transparent border-0">
+                                                            <i class="fa-regular fa-trash-can ms-2 text-danger"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                @empty
-                                    <p class="text-center text-secondary small">No comments yet.</p>
-                                @endforelse
-                            </div>
-
+                                    @empty
+                                        <p class="text-center text-secondary small">No comments yet.</p>
+                                    @endforelse
+                                </div>
                             </div>
                         </div>
                     </div>

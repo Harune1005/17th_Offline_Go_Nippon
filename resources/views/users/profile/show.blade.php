@@ -227,16 +227,13 @@
                 @if (Auth::user()->id === $user->id)
                     <div class="col-auto px-2">
                         <a href="{{ route('profile.edit') }}" 
-                            class="btn editbtn shadow-sm"
-                            style="background-color:#F1BDB2; color:white; font-weight:bold; width:190px; border:2px solid #F1BDB2; transition:0.3s;"
-                            onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
-                            onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
+                            class="btn btn-outline shadow-sm" style="font-weight:bold; width:190px; transition:0.3s;">
                             Edit profile
                         </a>
                     </div>
                     <div class="col-auto">
                         <a href="{{ route('favorite') }}" 
-                            class="btn editbtn shadow-sm"
+                            class="btn shadow-sm"
                             style="background-color:white; color:#F1BDB2; font-weight:bold; width:190px; border:2px solid #F1BDB2; transition:0.3s;"
                             onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
                             onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
@@ -262,10 +259,7 @@
                             <form action="{{ route('follow.store', $user->id) }}" method="post" class="d-inline">
                                 @csrf
                                 <input type="hidden" name="return_url" value="{{ url()->current() }}">
-                                <button type="submit" class="btn shadow-sm"
-                                        style="background-color:#F1BDB2; color:white; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
-                                        onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
-                                        onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
+                                <button type="submit" class="btn btn-outline shadow-sm" style="font-weight:bold; width:180px; transition:0.3s;">
                                     Follow
                                 </button>
                             </form>
