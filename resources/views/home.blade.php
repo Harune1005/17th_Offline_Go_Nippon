@@ -226,10 +226,24 @@
                                                             <i class="fa-regular fa-heart"  style="color: #9F6B46"></i>
                                                         </button>
                                                         <span class="fw-bold"  style="color: #9F6B46">{{ $post->likes->count() }}</span>
-
+                                                    </form>
+                                                @endif                               
+                                                @if ($post->isFavorited())
+                                                    <form action="{{ route('favorite.destroy', $post->id) }}" method="post">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm p-0">
+                                                            <i class="fa-solid fa-star text-brown me-1" style="color: #9F6B46"></i>
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <form action="{{ route('favorite.store', $post->id) }}" method="post">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm p-0">
+                                                            <i class="fa-regular fa-star text-brown me-1" style="color: #9F6B46"></i>
+                                                        </button>
                                                     </form>
                                                 @endif
-                                                <span>☆</span>                                      
                                             </div>
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center">

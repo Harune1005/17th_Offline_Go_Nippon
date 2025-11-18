@@ -578,6 +578,7 @@ const prefectureNameMap = {
     drawMap();
 
     const userId = {{ $user->id ?? 'null' }};
+    
     fetch(`/prefectures/${userId}/posts`)
       .then(response => response.json())
       .then(prefectures => {

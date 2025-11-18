@@ -91,6 +91,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/follow/{user_id}/search', 'search')->name('follow.search');
     });
 
+    // Notification
+    Route::get('/notifications', [NotificationController::class, 'index'])
+        ->name('notifications.index')
+        ->middleware('auth');
     // Like
     Route::controller(LikeController::class)->group(function () {
         Route::post('/like/{post_id}/store', 'store')->name('like.store');

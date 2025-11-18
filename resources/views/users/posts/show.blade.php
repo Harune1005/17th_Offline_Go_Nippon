@@ -97,9 +97,8 @@
                                 @endif
                             </a>
 
-                            <a href="{{ route('profile.show', $post->user->id) }}"
-                            class="text-decoration-none fw-bold text-brown">
-                            {{ $post->user->name }}
+                            <a href="{{ route('profile.show', $post->user->id) }}" class="text-decoration-none fw-bold text-brown">
+                                {{ $post->user->name }}
                             </a>
 
                         </div>
@@ -228,7 +227,22 @@
                                             @endif
                                         </div>
                                         <div class="d-flex align-items-center">
-                                            <i class="fa-regular fa-star text-brown me-1"></i>
+                                            @if ($post->isFavorited())
+                                                <form action="{{ route('favorite.destroy', $post->id) }}" method="post">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm p-0">
+                                                        <i class="fa-solid fa-star text-brown me-1"></i>
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('favorite.store', $post->id) }}" method="post">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm p-0">
+                                                        <i class="fa-regular fa-star text-brown me-1"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

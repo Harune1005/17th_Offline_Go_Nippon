@@ -131,29 +131,40 @@
                             <div class="d-flex align-items-center gap-2">
                                 {{-- LIKE --}}
                                 @if ($post->isLiked())
-                                <form action="{{ route('like.destroy', $post->id) }}" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm p-0">
-                                        <i class="fa-solid fa-heart me-1"  style="color: #9F6B46"></i>
-                                    </button>
-                                    <span class="fw-bold" style="color: #9F6B46">{{ $post->likes->count() }}</span>
-                                </form>
-                            @else
-                                <form action="{{ route('like.store', $post->id) }}" method="post">
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm p-0">
-                                        <i class="fa-regular fa-heart"  style="color: #9F6B46"></i>
-                                    </button>
-                                    <span class="fw-bold"  style="color: #9F6B46">{{ $post->likes->count() }}</span>
-                                </form>
-                            @endif
+                                    <form action="{{ route('like.destroy', $post->id) }}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm p-0">
+                                            <i class="fa-solid fa-heart me-1"  style="color: #9F6B46"></i>
+                                        </button>
+                                        <span class="fw-bold" style="color: #9F6B46">{{ $post->likes->count() }}</span>
+                                    </form>
+                                @else
+                                    <form action="{{ route('like.store', $post->id) }}" method="post">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm p-0">
+                                            <i class="fa-regular fa-heart"  style="color: #9F6B46"></i>
+                                        </button>
+                                        <span class="fw-bold"  style="color: #9F6B46">{{ $post->likes->count() }}</span>
+                                    </form>
+                                @endif
                                 {{-- FAVORITE --}}
-                                <form action="#" method="post">
-                                    <button type="submit" class="btn btn-sm p-0">
-                                        <i class="fa-solid fa-star me-1" style="color: #9F6B46"></i>
-                                    </button>
-                                </form>
+                                @if ($post->isFavorited())
+                                    <form action="{{ route('favorite.destroy', $post->id) }}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm p-0">
+                                            <i class="fa-solid fa-star text-brown me-1" style="color: #9F6B46"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('favorite.store', $post->id) }}" method="post">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm p-0">
+                                            <i class="fa-regular fa-star text-brown me-1" style="color: #9F6B46"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </div>
 
