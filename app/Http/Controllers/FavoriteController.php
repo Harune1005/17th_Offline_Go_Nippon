@@ -24,23 +24,26 @@ class FavoriteController extends Controller
         $this->prefecture = $prefecture;
     }
 
-      public function store($post_id)
+    public function store($post_id)
     {
         $this->favorite->user_id = Auth::user()->id;
         $this->favorite->post_id = $post_id;
         $this->favorite->save();
         $post_id = Post::findOrfail($post_id);
+
         return response()->json([
             'success' => true,
             'favorited' => true,
         ]);
     }
+
     public function destroy($post_id)
     {
         $this->favorite->where('user_id', Auth::user()->id)
             ->where('post_id', $post_id)
             ->delete();
         $post_id = Post::findOrFail($post_id);
+
         return response()->json([
             'success' => true,
             'favorited' => false,
