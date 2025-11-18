@@ -6,23 +6,29 @@
 @vite(['public/css/admin.css'])
 
 
-<div class="post-page">
+<div class="container my-4 post-page">
 
   <!-- ナビゲーション部分 -->
-  <nav>
-    <a href="{{ route('admin.users') }}">User</a>
-    <a href="{{ route('admin.posts') }}" class="active">Post</a>
-    <a href="{{ route('admin.categories') }}">Category</a>
-  </nav>
+  <ul class="nav nav-underline text-center w-25">
+      <li class="nav-item">
+          <a class="nav-link" href="{{ route('admin.users') }}">User</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link active" href="{{ route('admin.posts') }}">Post</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="{{ route('admin.categories') }}">Category</a>
+      </li>
+  </ul>
 
-  <!-- メインコンテンツ -->
-  <main>
+  <hr>
+
     <!-- フィルター部分 -->
-    <div class="filters mb-3">
-      <form method="GET" action="{{ route('admin.posts') }}" class="d-flex gap-3">
+    <div class="container my-5">
+      <form method="GET" action="{{ route('admin.posts') }}" class="d-flex justify-content-center gap-3">
         <!-- Category -->
-        <div class="filter-group">
-          <label for="category">Category</label>
+        <div class="w-25">
+          <label for="category" class="form-label">Category</label>
           <select name="category" id="category" class="form-select">
             <option value="">All</option>
             @foreach ($categories as $category)
@@ -34,8 +40,8 @@
         </div>
 
         <!-- Prefecture -->
-        <div class="filter-group">
-          <label for="prefecture">Prefecture</label>
+        <div class="w-25">
+          <label for="prefecture" class="form-label">Prefecture</label>
           <select name="prefecture" id="prefecture" class="form-select">
             <option value="">All</option>
             @foreach ($prefectures as $prefecture)
@@ -47,8 +53,8 @@
         </div>
 
         <!-- 検索ボタン -->
-        <div class="search-bar-2 align-self-end">
-          <button type="submit" class="btn">
+        <div class="align-self-end">
+          <button type="submit" class="btn btn-outline">
             <i class="fa-solid fa-magnifying-glass"></i> Search
           </button>
         </div>
@@ -56,9 +62,10 @@
     </div>
 
     <!-- 投稿一覧テーブル -->
-    <table>
+    <div class="container table-responsive">
+    <table class="table table-hover align-middle text-center">
       <thead>
-        <tr>
+        <tr class="fs-5">
           <th>#</th>
           <th>POST</th>
           <th>CATEGORY</th>
@@ -73,9 +80,14 @@
           <tr>
             <td>{{ $post->id }}</td>
             <td>
-              <a href="{{ route('post.show', $post->id) }}">
-                <img src="{{ $post->image }}" alt="{{ $post->id }}" class="image-lg">
-              </a>
+              @if ($post->trashed())
+                <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
+              @else
+                <a href="{{ route('post.show', $post->id) }}">
+                  <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
+                </a>
+              @endif
+
             </td>
             <td>
               <div class="col">
@@ -98,16 +110,16 @@
             <td>
             {{-- @if (Auth::user()->id !== $post->user->id) --}}
                 <div class="dropdown">
-                    <button class="btn-dropdown btn-sm" data-bs-toggle="dropdown">
-                        <i class="fa-solid fa-ellipsis"></i>
+                    <button class="btn-dropdown" type="button" data-bs-toggle="dropdown">
+                        <i class="fa-solid fa-ellipsis me-3"></i>
                     </button>
                     <div class="dropdown-menu">
                         @if ($post->trashed())
-                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
+                            <button class="dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
                                 <i class="fa-solid fa-check-to-slot"></i>&nbsp; Visible
                             </button>
                         @else
-                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
+                        <button class="dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
                             <i class="fa-solid fa-ban"></i>&nbsp; Hide
                         </button>
                         @endif
@@ -124,11 +136,11 @@
         @endforelse
       </tbody>
     </table>
+    </div>
 
     <!-- === ページネーション === -->
     <div class="d-flex justify-content-center">
         {{ $all_posts->links('vendor.pagination.custom') }}
     </div> 
-  </main>
 </div>
 @endsection

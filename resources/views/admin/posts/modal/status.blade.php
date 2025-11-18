@@ -5,18 +5,18 @@
             <div class="modal-content">
 
                 {{-- header --}}
-                <div class="modal-header ">
-                    <h5 class="modal-title ">
-                        <i class="fa-solid fa-check-to-slot"></i> Visible Post
-                    </h5>
+                <div class="modal-header">
+                    <h3 class="modal-title fs-5 ps-0">
+                        <i class="fa-solid fa-check-to-slot"></i> 
+                        Visible Post
+                    </h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 {{-- body --}}
-                <div class="modal-body">
-                    Are you sure you want to visible this post?
-                    <span>
-                         <img src="{{$post->image}}" alt="{{ $post->id }}" class="image-lg" >
-                    </span>
+                <div class="modal-body d-flex justify-content-center align-items-center">
+                    <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" alt="No post" class="img-thumbnail me-3" style="width:110px; height:110px; object-fit: cover;">
+                    <p class="mb-0">Are you sure you want to visible this post?</p>
                 </div>
 
                 {{-- footer --}}
@@ -25,8 +25,8 @@
                         @csrf
                         @method('PATCH')
 
-                        <button type="button" class="btn btn-outline btn-sm" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-outline btn-sm">Activate</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-outline">Activate</button>
                     </form>
                 </div>
 
@@ -40,18 +40,18 @@
             <div class="modal-content">
 
                 {{-- header --}}
-                <div class="modal-header border">
-                    <h5 class="modal-title">
-                        <i class="fa-solid fa-ban"></i> Hide Post
-                    </h5>
+                <div class="modal-header">
+                    <h3 class="modal-title fs-5 ps-0">
+                        <i class="fa-solid fa-ban"></i> 
+                        Hide Post
+                    </h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 {{-- body --}}
-                <div class="modal-body">
-                    Are you sure you want to hide this post?
-                    <span>
-                         <img src="{{$post->image}}" alt="{{ $post->id }}" class="image-lg" >
-                    </span>
+                <div class="modal-body d-flex justify-content-center align-items-center">
+                    <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" alt="No post" class="img-thumbnail me-3" style="width:110px; height:110px; object-fit: cover;">
+                    <p class="mb-0">Are you sure you want to hide this post?</p>
                 </div>
 
                 {{-- footer --}}
@@ -60,8 +60,8 @@
                         @csrf
                         @method('DELETE')
 
-                        <button type="button" class="btn btn-outline btn-sm" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-outline btn-sm">Hide</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-outline">Hide</button>
                     </form>
                 </div>
 

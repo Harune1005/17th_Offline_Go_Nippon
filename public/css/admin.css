@@ -1,498 +1,68 @@
-/* Admin */
 
-
-/* === 全体のスタイル === */
-    body {
-      font-family: 'Source Serif Pro', serif;
-      background-color: #f5f5f5;
-      color: #9F6B46;
-      margin-top:50px;
-      padding: 0;
-    }
-
-    .brand-text {
-      color: #333;
-      font-style: normal;
-      font-weight: 700;
-    }
-
-    /* navber */
-  .brand-text {
-    font-family: 'Source Serif Pro', serif;
-    color: #4a3b2d;
-    font-style: italic;
-    letter-spacing: 0.5px;
-  }
-
-  .nav-text-brown {
-    color: #9F6B46 !important;
-    font-weight: 500;
-  }
-
-  .menu-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #9F6B46;
-    font-weight: 500;
-    font-size: 1.1rem;
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-
-
-    /* === アイコン部分 === */
-    .icons {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .icons i {
-      font-size: 22px;
-      cursor: pointer;
-    }
-
-    .username {
-      font-size: 14px;
-      text-align: center;
-    }
-
-    /* === ナビゲーションバー === */
-    nav {
-      display: flex;
-      justify-content: flex-start;
-      gap: 40px;
-      padding: 20px 80px;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: #9F6B46;
-      font-weight: 500;
-      padding-bottom: 5px;
-    }
-
-    nav a.active {
-      border-bottom: 3px solid #9F6B46;
-    }
-
-    /* === 検索バー === */
-    .search-bar {
-      padding: 40px 80px 10px 80px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .search-bar form {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      max-width: 600px;
-      gap: 0; /* 隙間をなくす */
-    }
-
-    .search-bar input[type="text"] {
-      flex: 1;
-      padding: 10px 15px;
-      border: 1.5px solid #9F6B46;
-      border-right: none; /* ボタンとの境界線を消す */
-      border-radius: 8px 0 0 8px;
-      font-family: inherit;
-      color: #9F6B46;
-      background-color: #ffffff;
-      font-size: 16px;
-      min-width: 0; /* スマホでのはみ出し防止 */
-    }
-
-    .search-bar input[type="text"]:focus {
-      outline: none;
-      border-color: #9f6b46;
-      box-shadow: 0 0 5px #9F6B46;
-    }
-
-    .search-bar button {
-      background-color: #F1BDB2;
-      color: white;
-      border: 1.5px solid #9F6B46;
-      border-left: none; /* inputとつなげる */
-      padding: 10px 18px;
-      border-radius: 0 8px 8px 0;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      font-size: 16px;
-      white-space: nowrap; /* ボタン内の文字を折り返さない */
-    }
-
-    .search-bar button:hover {
-      background-color: #9F6B46;
-    }
-
-    .search-bar-2 button {
-      background-color: #F1BDB2;
-      color: white;
-    }
-
-    .search-bar-2 button:hover {
-      background-color: #9F6B46;
-      color: white;
-    }
-
-    /* === ページネーション === */
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 30px 0;
-      gap: 8px;
-    }
-
-    .pagination button {
-      border: none;
-      background-color: transparent;
-      color: #9F6B46;
-      font-size: 14px;
-      padding: 4px 10px;
-      cursor: pointer;
-    }
-
-    .pagination .active {
-      background-color: #9F6B46;
-      color: #fff;
-      border-radius: 5px;
-      padding: 4px 10px;
-    }
-
-
-     /* ・・・ボタン */
-  .btn-dropdown {
-    background: transparent;
-    border: none;
-    color: #9F6B46;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 6px;
-  }
-
-  .btn-dropdown:hover {
-    background-color: #f1f1f1;
-  }
-
-    /* ドロップダウンメニュー */
-    .dropdown {
-    position: relative;
-    display: inline-block;
-    }
-
-    .dropdown-menu {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 100%;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    min-width: 150px;
-    z-index: 10;
-    }
-
-    .dropdown-menu li {
-    list-style: none;
-    }
-
-    .dropdown-item {
-    width: 100%;
-    text-align: left;
-    border: none;
-    background: transparent;
-    padding: 8px 12px;
-    font-size: 14px;
-    cursor: pointer;
-    color: #9F6B46;
-    }
-
-    .dropdown-item:hover {
-    background-color: #f8f9fa;
-    color: #9F6B46;
-    }
-
-    /* text colors */
-  .status-active, text-success  {
-    color: #28a745;
-  }
-
-  .status-inactive, text-danger {
-    color: #dc3545;
-  }
-
-  .name-link {
-    text-decoration: none;
-    color: #9F6B46;
-    transition: color 0.2s;  
-    }
-
-    .name-link:hover {
-    color: #F1BDB2;          
-    }
-
-
-  /* 表示制御（クリックで開閉） */
-  .dropdown:hover .dropdown-menu {
-    display: block;
-  }
-
-
-/* ------------------------------
-       メインコンテンツ部分
-    ------------------------------ */
-    main {
-      padding: 40px 60px;
-    }
-
-    /* フィルター（カテゴリ・都道府県選択） */
-    .filters {
-      display: flex;
-      gap: 60px;
-      margin-bottom: 30px;
-    }
-
-    .filter-group label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-    .filter-group select {
-      width: 200px;
-      padding: 6px;
-      border: 1px solid #9F6B46;
-      border-radius: 5px;
-      color: #9F6B46;
-    }
-
-    /* === テーブル部分 === */
-    table {
-    width: 100%; 
-    margin: 20px auto; 
-    border-collapse: collapse;
-    text-align: center; 
-    }
-
-    /* 列タイトル */
-    th {
-    font-weight: 600;
-    color: #9F6B46;
-    border-bottom: 1.5px solid #9F6B46;
-    padding: 12px 10px;
-    text-align: center; 
-    }
-
-    /* 各セル */
-    td {
-    font-size: 14px;
-    border-bottom: 1px solid #9F6B46;
-    padding: 12px 10px;
-    text-align: center; 
-    }
-
-   /* アイコンの調整 */ 
-    i.edit , i.delete{
-      color: #9F6B46;
-    }
-
-    td i:first-child {
-    margin-right: 24px;
-    }
-
-     /* ホバー時に色を少し濃く */
-    td i:hover {
-    color: #7b4e30;
-    }
-
-    /* 投稿画像 */
-    .post-image {
-      width: 150px;             /* 任意のサイズ（必要に応じて変更） */
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    /* カテゴリーのタグ */
-    .tag {
-      display: inline-block;
-      border: 1px solid #9F6B46;
-      border-radius: 5px;
-      padding: 3px 10px;
-      color: #9F6B46;
-      background-color: #ffffff;
-    }
-
-    /* ステータス（Visible） */
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      color: #9F6B46;
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      background-color: #3EC70B; 
-      border-radius: 50%;
-    }
-
-    .modal-body, .modal-head, .modal-content{
-      color: #9F6B46;
-    }
-
-
-/* ==============================
-    スマホ用レイアウト調整
-============================== */
-@media (max-width: 768px) {
-
-  /* --- 全体 --- */
-  .post-page {
-    padding: 0;
-  }
-
-  main {
-    padding: 0 4px;
-  }
-
-  /* --- ナビゲーション --- */
-  nav {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 15px;
-  }
-
-  nav a {
-    font-size: 14px;
-  }
-
-  /* --- フィルター --- */
-  .filters {
-    flex-direction: column;
-    gap: 16px;
-    padding: 10px 16px;
-  }
-
-  .filter-group select {
-    width: 100%;
-  }
-
-  /* === 検索バー === */
-  .search-bar {
-    padding: 20px;
-  }
-
-  .search-bar form {
-    max-width: 100%;
-  }
-
-  .search-bar input[type="text"] {
-    font-size: 14px;
-    padding: 8px 12px;
-  }
-
-  .search-bar button {
-    font-size: 14px;
-    padding: 8px 14px;
-  }
-
-  /* --- テーブル --- */
-  table {
-    display: block;
-    width: 100vw;
-    overflow-x: auto;
-    white-space: nowrap;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-
-  th, td {
-    padding: 10px 8px;
-    text-align: left;
-  }
-
-  th:first-child, td:first-child {
-    padding-left: 12px;
-  }
-
-  th:last-child, td:last-child {
-    padding-right: 12px;
-  }
-
-  .post-image {
-  width: 100%;            /* 親幅いっぱい */
-  aspect-ratio: 1 / 1;    /* 正方形にする */
-  object-fit: cover;      /* はみ出す部分をトリミング */
-  height: auto;           /* 一応auto指定で安全 */
-  display: block;         /* レイアウト崩れ防止 */
-  }
-
-  td img.post-image {
-  width: 100px;      /* 固定幅 */
-  height: 100px;     /* 固定高さで確実に正方形 */
-  object-fit: cover;
-  border-radius: 8px;
+/* === ページネーション === */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px 0;
+  gap: 8px;
 }
 
-  /* --- ステータス --- */
-  .status {
-    gap: 4px;
-    font-size: 12px;
-  }
+.pagination button {
+  border: none;
+  background-color: transparent;
+  color: #9F6B46;
+  font-size: 14px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
 
-  /* --- ページネーション --- */
-  .pagination {
-    margin: 20px 0;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
+.pagination .active {
+  background-color: #9F6B46;
+  color: #fff;
+  border-radius: 5px;
+  padding: 4px 10px;
+}
 
-  .pagination button {
-    font-size: 12px;
-    padding: 4px 6px;
-  }
+/* ドロップダウンメニュー */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  min-width: 150px;
+  z-index: 10;
+}
 
-   /* --- Addボタンを1行に並べる --- */
-  .category-page .actions,
-  .category-page .add-buttons {
-    display: flex;
-    flex-wrap: nowrap;         /* 改行させない */
-    justify-content: center;   /* 中央揃え */
-    gap: 10px;                 /* ボタン間の隙間 */
-    width: 100%;
-    padding: 10px 0;
-  }
 
-  .category-page .add-button {
-    flex: 1 1 auto;
-    padding: 10px;
-    font-size: 14px;
-    white-space: nowrap;       /* テキスト改行防止 */
-  }
+.dropdown-item {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #9F6B46;
+}
 
-  /* --- テーブルを中央寄せに --- */
-  .category-page table {
-    margin: 0 auto;            /* 左右中央寄せ */
-    width: 95%;                /* 画面に少し余白を残す */
-    border-collapse: collapse;
-  }
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #9F6B46;
+}
 
-  .category-page th, 
-  .category-page td {
-    text-align: center;
-    padding: 8px;
-  }
+
+
+/* カテゴリーのタグ */
+.tag {
+  display: inline-block;
+  border: 1px solid #9F6B46;
+  border-radius: 5px;
+  padding: 3px 10px;
+  color: #9F6B46;
+  background-color: #ffffff;
 }

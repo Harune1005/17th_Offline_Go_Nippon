@@ -3,36 +3,36 @@
         <div class="modal-content">
 
             {{-- header --}}
-            <div class="modal-header ">
-                <h3 class="modal-title">
-                    <i class="fa-solid fa-pen"></i> Edit Category
+            <div class="modal-header">
+                <h3 class="fs-5 modal-title ps-0">
+                    <i class="fa-solid fa-pen"></i> 
+                    Edit Category
                 </h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            {{-- body --}}
-            <div class="modal-body">
-                <form action="{{ route('admin.categories.update', $category->id) }}" method="post">
-                    @csrf
-                    @method('PATCH')
-                    <input type="text" name="name" class="form-control " value="{{ old('name', $category->name) }}" id="{{ $category->id }}">
-                                    {{-- error --}}
+            <form action="{{ route('admin.categories.update', $category->id) }}" method="post">
+                @csrf
+                @method('PATCH')
+
+                {{-- body --}}
+                <div class="modal-body mt-3">
+                    <input type="text" name="name" class="form-control" value="{{ old('name', $category->name) }}" id="{{ $category->id }}">
+
+                    {{-- error --}}
                     @error('name')
                     <div class="text-danger sall">{{ $message }}</div>
                     @enderror
+                </div>
 
-                    {{-- footer --}}
-                    <div class="modal-footer border-0">
-
-
-                        <button type="button" class="btn btn-outline btn-sm" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-outline btn-sm">
-                            <i class="fa-solid fa-pen"></i>Edit
-                        </button>
-
-                    </form>
-                    </div>
-
-            </div>
+                {{-- footer --}}
+                <div class="modal-footer border border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-outline">
+                        <i class="fa-solid fa-pen"></i> Edit
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
