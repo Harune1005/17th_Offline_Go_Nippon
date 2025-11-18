@@ -5,13 +5,15 @@ body {
 }
 
 .btn-outline {
-    border-color: #F1BDB2;
-    color: #F1BDB2;
+    background-color: #F1BDB2;
+    color: #fff;
+    border: 2px solid #F1BDB2;
 }
 
 .btn-outline:hover {
-    background-color: #F1BDB2;
-    color: #fff;
+    background-color: transparent;
+    color: #F1BDB2;
+    border-color: #F1BDB2;
 }
 
 h5, span, label {
@@ -28,7 +30,7 @@ h5, span, label {
 }
 
 .nav-link.active {
-        color: #9F6B46 !important;
+    color: #9F6B46 !important;
 }
 
 /* navber */
@@ -56,21 +58,17 @@ h5, span, label {
 }
 
 /* edit profile */
-.edit-profile-page .card {
-    max-width: 800px;
-    margin: auto;
-}
-
-.edit-profile-page .form-check-inline {
-    width: 120px;
-}
-
-.edit-profile-page .form-check-label {
-    margin-left: 6px;
-}
-
 .edit-profile-page .form-control::placeholder {
     color: #C9A28C !important;
+}
+
+/* create post */
+.form-control.post-input:hover,
+.form-select.post-input:hover,
+.form-control.post-input:focus,
+.form-select.post-input:focus {
+    border-color: #9F6B46;
+    box-shadow: 0 0 0 0.2rem rgba(159,107,70,0.25);
 }
 
 /* analytics */

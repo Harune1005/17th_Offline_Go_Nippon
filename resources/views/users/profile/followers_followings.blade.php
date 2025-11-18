@@ -211,10 +211,7 @@
                 @if (Auth::user()->id === $user->id)
                     <div class="col-auto px-2">
                         <a href="{{ route('profile.edit') }}" 
-                            class="btn shadow-sm"
-                            style="background-color:#F1BDB2; color:white; font-weight:bold; width:190px; border:2px solid #F1BDB2; transition:0.3s;"
-                            onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
-                            onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
+                            class="btn btn-outline shadow-sm" style="font-weight:bold; width:190px; transition:0.3s;">
                             Edit profile
                         </a>
                     </div>
@@ -245,10 +242,7 @@
                             <form action="{{ route('follow.store', $user->id) }}" method="post" class="d-inline">
                                 @csrf
                                 <button type="submit" 
-                                        class="btn shadow-sm"
-                                        style="background-color:#F1BDB2; color:white; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
-                                        onmouseover="this.style.backgroundColor='transparent'; this.style.color='#F1BDB2';"
-                                        onmouseout="this.style.backgroundColor='#F1BDB2'; this.style.color='white';">
+                                        class="btn btn-outline shadow-sm" style="font-weight:bold; width:180px; transition:0.3s;">
                                     Follow
                                 </button>
                             </form>
