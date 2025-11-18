@@ -6,7 +6,7 @@
 
                 {{-- header --}}
                 <div class="modal-header">
-                    <h3 class="fs-5 modal-title ps-0">
+                    <h3 class="fs-4 fw-bold modal-title modal-font ps-0">
                         <i class="fa-solid fa-user-check"></i> 
                         Activate User
                     </h3>
@@ -20,7 +20,7 @@
                     @else
                         <i class="fa-solid fa-circle-user fa-3x d-block text-center text-secondary icon-md me-3"></i>
                     @endif
-                    <p class="mb-0">Are you sure you want to activate <span class="fw-bold">{{ $user->name }}</span> ?</p>
+                    <p class="mb-0 modal-font">Are you sure you want to activate <span class="fs-5 fw-bold text-decoration-underline">{{ $user->name }}</span> ?</p>
                 </div>
 
                 {{-- footer --}}
@@ -46,7 +46,7 @@
 
                 {{-- header --}}
                 <div class="modal-header">
-                    <h3 class="fs-5 modal-title ps-0">
+                    <h3 class="fs-4 fw-bold modal-title modal-font ps-0">
                         <i class="fa-solid fa-user-slash"></i> 
                         Deactivate User
                     </h3>
@@ -60,7 +60,7 @@
                     @else
                         <i class="fa-solid fa-circle-user fa-3x d-block text-center text-secondary icon-md me-3"></i>
                     @endif
-                    <p class="mb-0">Are you sure you want to deactivate <span class="fw-bold">{{ $user->name }}</span> ?</p>
+                    <p class="mb-0 modal-font">Are you sure you want to deactivate <span class="fs-5 fw-bold text-decoration-underline">{{ $user->name }}</span> ?</p>
                 </div>
 
                 {{-- footer --}}

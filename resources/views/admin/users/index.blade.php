@@ -90,13 +90,13 @@
               <button class="btn-dropdown" type="button" data-bs-toggle="dropdown">
                 <i class="fa-solid fa-ellipsis me-3"></i>
               </button>
-              <div class="dropdown-menu">
+              <div class="dropdown-menu admin-dropdown-menu">
                 @if ($user->trashed())
-                <button class="dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-user-{{ $user->id }}">
+                <button class="dropdown-item admin-dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-user-{{ $user->id }}">
                   <i class="fa-solid fa-user-check"></i> Activate {{ $user->name }}
                 </button>
                 @else
-                <button class="dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#deactivate-user-{{ $user->id }}">
+                <button class="dropdown-item admin-dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#deactivate-user-{{ $user->id }}">
                   <i class="fa-solid fa-user-slash"></i> Deactivate {{ $user->name }}
                 </button>
                 @endif

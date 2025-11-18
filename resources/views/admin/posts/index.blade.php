@@ -113,13 +113,13 @@
                     <button class="btn-dropdown" type="button" data-bs-toggle="dropdown">
                         <i class="fa-solid fa-ellipsis me-3"></i>
                     </button>
-                    <div class="dropdown-menu">
+                    <div class="dropdown-menu admin-dropdown-menu">
                         @if ($post->trashed())
-                            <button class="dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
+                            <button class="dropdown-item admin-dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
                                 <i class="fa-solid fa-check-to-slot"></i>&nbsp; Visible
                             </button>
                         @else
-                        <button class="dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
+                        <button class="dropdown-item admin-dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
                             <i class="fa-solid fa-ban"></i>&nbsp; Hide
                         </button>
                         @endif

@@ -4,14 +4,10 @@
 
 @section('content')
 <div class="container">
-  <div class="mb-4 d-flex justify-content-between">
+  <div class="mb-2 d-flex justify-content-between">
     <div class="my-2">
         <a href="{{ route('home') }}" class="text-decoration-none"><< back</a>
     </div>
-
-    <select class="form-select w-auto">
-      <option>Last 30 days</option>
-    </select>
   </div>
 
   <div class="row g-4">
@@ -171,7 +167,7 @@
     type: 'doughnut',
     data: {
       labels: ['Followers', 'Non-followers'],
-      datasets: [{ data: [{{ $followersRate }}, {{ $nonFollowersRate }}], backgroundColor: ['#9F6B46', '#F1BDB2'] }]
+      datasets: [{ data: [{{ $followersRate }}, {{ $nonFollowersRate }}], backgroundColor: ['#F1BDB2', '#9F6B46'] }]
     },
     options: { cutout: '60%', plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
   });
@@ -181,7 +177,7 @@
     type: 'doughnut',
     data: {
       labels: ['Followers', 'Non-followers'],
-      datasets: [{ data: [{{ $interactionFollowersRate }}, {{ $interactionNonFollowersRate }}], backgroundColor: ['#9F6B46', '#F1BDB2'] }]
+      datasets: [{ data: [{{ $interactionFollowersRate }}, {{ $interactionNonFollowersRate }}], backgroundColor: ['#F1BDB2', '#9F6B46'] }]
     },
     options: { cutout: '60%', plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
   });

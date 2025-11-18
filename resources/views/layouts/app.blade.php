@@ -79,9 +79,9 @@
                         
                             @endif
                         @else
-                                <li class="nav-item">
+                            <li class="nav-item">
                                 <a href="{{ route('post.create') }}" class="nav-link fs-2" style="color:#9F6B46;">
-                                    <i class="fa-solid fa-circle-plus" ></i>
+                                    <i class="fa-solid fa-circle-plus"></i>
                                 </a>
                             </li>
 
@@ -114,11 +114,12 @@
 
                                 <div class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-2"
                                     aria-labelledby="account-dropdown">
-                                    {{-- @can('admin') --}}
+                                    @can('admin')
                                         <a href="{{ route('admin.users') }}" class="dropdown-item"><i class="fa-solid fa-lock me-2"></i></i> Admin</a>
-                                    {{-- @endcan --}}
+                                        <hr class="dropdown-divider">
+                                    @endcan
 
-                                    <hr class="dropdown-divider">
+                                    
                                     <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-user me-2"></i> Profile</a>
 
                                     <a href="#" class="dropdown-item"
@@ -203,11 +204,11 @@
                             <i class="fa-regular fa-bell me-3"></i> Notifications
 
                             {{-- 未読通知がある場合に赤丸バッジ --}}
-                            @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
+                            {{-- @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                     {{ Auth::user()->unreadNotifications->count() }}
                                 </span>
-                            @endif
+                            @endif --}}
                         </a>
                     </li>
                     <li class="mb-3">
