@@ -13,6 +13,7 @@
 }
 
 .card, .big-card, .post-card {
+  overflow: hidden;   
   border-radius: 16px;
   box-shadow: 0 4px 12px var(--shadow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -163,8 +164,8 @@ div{
   font-family: 'Source Serif Pro', serif;
   color: #9F6B46;
   font-weight: 600;
-  font-size: 20px;
-  padding-top: 1rem;
+  font-size: 25px;
+  margin-bottom: 2px;
 }
 
 .spinner-text .count {
@@ -172,17 +173,20 @@ div{
   color: #9F6B46;
   font-weight: bold;
   font-size: 65px;
+  line-height: 1;
 }
-
+.spinner-text .small-text {
+    font-size: 18px;
+    color: #CAAE99;
+}
 .big-card-body{
     height: 75vh;
     overflow-y:auto;
 }
 .big-card{
-   border:3px solid #9F6B46 ;
+   border:0px;
    background-color: #FFFBEB;
-   border-radius: 20px;
-   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);   
+   box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);   
    opacity: 0;
   transition: opacity 0.4s ease;
   display: none;
@@ -191,6 +195,11 @@ div{
 .big-card.show{
     display:block !important;
     opacity:1;
+    animation: slideIn 0.4s ease-out;
+  }
+  @keyframes slideIn{
+    from { opaxity: 0; transform:translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
   }
 
 .post-card{
@@ -199,13 +208,13 @@ div{
 
 @media (max-width: 600px) {
     .trip-map-page main.py-4 {
-    flex-direction: column; /* 横 → 縦配置 */
+    flex-direction: column; 
     height: auto;
-    overflow: auto; /* スクロール許可 */
+    overflow: auto;
   }
 
   html, body {
-    overflow-y: auto;     /* ← ページ全体をスクロール可能に */
+    overflow-y: auto;  
   } 
 
   .spinner-wrapper {
@@ -227,12 +236,12 @@ div{
 .big-card {
   order: 2;
   width: 100%;
-  border-radius: 15px 15px 0 0;
+  border-radius: 15px 15px 0 0; */
   overflow-y: visible; 
   max-height: none; 
   border: 3px solid #9F6B46;
   background-color: #FFFBEB;
-  border-radius: 20px;
+  /* border-radius: 20px; */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -307,6 +316,7 @@ div{
                             <div class="spinner-text">
                                 <p class="label  p-0 m-0">Completed</p>
                                 <p class="count p-0 m-0">0<span style="font-size: 27px">/47</span></p>
+                                <p class="small-text">Prefectures</p>
                             </div>
                         </div>
                     </div>
@@ -315,8 +325,8 @@ div{
 
     {{-- Post --}}
     <div class="col mt-1">
-        <div class="card mt-4 big-card">
-            <div class="card-header border-0">
+        <div class="card mt-5 big-card">
+            <div class="card-header" style="border-radius: 16px 16px 0 0; ">
                 <h1 class="fw-bold  d-flex justify-content-center " style="color:#9F6B46;">&nbsp;</h1>
             </div>
             <div class="card-body big-card-body" ></div>
@@ -327,7 +337,7 @@ div{
 @endsection
 
 <script>
-    const prefectures = @json($prefectures ?? []); // ← LaravelからJSへ渡す
+    const prefectures = @json($prefectures ?? []); 
 </script>
 
 
@@ -383,81 +393,70 @@ div{
   "沖縄県": "Okinawa"
 };
 
-     const userId = {{ $user->id ?? 'null' }};
-    window.onload = function() {
+      const userId = {{ $user->id ?? 'null' }};
+      window.onload = function() {
       const baseWidth = 675;
       const baseHeight = 670;
       let svg;
-    
       const projection = d3.geoMercator()
         .center([137, 38]) 
         .translate([baseWidth / 2, baseHeight / 2]);
-    
       const path = d3.geoPath().projection(projection);
-    
       function adjustProjectionScale() {
       const container = document.querySelector(".map-container");
       const cw = container.clientWidth;
       const ch = container.clientHeight;
       const scaleFactor = Math.min(cw / baseWidth, ch / baseHeight);
       let baseScale = 3000 * scaleFactor;
-
       if (window.innerWidth < 600) {
-        // スマホ
         projection
           .center([133.0, 43.0]) 
           .scale(baseScale * 1.0) 
           .translate([cw / 2, ch / 2.3]); 
-
       } else {
-        //  PC
         projection
           .center([138.0, 38.0]) 
           .scale(1800)
           .translate([cw / 2, ch / 2]);
       }
     }
-    
-    
-      function renderMap(data) {
-        //本州のpath描画
-        svg.selectAll(".prefecture")
-          .data(data.features.filter(d => d.properties.nam_ja !== "沖縄県"))
-          .enter()
-          .append("path")
-          .attr("class", "prefecture")
-          .attr("d", path)
-          .attr("id", d => {
+
+    function renderMap(data) {
+      //本州
+      svg.selectAll(".prefecture")
+       .data(data.features.filter(d => d.properties.nam_ja !== "沖縄県"))
+       .enter()
+       .append("path")
+       .attr("class", "prefecture")
+       .attr("d", path)
+        .attr("id", d => {
           const engName = prefectureNameMap[d.properties.nam_ja];
-            const prefData = prefectures.find(p => p.name === engName);
-            return prefData ? `pref-${prefData.code}` : null;
-          })
-          .attr("fill", d => {
-            const engName = prefectureNameMap[d.properties.nam_ja];
-            const prefData = prefectures.find(p => p.name === engName);
-            return prefData && prefData.has_post ? "#F1BDB2" : "#dcdcdc";
-          })          
-
-          .attr("stroke", "#333")
-          .on("mouseover", function() { d3.select(this).attr("fill", "#ff7f50"); })
-          .on("mouseout", function() { d3.select(this).attr("fill", "#dcdcdc"); })
-
-          .on("click", function(event, d) {
-            const prefNameJa = d.properties.nam_ja;
-            const engName = prefectureNameMap[prefNameJa];
-            const prefData = prefectures.find(p => p.name === engName);
-
-            if (prefData) {
-              loadPosts(prefData.id, prefNameJa);
-            } else {
-              console.warn("There is no post yet.:", prefNameJa);
-            }
-          });
-          // 沖縄のpath描画
+          const prefData = prefectures.find(p => p.name === engName);
+          return prefData ? `pref-${prefData.code}` : null;
+       })
+        .attr("fill", d => {
+          const engName = prefectureNameMap[d.properties.nam_ja];
+          const prefData = prefectures.find(p => p.name === engName);
+          return prefData && prefData.has_post ? "#F1BDB2" : "#dcdcdc";
+        })          
+        .attr("stroke", "#333")
+        .on("mouseover", function() { d3.select(this).attr("fill", "#ff7f50"); })
+        .on("mouseout", function() { d3.select(this).attr("fill", "#dcdcdc"); })
+        .on("click", function(event, d) {
+          const prefNameJa = d.properties.nam_ja;
+          const engName = prefectureNameMap[prefNameJa];
+          const prefData = prefectures.find(p => p.name === engName);
+          if (prefData) {
+            loadPosts(prefData.id, engName);
+          } else {
+             console.warn("There is no post yet.:", prefNameJa);
+          }
+        });
+       // 沖縄
         const okinawaProjection = d3.geoMercator()
           .center([127.6, 26.2])
           .scale(4500)
-          .translate([130, 130]); // ← 左上枠の位置調整
+          .translate([130, 130]); 
         const okinawaPath = d3.geoPath().projection(okinawaProjection);
         const okinawa = data.features.filter(d => d.properties.nam_ja === "沖縄県");
         svg.selectAll(".okinawa")
@@ -472,7 +471,7 @@ div{
             return prefData ? `pref-${prefData.code}` : null;
           })
           .attr("fill", "#ffdcb2")
-          .attr("stroke", "#666")
+          .attr("stroke", "#9F6B46")
           .attr("stroke-width", 0.5)
           .on("mouseover", function() { d3.select(this).attr("fill", "#ffb37f"); })
           .on("mouseout", function() { d3.select(this).attr("fill", "#ffdcb2"); })
@@ -482,7 +481,7 @@ div{
             const prefData = prefectures.find(p => p.name === engName);
 
             if (prefData) {
-              loadPosts(prefData.id, prefNameJa);
+              loadPosts(prefData.id, engName);
             } else {
               console.warn("There is no post yet.:", prefNameJa);
             }
@@ -496,13 +495,13 @@ div{
                 }
             }
           });
-
+        //沖縄の線
         svg.append("line")
         .attr("x1", 240)
         .attr("y1", 20)
         .attr("x2", 240)
         .attr("y2", 240)
-        .attr("stroke", "#666")
+        .attr("stroke", "#9F6B46")
         .attr("stroke-width", 1);
 
         svg.append("line")
@@ -510,11 +509,11 @@ div{
         .attr("y1", 240)
         .attr("x2", 240)
         .attr("y2", 240)
-        .attr("stroke", "#666")
+        .attr("stroke", "#9F6B46")
         .attr("stroke-width", 1);
-      }
+     }
     
-      function drawMap() {
+    function drawMap() {
         d3.select("#map").selectAll("*").remove();
         svg = d3.select("#map")
           .append("svg")
@@ -526,54 +525,36 @@ div{
         adjustProjectionScale();
     
         d3.json("{{ asset('geojson/japan.geojson') }}").then(renderMap);
-      }
-      function updateSpinner(prefectures) {
-  const completed = prefectures.filter(p => p.has_post).length;
-  console.log(completed);
-  const total = 47;
-  const degree = (360 / total) * completed;
+    }
 
-  const spinnerFill = document.querySelector('.spinner-fill');
-  if(spinnerFill){
-    spinnerFill.style.transform = `rotate(${degree - 90}deg)`; 
-  }
+    drawMap();
 
-  const countElement = document.querySelector('.spinner-text .count');
-  if(countElement){
-    countElement.innerHTML = `${completed}<span style="font-size:27px">/47</span>`;
-  }
-}
+    const userId = {{ $user->id ?? 'null' }};
+    fetch(`/prefectures/${userId}/posts`)
+      .then(response => response.json())
+      .then(prefectures => {
+          prefectures.forEach(pref => {
+            const area = document.querySelector(`#pref-${pref.code}`); 
+              if (area && pref.has_post) {
+                area.style.fill = "#F1BDB2";
+              }
+            });
 
-
-drawMap();
-
-const userId = {{ $user->id ?? 'null' }};
-fetch(`/prefectures/${userId}/posts`)
-  .then(response => response.json())
-  .then(prefectures => {
-    prefectures.forEach(pref => {
-      const area = document.querySelector(`#pref-${pref.code}`); 
-      if (area && pref.has_post) {
-        area.style.fill = "#F1BDB2";
-      }
-    });
-
-    updateSpinner(prefectures);
-  })
-  .catch(error => console.error('Error loading prefectures:', error));
-
+             updateSpinner(prefectures);
+         })
+      .catch(error => console.error('Error loading prefectures:', error));
       drawMap();
-function updateSpinner(prefectures) {
-    
-  const completed = prefectures.filter(p => p.has_post).length;
-  console.log(prefectures);
-  const total = 47;
-  const degree = (360 / total) * completed; 
-  const spinnerOuter = document.querySelector('.spinner-outer');
-  spinnerOuter.style.background = `conic-gradient(#F1BDB2 0deg ${degree}deg, #FFF ${degree}deg 360deg)`;
-  const countElement = document.querySelector('.spinner-text .count');
-  countElement.innerHTML = `${completed}<span style="font-size: 27px">/47</span>`;
-}
+
+    function updateSpinner(prefectures) {
+      const completed = prefectures.filter(p => p.has_post).length;
+      console.log(prefectures);
+      const total = 47;
+      const degree = (360 / total) * completed; 
+      const spinnerOuter = document.querySelector('.spinner-outer');
+      spinnerOuter.style.background = `conic-gradient(#F1BDB2 0deg ${degree}deg, #FFF ${degree}deg 360deg)`;
+      const countElement = document.querySelector('.spinner-text .count');
+      countElement.innerHTML = `${completed}<span style="font-size: 27px">/47</span>`;
+    }
 
         let resizeTimeout;
         window.addEventListener("resize", () => {
@@ -592,78 +573,105 @@ function updateSpinner(prefectures) {
       const prefHeader = document.querySelector('.big-card h1');
       prefHeader.textContent = prefName;
       const prefectureEnglishNames = {
-  1: "Hokkaido",
-  2: "Aomori",
-  3: "Iwate",
-  4: "Miyagi",
-  5: "Akita",
-  6: "Yamagata",
-  7: "Fukushima",
-  8: "Ibaraki",
-  9: "Tochigi",
-  10: "Gunma",
-  11: "Saitama",
-  12: "Chiba",
-  13: "Tokyo",
-  14: "Kanagawa",
-  15: "Niigata",
-  16: "Toyama",
-  17: "Ishikawa",
-  18: "Fukui",
-  19: "Yamanashi",
-  20: "Nagano",
-  21: "Gifu",
-  22: "Shizuoka",
-  23: "Aichi",
-  24: "Mie",
-  25: "Shiga",
-  26: "Kyoto",
-  27: "Osaka",
-  28: "Hyogo",
-  29: "Nara",
-  30: "Wakayama",
-  31: "Tottori",
-  32: "Shimane",
-  33: "Okayama",
-  34: "Hiroshima",
-  35: "Yamaguchi",
-  36: "Tokushima",
-  37: "Kagawa",
-  38: "Ehime",
-  39: "Kochi",
-  40: "Fukuoka",
-  41: "Saga",
-  42: "Nagasaki",
-  43: "Kumamoto",
-  44: "Oita",
-  45: "Miyazaki",
-  46: "Kagoshima",
-  47: "Okinawa"
-};
-
-prefHeader.textContent = prefectureEnglishNames[prefId] || prefName;
-
+        1: "Hokkaido",
+        2: "Aomori",
+        3: "Iwate",
+        4: "Miyagi",
+        5: "Akita",
+        6: "Yamagata",
+        7: "Fukushima",
+        8: "Ibaraki",
+        9: "Tochigi",
+        10: "Gunma",
+        11: "Saitama",
+        12: "Chiba",
+        13: "Tokyo",
+        14: "Kanagawa",
+        15: "Niigata",
+        16: "Toyama",
+        17: "Ishikawa",
+        18: "Fukui",
+        19: "Yamanashi",
+        20: "Nagano",
+        21: "Gifu",
+        22: "Shizuoka",
+        23: "Aichi",
+        24: "Mie",
+        25: "Shiga",
+        26: "Kyoto",
+        27: "Osaka",
+        28: "Hyogo",
+        29: "Nara",
+        30: "Wakayama",
+        31: "Tottori",
+        32: "Shimane",
+        33: "Okayama",
+        34: "Hiroshima",
+        35: "Yamaguchi",
+        36: "Tokushima",
+        37: "Kagawa",
+        38: "Ehime",
+        39: "Kochi",
+        40: "Fukuoka",
+        41: "Saga",
+        42: "Nagasaki",
+        43: "Kumamoto",
+        44: "Oita",
+        45: "Miyazaki",
+        46: "Kagoshima",
+        47: "Okinawa"
+      };
+    prefHeader.textContent = prefectureEnglishNames[prefId] || prefName;
       if (!posts || posts.length === 0) {
         postContainer.innerHTML = `<p class="text-center text-muted">There is no post.</p>`;
       } else {
         postContainer.innerHTML = `
-  <div class="row">
-${posts.map(post => {
-      const imagePath = (post.images && post.images.length) ? `/storage/${post.images[0].image}` : '/images/placeholder.jpg';
-      return `
-        <div class="col-12 col-md-6 mb-3">
-          <div class="card border-0 post-card">
-            <div class="card-header p-0 border-0">
-              <a href="/post/${post.id}/show">
-                <img src="${imagePath}" alt="${post.user ? post.user.name : ''}" class="p-0 post-image">
-              </a>            </div>
-          </div>
-        </div>
-      `;
-    }).join('')}
-  </div>
-`;
+      <div class="row">
+    ${posts.map(post => {
+      const images = post.images || [];
+      const carouselId = `carouselPost${post.id}`;
+      const carouselHTML = images.length > 1
+        ? `
+          <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              ${images.map((img, index) => `
+                <div class="carousel-item ${index === 0 ? "active" : ""}">
+                  <a href="/post/${post.id}/show">
+                    <img src="/storage/${img.image}" class="d-block w-100 post-image" alt="">
+                  </a>
+                </div>
+              `).join('')}
+            </div>
 
+            <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+              <span class="carousel-control-next-icon"></span>
+            </button>
+
+          </div>
+        `
+        : `
+          <a href="/post/${post.id}/show">
+            <img src="${images.length ? "/storage/" + images[0].image : "/images/placeholder.jpg"}"
+                class="post-image w-100" alt="">
+          </a>
+        `;
+
+          return `
+            <div class="col-12 col-md-6 mb-3">
+              <div class="card border-0 post-card">
+                <div class="card-header p-0 border-0">
+                  ${carouselHTML}
+                </div>
+              </div>
+            </div>
+          `;
+
+        }).join('')}
+          </div>
+        `;
       }
 
       bigCard.style.display = 'block';
@@ -671,9 +679,9 @@ ${posts.map(post => {
       
     })
     .catch(error => console.error('Error loading posts:', error));
-}
+  }
 
 
-     };
+  };
 </script>
     
