@@ -28,27 +28,27 @@ class HomeController extends Controller
 
         $postsQuery = Post::with(['categories', 'prefecture', 'images'])
             ->withCount('likes');
-        if($order === 'most_liked'){
+        if ($order === 'most_liked') {
             $postsQuery->orderByDesc('likes_count');
-        }elseif($order === 'recommend' && !empty($categoryIds)){
-            $postsQuery->withCount(['categories as relevance' => function ($q) use ($categoryIds){
+        } elseif ($order === 'recommend' && ! empty($categoryIds)) {
+            $postsQuery->withCount(['categories as relevance' => function ($q) use ($categoryIds) {
                 $q->whereIn('categories.id', $categoryIds);
             }])
-           ->orderByDesc('relevance')
-           ->orderByDesc('created_at');
-        }else{ //newest
+                ->orderByDesc('relevance')
+                ->orderByDesc('created_at');
+        } else { // newest
             $postsQuery->orderByDesc('created_at');
         }
         $posts = $postsQuery->paginate(30)->appends(['order' => $order]);
-            // ->when($order === 'most_liked', fn ($q) => $q->orderByDesc('likes_count'))
-            // ->when($order === 'recommend' && !empty($categoryIds), fn ($q) => 
-            //     $q->withCount(['categories as relevance' => fn($q2) => $q2->whereIn('categories.id', $categoryIds)])
-            //       ->orderByDesc('relecance')
-            //       ->orderByDesc('created_at')
-            // )
-            // ->when($order === 'newest', fn ($q) => $q->orderByDesc('created_at'))
-            // ->paginate(30)
-            // ->appends(['order' => $order]);
+        // ->when($order === 'most_liked', fn ($q) => $q->orderByDesc('likes_count'))
+        // ->when($order === 'recommend' && !empty($categoryIds), fn ($q) =>
+        //     $q->withCount(['categories as relevance' => fn($q2) => $q2->whereIn('categories.id', $categoryIds)])
+        //       ->orderByDesc('relecance')
+        //       ->orderByDesc('created_at')
+        // )
+        // ->when($order === 'newest', fn ($q) => $q->orderByDesc('created_at'))
+        // ->paginate(30)
+        // ->appends(['order' => $order]);
 
         $categoryCounts = DB::table('category_posts')
             ->join('categories', 'category_posts.category_id', '=', 'categories.id')
@@ -145,17 +145,16 @@ class HomeController extends Controller
             });
             $titleParts[] = ''.$search.'';
 
-            if(!$prefectureSelected && !$categorySelected){
+            if (! $prefectureSelected && ! $categorySelected) {
                 $headerImage = 'images/nippon.jpg';
                 // $randomPrefecture = Prefecture::inRandomOrder()->first();
                 // $headerImage = $randomPrefecture->image ?? 'images_default.jpeg';
             }
         }
 
-        if($prefectureSelected){
+        if ($prefectureSelected) {
             $headerImage = $prefecture->image ?? 'images_default.jpeg';
         }
-
 
         $query->withCount(['likes', 'favorites'])
             ->when($order === 'most_liked', fn ($q) => $q->orderByDesc('likes_count'))
