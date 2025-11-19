@@ -62,13 +62,78 @@ h5, span, label {
     color: #C9A28C !important;
 }
 
-/* create post */
+/* create edit post */
 .form-control.post-input:hover,
 .form-select.post-input:hover,
 .form-control.post-input:focus,
 .form-select.post-input:focus {
     border-color: #9F6B46;
     box-shadow: 0 0 0 0.2rem rgba(159,107,70,0.25);
+}
+
+.image-preview-area {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    overflow-x: auto;
+}
+.image-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+.image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.remove-btn {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    background: #9F6B46;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.image-btn {
+    background-color: #F8F8F8;
+    border: 1px solid #9F6B46;
+    color: #9F6B46;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+#cost-slider::-webkit-slider-runnable-track { 
+    height: 6px; 
+    background: #F8C7B3;
+    border-radius: 5px; 
+}
+#cost-slider::-webkit-slider-thumb { 
+    appearance: none; 
+    width: 18px; 
+    height: 18px; 
+    margin-top: -6px; 
+    border-radius: 50%; 
+    background-color: #9F6B46; 
+    border: 2px solid white; 
+    cursor: pointer; 
+    transition: transform 0.2s ease; 
+} 
+#cost-slider::-webkit-slider-thumb:hover { 
+    transform: scale(1.1); 
 }
 
 /* analytics */

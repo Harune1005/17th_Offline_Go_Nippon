@@ -2,73 +2,6 @@
 
 @section('content')
 
-<style>
-.image-preview-area {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    overflow-x: auto;
-}
-.image-item {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #ccc;
-}
-.image-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.remove-btn {
-    position: absolute;
-    top: 3px;
-    right: 3px;
-    background: #9F6B46;
-    color: #fff;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-/* 画像 +ADD ボタン */
-.image-btn {
-    background-color: #F8F8F8;
-    border: 1px solid #9F6B46;
-    color: #9F6B46;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 500;
-}
-
-#cost-slider::-webkit-slider-runnable-track { 
-    height: 6px; 
-    background: #F8C7B3;
-    border-radius: 5px; 
-}
-
-#cost-slider::-webkit-slider-thumb { 
-    appearance: none; 
-    width: 18px; 
-    height: 18px; 
-    margin-top: -6px; 
-    border-radius: 50%; 
-    background-color: #9F6B46; 
-    border: 2px solid white; 
-    cursor: pointer; 
-    transition: transform 0.2s ease; 
-} 
-</style>
-
-
 <div class="container mt-3">
     <div class="card shadow border-0 rounded-4 p-4 mx-auto" style="max-width: 800px;">
         <div class="card-header bg-transparent">
@@ -127,6 +60,7 @@
                             </div>
                         @endforeach
                     </div>
+                    @error('category') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 {{-- Prefecture --}}
@@ -140,6 +74,7 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('prefecture_id') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 {{-- Cost --}}
@@ -149,6 +84,7 @@
                         <span id="cost-current">¥{{ old('cost',100) }}</span>
                         <input type="range" name="cost" min="0" max="10000" step="100" value="{{ old('cost',100) }}" id="cost-slider" class="form-range">
                     </div>
+                    @error('cost') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 {{-- Images --}}
@@ -156,6 +92,7 @@
                     <label class="form-label">Images (up to 3)</label>
                     <div id="image-inputs"></div>
                     <div id="image-previews" class="image-preview-area"></div>
+                    @error('image') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="text-end mt-4">
