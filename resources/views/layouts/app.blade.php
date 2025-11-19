@@ -203,11 +203,11 @@
                             <i class="fa-regular fa-bell me-3"></i> Notifications
 
                             {{-- 未読通知がある場合に赤丸バッジ --}}
-                            @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
+                            {{-- @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                     {{ Auth::user()->unreadNotifications->count() }}
                                 </span>
-                            @endif
+                            @endif --}}
                         </a>
                     </li>
                     <li class="mb-3">
