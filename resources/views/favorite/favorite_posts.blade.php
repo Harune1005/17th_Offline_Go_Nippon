@@ -1,19 +1,93 @@
 <div class="row mb-5">
 
     @forelse ($favorites as $favorite)
-
         <div class="col-12 col-md-6 col-lg-4">
-            <div class="card shadow m-2" style="color: #9F6B46">
+            <div class="card border-0 shadow m-2">
+                <div class="card-body p-0">
+                    @php
+                        $images = $favorite->post->images->pluck('image')->take(3)->toArray();
+                    @endphp
+                    @if (count($images)>0)
+                        @if (count($images)>1)
+                            <div id="carouselPost{{ $favorite->post->id }}" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    @foreach ($images as $index => $image)
+                                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                            <a href="{{ route('post.show', $favorite->post->id) }}">
+                                                <a href="{{ route('post.show', $favorite->post->id) }}">
+                                                    <div class="ratio ratio-1x1">
+                                                        <img 
+                                                            src="{{ asset('storage/' . $image) }}" 
+                                                            class="d-block w-100 h-100"
+                                                            style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
+                                                            alt="Post Image {{ $index + 1 }}">
+                                                    </div>
+                                                </a>
+                                                
+                                            </a>
+                                        </div>
+                                    @endforeach
+                                </div>
 
-                <div class="card-body ratio ratio-1x1">
-                    <img src="{{ asset('storage/sample_images/' . $favorite->post->image) }}" alt="{{ $favorite->post->image }}" class="img-fluid" style=" object-fit:cover; width: 100%; height: 100%; border-top-left-radius: 5px; border-top-right-radius: 5px;">
+                                <button class="carousel-control-prev" type="button"
+                                        data-bs-target="#carouselPost{{ $favorite->post->id }}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+
+                                <button class="carousel-control-next" type="button"
+                                        data-bs-target="#carouselPost{{ $favorite->post->id }}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+
+                                <div class="carousel-indicators">
+                                    @foreach ($images as $index => $image)
+                                        <button type="button"
+                                                data-bs-target="#carouselPost{{ $favorite->post->id }}"
+                                                data-bs-slide-to="{{ $index }}"
+                                                class="{{ $index === 0 ? 'active' : '' }}"
+                                                aria-current="{{ $index === 0 ? 'true' : 'false' }}"
+                                                aria-label="Slide {{ $index + 1 }}">
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @elseif(count($images)===1)
+                            <a href="{{ route('post.show', $favorite->post->id) }}">
+                                <div class="card-body ratio ratio-1x1">
+                                    <img src="{{ asset('storage/' . $images[0]) }}" class="d-block w-100 h-100" style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;" alt="Post Image">
+                                </div>
+                            </a>
+                            
+                        @endif
+                    @else
+                        <div class="text-center py-5 text-muted">No image available.</div>
+                    @endif
                 </div>
 
-                <div class="card-footer bg-white">
-                    <div class="row p-1 align-items-center mb-4">
-                        <div class="col-7" style="font-size: 20px; white-space: nowrap; overflow: hidden;text-overflow: ellipsis;">{{ $favorite->post->title }}</div>
-                        <div class="col-3 text-end"><i class="fa-regular fa-heart" style="font-size:18px;"></i><span style="font-size: 13px;">&nbsp;{{ $favorite->post->likes_count }}</span></div>
-                        <div class="col-2 text-end">
+                <div class="card-footer bg-white border-0">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fs-5 mb-0">{{ $favorite->post->title ?? 'Title' }}</span>
+                        <div class="d-flex align-items-center gap-2">
+                            @if ($favorite->post->isLiked())
+                                <form action="{{ route('like.destroy', $favorite->post->id) }}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm p-0">
+                                        <i class="fa-solid fa-heart me-1"  style="color: #9F6B46"></i>
+                                    </button>
+                                    <span class="fw-bold" style="color: #9F6B46">{{ $favorite->post->likes->count() }}</span>
+                                </form>
+                            @else
+                                <form action="{{ route('like.store', $favorite->post->id) }}" method="post">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm p-0">
+                                        <i class="fa-regular fa-heart"  style="color: #9F6B46"></i>
+                                    </button>
+                                    <span class="fw-bold"  style="color: #9F6B46">{{ $favorite->post->likes->count() }}</span>
+                                </form>
+                            @endif
                             <button class="btn btn-sm shadow-none favorite-btn" data-post-id="{{ $favorite->post->id }}" data-favorited="{{ $favorite->post->isFavorited() ? 'true' : 'false' }}">
                                 @if ($favorite->post->isFavorited())
                                     <i class="fa-solid fa-star text-warning" style="font-size: 18px;"></i>
@@ -23,11 +97,11 @@
                             </button>
                         </div>
                     </div>
-                    <div class="row px-1 py-2">
-                        <div class="col d-flex align-items-end" style="font-size: 13px;">{{ $favorite->post->visited_at }}</div>
-                        <div class="col d-flex justify-content-end align-items-end">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>{{ $favorite->post->visited_at ? $favorite->post->visited_at->format('Y-m-d') : 'Unknown' }}</span>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                             @foreach ($favorite->post->categories as $category)
-                                <div class="d-inline-block border border-0 rounded-4 text-center py-1 px-3 me-1" style="background-color:#ECF9FF">{{ $category->name }}</div>
+                                <div style="background-color:#ECF9FF;color:#9F6B46;border-radius: 12px;padding: 2px 8px;font-size: 13px;font-weight: 500;">{{ $category->name }}</div>
                             @endforeach
                         </div>
                     </div>

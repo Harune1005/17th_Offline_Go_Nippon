@@ -213,22 +213,13 @@
                                             @endif
                                         </div>
                                         <div class="d-flex align-items-center">
-                                            @if ($post->isFavorited())
-                                                <form action="{{ route('favorite.destroy', $post->id) }}" method="post">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm p-0">
-                                                        <i class="fa-solid fa-star text-brown me-1"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <form action="{{ route('favorite.store', $post->id) }}" method="post">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm p-0">
-                                                        <i class="fa-regular fa-star text-brown me-1"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
+                                            <button class="btn btn-sm shadow-none favorite-btn" data-post-id="{{ $post->id }}" data-favorited="{{ $post->isFavorited() ? 'true' : 'false' }}">
+                                                @if ($post->isFavorited())
+                                                    <i class="fa-solid fa-star text-warning" style="font-size: 18px;"></i>
+                                                @else
+                                                    <i class="fa-regular fa-star" style="font-size: 18px;color:#7e5638;"></i>
+                                                @endif
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -313,4 +304,57 @@
             </div>
         </div>
     </div>
+
+{{-- For Favorite button --}}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const token = document.querySelector('meta[name="csrf-token"]').content;
+
+    document.querySelectorAll('.favorite-btn').forEach(button => {
+        button.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const postId = button.dataset.postId;
+            const isFavorited = button.dataset.favorited === 'true';
+
+            const url = isFavorited
+                ? `/favorite/${postId}/destroy`
+                : `/favorite/${postId}/store`;
+
+            const method = isFavorited ? 'DELETE' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'X-CSRF-TOKEN': token,
+                        'Accept': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const icon = button.querySelector('i');
+
+                    if (data.favorited) {
+                        // ★ register
+                        icon.classList.remove('fa-regular');
+                        icon.classList.add('fa-solid', 'text-warning');
+                        button.dataset.favorited = 'true';
+                    } else {
+                        // ☆ remove
+                        icon.classList.remove('fa-solid', 'text-warning');
+                        icon.classList.add('fa-regular');
+                        icon.style.color = '#9F6B46';
+                        button.dataset.favorited = 'false';
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    });
+});
+</script>
 @endsection
