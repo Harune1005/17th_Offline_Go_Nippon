@@ -4,9 +4,9 @@
 
             {{-- header --}}
             <div class="modal-header">
-                <h3 class="fs-5 modal-title ps-0">
-                    <i class="fa-solid fa-pen"></i> 
-                    Edit Category
+                <h3 class="fs-4 fw-bold modal-title modal-font ps-0">
+                    <i class="fa-solid fa-pen text-warning"></i> 
+                     Edit Category
                 </h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>

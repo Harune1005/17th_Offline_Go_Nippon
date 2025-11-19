@@ -6,7 +6,7 @@
 
                 {{-- header --}}
                 <div class="modal-header">
-                    <h3 class="modal-title fs-5 ps-0">
+                    <h3 class="fs-4 fw-bold modal-title modal-font ps-0">
                         <i class="fa-solid fa-check-to-slot"></i> 
                         Visible Post
                     </h3>
@@ -16,7 +16,7 @@
                 {{-- body --}}
                 <div class="modal-body d-flex justify-content-center align-items-center">
                     <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" alt="No post" class="img-thumbnail me-3" style="width:110px; height:110px; object-fit: cover;">
-                    <p class="mb-0">Are you sure you want to visible this post?</p>
+                    <p class="mb-0 modal-font">Are you sure you want to visible this post?</p>
                 </div>
 
                 {{-- footer --}}
@@ -41,7 +41,7 @@
 
                 {{-- header --}}
                 <div class="modal-header">
-                    <h3 class="modal-title fs-5 ps-0">
+                    <h3 class="fs-4 fw-bold modal-title modal-font ps-0">
                         <i class="fa-solid fa-ban"></i> 
                         Hide Post
                     </h3>
@@ -51,7 +51,7 @@
                 {{-- body --}}
                 <div class="modal-body d-flex justify-content-center align-items-center">
                     <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" alt="No post" class="img-thumbnail me-3" style="width:110px; height:110px; object-fit: cover;">
-                    <p class="mb-0">Are you sure you want to hide this post?</p>
+                    <p class="mb-0 modal-font">Are you sure you want to hide this post?</p>
                 </div>
 
                 {{-- footer --}}

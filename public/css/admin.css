@@ -1,5 +1,15 @@
 
-/* === ページネーション === */
+/* admin */
+/* common */
+th, td {
+  color: #9F6B46 !important;
+}
+
+.modal-font {
+  color: #9F6B46 !important;
+}
+
+/* ページネーション */
 .pagination {
   display: flex;
   justify-content: center;
@@ -25,7 +35,7 @@
 }
 
 /* ドロップダウンメニュー */
-.dropdown-menu {
+.admin-dropdown-menu {
   display: none;
   position: absolute;
   right: 0;
@@ -38,8 +48,7 @@
   z-index: 10;
 }
 
-
-.dropdown-item {
+.admin-dropdown-item {
   width: 100%;
   text-align: left;
   border: none;
@@ -50,12 +59,10 @@
   color: #9F6B46;
 }
 
-.dropdown-item:hover {
+.admin-dropdown-item:hover {
   background-color: #f8f9fa;
   color: #9F6B46;
 }
-
-
 
 /* カテゴリーのタグ */
 .tag {

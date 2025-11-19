@@ -4,8 +4,8 @@
 
             {{-- header --}}
             <div class="modal-header">
-                <h3 class="fs-5 modal-title ps-0">
-                    <i class="fa-solid fa-trash-can"></i>
+                <h3 class="fs-4 fw-bold modal-title modal-font ps-0">
+                    <i class="fa-solid fa-trash-can text-danger"></i>
                      Delete Category
                 </h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -18,7 +18,7 @@
 
                 {{-- body --}}
                 <div class="modal-body mt-3">
-                    <p class="text-center">Are you sure to delete this category <span class="fw-bold">{{ $category->name }} </span> ?</p>
+                    <p class="text-center modal-font">Are you sure to delete this category <span class="fs-5 fw-bold text-decoration-underline">{{ $category->name }} </span> ?</p>
                 </div>
 
                 {{-- footer --}}
