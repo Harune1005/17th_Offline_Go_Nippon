@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use App\Models\Favorite;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\PostView;
 use App\Models\ProfileVisit;
-use App\Models\Save;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +40,7 @@ class AnalyticsController extends Controller
 
         $likes = Like::whereIn('post_id', $postIds)->where('created_at', '>=', $since)->count();
         $comments = Comment::whereIn('post_id', $postIds)->where('created_at', '>=', $since)->count();
-        $saves = Save::whereIn('post_id', $postIds)->where('created_at', '>=', $since)->count();
+        $saves = Favorite::whereIn('post_id', $postIds)->count();
         $interactionsTotal = $likes + $comments + $saves;
 
         $followerIds = $user->followers()->pluck('id')->toArray();
@@ -60,8 +60,7 @@ class AnalyticsController extends Controller
             : 0;
 
         $savesFromFollowers = $followerIds
-            ? Save::whereIn('post_id', $postIds)
-                ->where('created_at', '>=', $since)
+            ? Favorite::whereIn('post_id', $postIds)
                 ->whereIn('user_id', $followerIds)
                 ->count()
             : 0;
