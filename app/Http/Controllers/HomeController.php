@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\Prefecture;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -22,13 +23,32 @@ class HomeController extends Controller
         $categories = Category::orderBy('id')->get();
         $prefectures = Prefecture::orderBy('id')->get();
 
-        $posts = Post::with(['categories'])
-            ->withCount('likes')
-            ->when($order === 'most_liked', fn ($q) => $q->orderByDesc('likes_count'))
-            ->when($order === 'recommend', fn ($q) => $q->orderByDesc('visited_at'))
-            ->when($order === 'newest', fn ($q) => $q->orderByDesc('created_at'))
-            ->paginate(30)
-            ->appends(['order' => $order]);
+        $user = Auth::user();
+        $categoryIds = $user->categories()->pluck('categories.id')->toArray();
+
+        $postsQuery = Post::with(['categories', 'prefecture', 'images'])
+            ->withCount('likes');
+        if ($order === 'most_liked') {
+            $postsQuery->orderByDesc('likes_count');
+        } elseif ($order === 'recommend' && ! empty($categoryIds)) {
+            $postsQuery->withCount(['categories as relevance' => function ($q) use ($categoryIds) {
+                $q->whereIn('categories.id', $categoryIds);
+            }])
+                ->orderByDesc('relevance')
+                ->orderByDesc('created_at');
+        } else { // newest
+            $postsQuery->orderByDesc('created_at');
+        }
+        $posts = $postsQuery->paginate(30)->appends(['order' => $order]);
+        // ->when($order === 'most_liked', fn ($q) => $q->orderByDesc('likes_count'))
+        // ->when($order === 'recommend' && !empty($categoryIds), fn ($q) =>
+        //     $q->withCount(['categories as relevance' => fn($q2) => $q2->whereIn('categories.id', $categoryIds)])
+        //       ->orderByDesc('relecance')
+        //       ->orderByDesc('created_at')
+        // )
+        // ->when($order === 'newest', fn ($q) => $q->orderByDesc('created_at'))
+        // ->paginate(30)
+        // ->appends(['order' => $order]);
 
         $categoryCounts = DB::table('category_posts')
             ->join('categories', 'category_posts.category_id', '=', 'categories.id')
@@ -90,6 +110,9 @@ class HomeController extends Controller
         $titleParts = [];
         $headerImage = 'images/default.jpeg';
 
+        $prefectureSelected = false;
+        $categorySelected = false;
+
         if ($request->filled('prefecture_id')) {
             $prefecture = Prefecture::find($request->prefecture_id);
             if ($prefecture) {
@@ -97,10 +120,8 @@ class HomeController extends Controller
                 $titleParts[] = $prefecture->name;
 
                 $headerImage = $prefecture->image ?? 'images_default.jpeg';
-                // $imagePath = 'images/prefectures/'.strtolower($prefecture->name).'.jpg';
-                // if (file_exists(public_path($imagePath))) {
-                //     $headerImage = $imagePath;
-                // }
+
+                $prefectureSelected = true;
             }
         }
 
@@ -110,6 +131,8 @@ class HomeController extends Controller
                 $query->whereHas('categories', fn ($q) => $q->where('id', $category->id));
                 $titleParts[] = $category->name;
                 $headerImage = $category->image ?? 'images_default.jpeg';
+
+                $categorySelected = true;
 
             }
         }
@@ -121,6 +144,16 @@ class HomeController extends Controller
                     ->orWhere('content', 'like', "%{$search}%");
             });
             $titleParts[] = ''.$search.'';
+
+            if (! $prefectureSelected && ! $categorySelected) {
+                $headerImage = 'images/nippon.jpg';
+                // $randomPrefecture = Prefecture::inRandomOrder()->first();
+                // $headerImage = $randomPrefecture->image ?? 'images_default.jpeg';
+            }
+        }
+
+        if ($prefectureSelected) {
+            $headerImage = $prefecture->image ?? 'images_default.jpeg';
         }
 
         $query->withCount(['likes', 'favorites'])

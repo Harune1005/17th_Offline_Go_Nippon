@@ -50,10 +50,10 @@
     }
 
     /* スピナーの位置調整も微修正（右にはみ出ることがあるため） */
-    .spinner-wrapper {
+    /* .spinner-wrapper {
         right: 10%;
         transform: translateX(0) scale(0.9);
-    }
+    } */
     .col-auto{
         padding: 0;
     }
@@ -155,12 +155,6 @@
     color: #9F6B46;
     font-weight: bold;
     font-size: 45px;
-    }
-    .spinner-wrapper {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    z-index: 10; /* 地図の上に出す */
     }
 
 </style>
@@ -536,6 +530,8 @@ const prefectureNameMap = {
 
      const userId = {{ $user->id ?? 'null' }};
     window.onload = function() {
+        const form = document.querySelector('form');
+
       const baseWidth = 675;
       const baseHeight = 670;
       let svg;
@@ -569,6 +565,17 @@ const prefectureNameMap = {
       }
     }
     
+    function colorPrefectures(prefectures) {
+    prefectures.forEach(pref => {
+        const area = document.querySelector(`#pref-${pref.code}`);
+        if (area) {
+            area.style.fill = pref.has_post ? "#F1BDB2" : "#dcdcdc";
+        }
+    });
+
+    updateSpinner(prefectures);
+}
+
       function renderMap(data) {
 
         svg.selectAll(".prefecture")
@@ -670,22 +677,33 @@ const prefectureNameMap = {
         d3.json("{{ asset('geojson/japan.geojson') }}").then(renderMap);
       }
 
-      function updateSpinner(prefectures) {
-      const completed = prefectures.filter(p => p.has_post).length;
-      console.log(completed);
-      const total = 47;
-      const degree = (360 / total) * completed;
+      function colorPrefectures(prefectures) {
+    prefectures.forEach(pref => {
+        const area = document.querySelector(`#pref-${pref.code}`);
+        if (area) {
+            area.style.fill = pref.has_post ? "#F1BDB2" : "#dcdcdc";
+        }
+    });
 
-      const spinnerFill = document.querySelector('.spinner-fill');
-      if(spinnerFill){
-        spinnerFill.style.transform = `rotate(${degree - 90}deg)`; 
-      }
+    updateSpinner(prefectures);
+}
 
-      const countElement = document.querySelector('.spinner-text .count');
-      if(countElement){
-        countElement.innerHTML = `${completed}<span style="font-size:27px">/47</span>`;
-      }
-    }
+    //   function updateSpinner(prefectures) {
+    //   const completed = prefectures.filter(p => p.has_post).length;
+    //   console.log(completed);
+    //   const total = 47;
+    //   const degree = (360 / total) * completed;
+
+    //   const spinnerFill = document.querySelector('.spinner-fill');
+    //   if(spinnerFill){
+    //     spinnerFill.style.transform = `rotate(${degree - 90}deg)`; 
+    //   }
+
+    //   const countElement = document.querySelector('.spinner-text .count');
+    //   if(countElement){
+    //     countElement.innerHTML = `${completed}<span style="font-size:27px">/47</span>`;
+    //   }
+    // }
     drawMap();
 
     const userId = {{ $user->id ?? 'null' }};
@@ -727,97 +745,33 @@ const prefectureNameMap = {
                 }, 400);
             });
 
-        function loadPosts(prefId, prefName) {
-          const bigCard = document.querySelector('.big-card');
-            fetch(`/profile/${userId}/pref/${prefId}`)
-                .then(response => response.json())
-                .then(posts => {
-          const postContainer = document.querySelector('.big-card-body');
-          const prefHeader = document.querySelector('.big-card h1');
-          prefHeader.textContent = prefName;
-          const prefectureNameMap = {
-  "北海道": "Hokkaido",
-  "青森県": "Aomori",
-  "岩手県": "Iwate",
-  "宮城県": "Miyagi",
-  "秋田県": "Akita",
-  "山形県": "Yamagata",
-  "福島県": "Fukushima",
-  "茨城県": "Ibaraki",
-  "栃木県": "Tochigi",
-  "群馬県": "Gunma",
-  "埼玉県": "Saitama",
-  "千葉県": "Chiba",
-  "東京都": "Tokyo",
-  "神奈川県": "Kanagawa",
-  "新潟県": "Niigata",
-  "富山県": "Toyama",
-  "石川県": "Ishikawa",
-  "福井県": "Fukui",
-  "山梨県": "Yamanashi",
-  "長野県": "Nagano",
-  "岐阜県": "Gifu",
-  "静岡県": "Shizuoka",
-  "愛知県": "Aichi",
-  "三重県": "Mie",
-  "滋賀県": "Shiga",
-  "京都府": "Kyoto",
-  "大阪府": "Osaka",
-  "兵庫県": "Hyogo",
-  "奈良県": "Nara",
-  "和歌山県": "Wakayama",
-  "鳥取県": "Tottori",
-  "島根県": "Shimane",
-  "岡山県": "Okayama",
-  "広島県": "Hiroshima",
-  "山口県": "Yamaguchi",
-  "徳島県": "Tokushima",
-  "香川県": "Kagawa",
-  "愛媛県": "Ehime",
-  "高知県": "Kochi",
-  "福岡県": "Fukuoka",
-  "佐賀県": "Saga",
-  "長崎県": "Nagasaki",
-  "熊本県": "Kumamoto",
-  "大分県": "Oita",
-  "宮崎県": "Miyazaki",
-  "鹿児島県": "Kagoshima",
-  "沖縄県": "Okinawa"
-};
+            form.addEventListener('submit', function(e) {
+    e.preventDefault();
 
-    prefHeader.textContent = prefectureEnglishNames[prefId] || prefName;
+    const url = this.action + '?' + new URLSearchParams(new FormData(this)).toString();
 
-          if (!posts || posts.length === 0) {
-            postContainer.innerHTML = `<p class="text-center text-muted">There is no post.</p>`;
-          } else {
-            postContainer.innerHTML = `
-      <div class="row">
-        ${posts.map(post => {
-          const base64 = (post.images && post.images.length) ? post.images[0].image : null;
-          const imgSrc = base64 ? `data:image/jpeg;base64,${base64}` : '/images/placeholder.jpg';
-          return `
-            <div class="col-12 col-md-6 mb-3">
-              <div class="card border-0 post-card">
-                <div class="card-header p-0 border-0">
-                  <a href="/post/${post.id}/show">
-                    <img src="${imgSrc}" alt="${post.user ? post.user.name : ''}" class="p-0 post-image">
-                  </a>
-                </div>
-              </div>
-            </div>
-          `;
-        }).join('')}
-      </div>
-    `;
+    fetch(url)
+        .then(res => res.text())
+        .then(html => {
+            // サーチ結果差し替え
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const searchResults = doc.querySelector('.search-result-container');
+            const targetContainer = document.querySelector('.search-result-container');
 
-          }
+            if(searchResults && targetContainer){
+                targetContainer.innerHTML = searchResults.innerHTML;
+            }
 
-          bigCard.style.display = 'block';
-          bigCard.classList.add('show');
-          
-        })
-        .catch(error => console.error('Error loading posts:', error));
-    }
+            // マップ再描画
+            drawMap();
+
+            // 色付け
+            fetch(`/prefectures/${userId}/posts`)
+                .then(res => res.json())
+                .then(prefectures => colorPrefectures(prefectures));
+        });
+});
 
 
    };

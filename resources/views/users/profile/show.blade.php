@@ -28,7 +28,7 @@
 
  @media (max-width: 600px) {
     html, body {
-    overflow-x: hidden; /* 横スクロール禁止 */
+    overflow-x: hidden; 
   }
 
   .col-md-4{
@@ -113,10 +113,6 @@
     fill: #F1BDB2;
   }
 
-
-
-
-/* 外円 */
 .spinner-wrapper {
   position: absolute;
   bottom: 5%;
@@ -140,8 +136,6 @@
   transition: background 0.5s ease;
 }
 
-
-/* 中央のテキスト */
 .spinner-text {
   position: absolute;
   top: 50%;
@@ -159,6 +153,7 @@
   color: #9F6B46;
   font-weight: 600;
   font-size: 20px;
+  margin-bottom: 2px;
 }
 
 .spinner-text .count {
@@ -166,16 +161,22 @@
   color: #9F6B46;
   font-weight: bold;
   font-size: 45px;
+  line-height: 1;
+}
+.spinner-text .small-text {
+    font-size: 15px;
+    color: #CAAE99;
+    
 }
 .spinner-wrapper {
   position: absolute;
   bottom: 10px;
   right: 10px;
-  z-index: 10; /* 地図の上に出す */
+  z-index: 10; 
 }
 .map-container svg {
   width: 100%;
-  max-width: 600px; /* パソコンでは600pxくらいに制限 */
+  max-width: 600px;
   height: auto;
 }
 </style>
@@ -288,7 +289,11 @@
                             <div class="spinner-fill"></div>
                             <div class="spinner-text">
                                 <p class="label">Completed</p>
-                                <p class="count">5 <span style="font-size: 20px">/47</span></p>
+                                <p class="count">5 
+                                  <span style="font-size: 20px;">/47</span>
+                                </p>
+                                <p class="small-text">Prefectures</p>
+
                             </div>
                         </div>
                     </div>
