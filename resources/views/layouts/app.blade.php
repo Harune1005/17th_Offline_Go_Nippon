@@ -86,7 +86,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <a href="#" class="nav-link fs-2" style="color:#9F6B46;">
+                                <a href="{{ route('conversation.show') }}" class="nav-link fs-2" style="color:#9F6B46;">
                                     <i class="fa-regular fa-comment "></i>
                                 </a>
                             </li>
@@ -211,7 +211,7 @@
                         </a>
                     </li>
                     <li class="mb-3">
-                        <a href="" class="menu-link nav-text-brown">
+                        <a href="{{ route('conversation.show') }}" class="menu-link nav-text-brown">
                             <i class="fa-regular fa-comment me-3"></i>Messages
                         </a>
                     </li>
