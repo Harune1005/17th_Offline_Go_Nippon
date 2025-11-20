@@ -54,7 +54,7 @@ class LikeController extends Controller
             ->where('post_id', $post_id)
             ->where('user_id', Auth::user()->id)
             ->delete();
-            
+
         $post = Post::find($post_id);
 
         // return redirect()->back();
