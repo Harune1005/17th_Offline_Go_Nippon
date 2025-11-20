@@ -30,7 +30,7 @@ class LikeController extends Controller
 
             // ✔ プロフィール画像の正しいURLを作る
             $avatar = $user->avatar
-                ? asset('storage/avatars/' . $user->avatar)
+                ? asset('storage/avatars/'.$user->avatar)
                 : 'https://via.placeholder.com/50';
 
             // ✔ 通知を送る（配列が正しく渡る）

@@ -10,10 +10,15 @@ class LikeNotification extends Notification
     use Queueable;
 
     public $liker_name;
+
     public $liker_avatar;
+
     public $post_id;
+
     public $post_title;
+
     public $post_image;
+
     public $liker_id;
 
     public function __construct($liker_name, $liker_avatar, $post_id, $post_title, $post_image, $liker_id)
