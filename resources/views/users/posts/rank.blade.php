@@ -11,7 +11,7 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            height: 320px;
+            height: 360px;
             position: relative;
         ">
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1;"></div>
@@ -148,6 +148,9 @@
                 <p class="fs-5 mb-0">No posts found for "{{ $title ?? 'Ranking' }}"</p>
             </div>
         @endforelse
+        <div class="d-flex justify-content-center mt-4">
+            {{ $posts->appends(request()->query())->links() }}
+        </div>
     </div>
 </div>
 
