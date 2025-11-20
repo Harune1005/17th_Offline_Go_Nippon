@@ -211,10 +211,7 @@
                     </div>
                     <div class="col-auto">
                         <a href="{{ route('favorite') }}" 
-                            class="btn shadow-sm"
-                            style="background-color:white; color:#F1BDB2; font-weight:bold; width:190px; border:2px solid #F1BDB2; transition:0.3s;"
-                            onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
-                            onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
+                            class="btn btn-pink shadow-sm" style="font-weight:bold; width:190px;">
                             Favorite
                         </a>
                     </div>
@@ -245,10 +242,7 @@
 
                     <div class="col-auto">
                         <a href="¥" 
-                            class="btn editbtn shadow-sm"
-                            style="background-color:white; color:#F1BDB2; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
-                            onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
-                            onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
+                            class="btn btn-pink shadow-sm" style="font-weight:bold; width:180px;">
                             DM
                         </a>
                     </div>
@@ -280,7 +274,7 @@
                 <form action="{{ route('follow.search', $user->id) }}" method="GET" class="d-flex mb-3">
                     <input type="text" name="search" value="{{ $keyword ?? '' }}" placeholder="Search User ...." class="d-flex form-control me-2" style="width: 75%;">
                     <input type="hidden" name="tab" value="{{ $activeTab ?? 'followers' }}">
-                    <button class="btn follow-btn ms-auto">
+                    <button class="btn btn-outline ms-auto">
                         <i class="fa-solid fa-magnifying-glass"></i>Search
                     </button>
                 </form>

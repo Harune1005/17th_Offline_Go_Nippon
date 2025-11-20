@@ -3,6 +3,7 @@
 @section('title', 'Ranking Post')
 
 @section('content')
+@php $mainClass = ''; @endphp
 <div class="container-fluid p-0 mt-0">
     <div class="row align-items-center justify-content-center text-center mb-5"
         style="
@@ -10,18 +11,10 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            height: 300px;
+            height: 320px;
             position: relative;
         ">
-        <div style="
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            z-index: 1;
-        "></div>
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1;"></div>
 
         <h1 class="display-1 fw-bold text-white" style="z-index: 2; position: relative;">
             {{ strtoupper($title ?? 'RANKING') }}
@@ -56,7 +49,6 @@
                         Recommend
                     </a>
                 </li>
-
             </ul>
         </div>
     </div>
@@ -98,20 +90,7 @@
                                     <span class="carousel-control-next-icon"></span>
                                     <span class="visually-hidden">Next</span>
                                 </button>
-
-                                <div class="carousel-indicators">
-                                    @foreach ($images as $index => $image)
-                                        <button type="button"
-                                                data-bs-target="#carouselPost{{ $post->id }}"
-                                                data-bs-slide-to="{{ $index }}"
-                                                class="{{ $index === 0 ? 'active' : '' }}"
-                                                aria-current="{{ $index === 0 ? 'true' : 'false' }}"
-                                                aria-label="Slide {{ $index + 1 }}">
-                                        </button>
-                                    @endforeach
-                                </div>
                             </div>
-
                         @elseif(count($images) === 1)
                             <a href="{{ route('post.show', $post->id) }}">
                                 <div class="ratio ratio-1x1">
@@ -169,12 +148,12 @@
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="small mb-0">{{ $post->created_at->format('Y-m-d') }}</span>
+                            <span class="mb-0">{{ $post->created_at->format('Y-m-d') }}</span>
 
                             {{-- CATEGORY --}}
-                            <div class="d-flex flex-wrap gap-1">
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                                 @foreach ($post->categories as $category)
-                                    <span class="badge border" style="color: #9F6B46; background-color: rgb(236, 239, 255)">
+                                    <span class="category-name">
                                         {{ $category->name }}
                                     </span>
                                 @endforeach

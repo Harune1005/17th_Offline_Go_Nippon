@@ -245,7 +245,7 @@
             </div>
         </div>
 
-        <main class="mt-4 py-4">
+        <main class="{{ $mainClass ?? 'mt-4 py-4' }}">
             @yield('content')
         </main>
     </div>

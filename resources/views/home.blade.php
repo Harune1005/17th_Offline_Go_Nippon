@@ -174,19 +174,6 @@
                                                         <span class="carousel-control-next-icon"></span>
                                                         <span class="visually-hidden">Next</span>
                                                     </button>
-
-                                                    {{-- インジケータ --}}
-                                                    <div class="carousel-indicators">
-                                                        @foreach ($images as $index => $image)
-                                                            <button type="button"
-                                                                    data-bs-target="#carouselPost{{ $post->id }}"
-                                                                    data-bs-slide-to="{{ $index }}"
-                                                                    class="{{ $index === 0 ? 'active' : '' }}"
-                                                                    aria-current="{{ $index === 0 ? 'true' : 'false' }}"
-                                                                    aria-label="Slide {{ $index + 1 }}">
-                                                            </button>
-                                                        @endforeach
-                                                    </div>
                                                 </div>
 
                                             {{-- 1枚のみ --}}
@@ -241,13 +228,7 @@
                                             <span>{{ $post->visited_at ? $post->visited_at->format('Y-m-d') : 'Unknown' }}</span>
                                             <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                                                 @foreach ($post->categories as $category)
-                                                    <span style="
-                                                        background-color:rgb(236, 239, 255);
-                                                        color:#9F6B46;
-                                                        border-radius: 12px;
-                                                        padding: 2px 8px;
-                                                        font-size: 13px;
-                                                        font-weight: 500;">
+                                                    <span class="category-name">
                                                         {{ $category->name }}
                                                     </span>
                                                 @endforeach

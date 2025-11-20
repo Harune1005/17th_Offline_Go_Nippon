@@ -234,10 +234,7 @@
                     </div>
                     <div class="col-auto">
                         <a href="{{ route('favorite') }}" 
-                            class="btn shadow-sm"
-                            style="background-color:white; color:#F1BDB2; font-weight:bold; width:190px; border:2px solid #F1BDB2; transition:0.3s;"
-                            onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
-                            onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
+                            class="btn btn-pink shadow-sm" style="font-weight:bold; width:190px;">
                             Favorite
                         </a>
                     </div>
@@ -267,10 +264,7 @@
                         @endif
                     </div>
                     <div class="col-auto">
-                        <a href="#" class="btn shadow-sm"
-                            style="background-color:white; color:#F1BDB2; font-weight:bold; width:180px; border:2px solid #F1BDB2; transition:0.3s;"
-                            onmouseover="this.style.backgroundColor='#F1BDB2'; this.style.color='white';"
-                            onmouseout="this.style.backgroundColor='white'; this.style.color='#F1BDB2';">
+                        <a href="#" class="btn btn-pink shadow-sm" style="font-weight:bold; width:180px;">
                             DM
                         </a>
                     </div>

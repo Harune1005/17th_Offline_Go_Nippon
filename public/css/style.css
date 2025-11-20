@@ -16,6 +16,18 @@ body {
     border-color: #F1BDB2;
 }
 
+.btn-pink {
+    background-color: transparent;
+    color: #F1BDB2;
+    border: 2px solid #F1BDB2;
+    transition: 0.3s;
+    }
+
+.btn-pink:hover {
+    background-color: #F1BDB2;
+    color: white;
+}   
+
 h5, span, label {
     color: #9F6B46;
 }
@@ -134,6 +146,16 @@ h5, span, label {
 } 
 #cost-slider::-webkit-slider-thumb:hover { 
     transform: scale(1.1); 
+}
+
+/* post */
+.category-name {
+    background-color:#ECF9FF;
+    color:#9F6B46;
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 13px;
+    font-weight: 500;
 }
 
 /* analytics */

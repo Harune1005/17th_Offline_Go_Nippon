@@ -28,30 +28,6 @@
         background-color: #7e5638;
     }
 
-    .btn-pink {
-        background-color: #F1BDB2;
-        color: white;
-        border: 2px solid #F1BDB2;
-        transition: 0.3s;
-    }
-
-    .btn-pink:hover {
-        background-color: #e6a99c;
-        border-color: #e6a99c;
-    }
-
-    .btn-outline-pink {
-        background-color: transparent;
-        color: #F1BDB2;
-        border: 2px solid #F1BDB2;
-        transition: 0.3s;
-    }
-
-    .btn-outline-pink:hover {
-        background-color: #F1BDB2;
-        color: white;
-    }
-    
     .form-control:focus {
         border-color: #9F6B46;
         box-shadow: 0 0 0 0.2rem rgba(159, 107, 70, 0.25);
@@ -130,7 +106,7 @@
                                     <form action="{{ route('follow.destroy', $post->user_id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-pink btn-md fw-bold">Following</button>
+                                        <button type="submit" class="btn btn-outline btn-md fw-bold">Following</button>
                                     </form>
                                 @else 
                                     <form action="{{ route('follow.store', $post->user_id) }}" method="POST">
@@ -244,17 +220,10 @@
 
                                 <div class="mb-3 text-end" style="display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px;">
                                    @foreach ($post->categories as $category)
-                                                <span style="
-                                                    background-color:rgb(236, 239, 255);
-                                                    color:#9F6B46 ;
-                                                    border-radius: 12px;
-                                                    padding: 2px 8px;
-                                                    font-size: 13px;
-                                                    font-weight: 500;
-                                                ">
-                                                    {{ $category->name }}
-                                                </span>
-                                            @endforeach
+                                        <span class="category-name">
+                                            {{ $category->name }}
+                                        </span>
+                                    @endforeach
                                 </div>
 
                             {{-- コメントフォーム --}}
