@@ -97,18 +97,34 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item dropdown">
-                                <button class="btn shadow-none nav-link d-flex align-items-center"
+                            <li class="nav-item dropdown position-relative">
+                                <button class="btn shadow-none nav-link d-flex align-items-center position-relative"
                                     id="account-dropdown" data-bs-toggle="dropdown" aria-expanded="false"
                                     style="color:#9F6B46;">
+
                                     @if (Auth::user()->avatar)
                                         <img src="{{ Auth::user()->avatar }}" 
                                             alt="{{ Auth::user()->name }}" 
                                             class="rounded-circle" 
-                                            style="width: 40px; height: 40px; object-fit: cover;  flex-shrink: 0;">
+                                            style="width: 40px; height: 40px; object-fit: cover; flex-shrink: 0;">
                                     @else
                                         <i class="fa-solid fa-circle-user text-secondary" 
                                         style="font-size: 40px;"></i>
+                                    @endif
+
+                                    {{-- バッジ（プロフィール右上） --}}
+                                    @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
+                                        <span 
+                                            class="position-absolute badge rounded-pill bg-danger"
+                                            id="notificationBadge"
+                                            style="
+                                                font-size: 0.8rem;
+                                                padding: 3px 6px;
+                                                left: 80%;
+                                                transform: translate(-50%, 0);
+                                            ">
+                                            {{ Auth::user()->unreadNotifications->count() }}
+                                        </span>
                                     @endif
                                 </button>
 
@@ -119,14 +135,19 @@
                                         <hr class="dropdown-divider">
                                     @endcan
 
-                                    
                                     <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-user me-2"></i> Profile</a>
 
                                     <a href="#" class="dropdown-item"
                                         data-bs-toggle="modal"
                                         data-bs-target="#notificationModal"
                                         id="notificationBtn">
-                                        <i class="fa-solid fa-toggle-on me-2"></i>Notification
+                                        <i class="fa-regular fa-bell me-2"></i>Notification
+
+                                         @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
+                                            <span class="badge bg-danger rounded-pill ms-2">
+                                                {{ Auth::user()->unreadNotifications->count() }}
+                                            </span>
+                                        @endif
                                     </a>
 
                                     <a href="{{ route('analytics.index', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-chart-line me-2"></i>Analytics</a>
@@ -164,12 +185,12 @@
                 @if (Auth::check())
                     <a href="{{ route('profile.show', Auth::user()->id) }}" class="d-flex align-items-center text-decoration-none">
                         @if (Auth::user()->avatar)
-                            <img src="{{ Auth::user()->avatar }}" 
-                                alt="{{ Auth::user()->name }}" 
-                                class="rounded-circle me-3" 
+                            <img src="{{ Auth::user()->avatar }}"
+                                alt="{{ Auth::user()->name }}"
+                                class="rounded-circle me-3"
                                 style="width:50px; height:50px; object-fit:cover;">
                         @else
-                            <i class="fa-solid fa-circle-user text-secondary me-3" 
+                            <i class="fa-solid fa-circle-user text-secondary me-3"
                             style="font-size:50px;"></i>
                         @endif
                         <span class="fw-bold" style="color:#9F6B46; font-size:20px;">{{ Auth::user()->name }}</span>
@@ -194,23 +215,6 @@
                             <i class="fa-solid fa-circle-plus me-3"></i> Create Post
                         </a>
                     </li>
-                    {{-- <li class="mb-3">
-                        <a href="" class="notificationBtn menu-link nav-text-brown">
-                            <i class="fa-regular fa-heart me-3"></i> Notifications
-                        </a>
-                    </li> --}}
-                    <li class="mb-3">
-                        <a href="#" class="notificationBtn menu-link nav-text-brown position-relative">
-                            <i class="fa-regular fa-bell me-3"></i> Notifications
-
-                            {{-- 未読通知がある場合に赤丸バッジ --}}
-                            {{-- @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    {{ Auth::user()->unreadNotifications->count() }}
-                                </span>
-                            @endif --}}
-                        </a>
-                    </li>
                     <li class="mb-3">
                         <a href="" class="menu-link nav-text-brown">
                             <i class="fa-regular fa-comment me-3"></i> Messages
@@ -223,7 +227,7 @@
                     </li>
                     <li class="mb-3">
                         <a href="#" class="notificationBtn menu-link nav-text-brown">
-                            <i class="fa-solid fa-toggle-on me-3"></i> Notification
+                            <i class="fa-regular fa-bell me-3"></i> Notification
                         </a>
                     </li>
                 </ul>
@@ -319,6 +323,31 @@
         </div>
     </div>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 通知ボタン
+        const notificationBtn = document.getElementById('notificationBtn');
+        const profileBadge = document.getElementById('notificationBadge');
 
+        if(notificationBtn) {
+            notificationBtn.addEventListener('click', function() {
+                fetch("{{ route('notifications.readAll') }}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                        "Content-Type": "application/json"
+                    },
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'ok' && profileBadge) {
+                        profileBadge.style.display = 'none'; // バッジを消す
+                    }
+                })
+                .catch(err => console.error(err));
+            });
+        }
+    });
+    </script>
 </body>
 </html>
