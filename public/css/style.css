@@ -309,3 +309,11 @@ th, td {
   color: #9F6B46;
   background-color: #ffffff;
 }
+
+.admin a {
+    color: #9F6B46;
+}
+
+.admin a:hover {
+    color: #9F6B46;
+}

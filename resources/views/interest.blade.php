@@ -11,10 +11,9 @@
 
         <div class="row g-3">
             @foreach($categories as $category)
-            @php
-                $imageName = $category->name . '.jpeg';
-                $imagePath = asset("images/categories/{$imageName}");
-            @endphp
+                @php
+                    $imagePath = asset($category->image ?? 'images/default.jpeg');
+                @endphp
                 <div class="col-md-4">
                     <div class="form-check border rounded p-3 h-100">
                         <input type="checkbox" name="categories[]" value="{{ $category->id }}" id="cat{{ $category->id }}" class="form-check-input category-checkbox">
