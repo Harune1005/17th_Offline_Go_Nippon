@@ -76,7 +76,7 @@
                                         <a href="{{ route('post.edit', ['id' => $post->id]) }}" class="dropdown-item text-brown">
                                             <i class="fa-regular fa-pen-to-square me-2"></i>Edit
                                         </a>
-                                        <form action="{{ route('post.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');">
+                                        <form action="{{ route('post.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="dropdown-item text-danger">
@@ -144,11 +144,11 @@
                         </div>
 
                         <div class="col-md-5 border-start border-brown">
-                            <div class="p-4 bg-white h-100 comment-section-wrapper" style="max-height: 650px;">
+                            <div class="p-4 bg-white h-100 comment-section-wrapper" style="max-height: 650px; ">
                                 <h4 class="fw-bold text-brown mb-3 text-center fs-2">{{ $post->title ?? 'Title' }}</h4>
                                 <div class="row align-items-center mb-3">
                                     <div class="col-auto">
-                                        <p class="mb-2 text-brown">
+                                        <p class="mb-2 text-brown" style="font-size: 1.3rem;">
                                             <i class="fa-solid fa-location-dot text-danger me-1"></i>  {{ $post->prefecture ? $post->prefecture->name : 'Unknown' }}
                                         </p> 
                                     </div>
@@ -190,58 +190,91 @@
 
                                 </div>
 
-                                <p class="text-brown mb-3">
+                                <p class="text-brown mb-3" style="font-size:1.0rem;">
                                   {{ $post->content ?? 'Title' }}
                                 </p>
 
                                 <div class="mb-3 text-end" style="display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px;">
                                    @foreach ($post->categories as $category)
-                                        <span class="category-name">
+                                        <span class="category-name fw-bold">
                                             {{ $category->name }}
                                         </span>
                                     @endforeach
                                 </div>
 
                             {{-- コメントフォーム --}}
-                                <form action="{{ route('comment.store', $post->id) }}" method="POST" class="input-group mb-4">
+                               <form action="{{ route('comment.store', $post->id) }}" method="POST" class="mb-4">
                                     @csrf
-                                    <input type="text" 
-                                        name="comment_body{{ $post->id }}" 
-                                        class="form-control post-input rounded-start @error('comment_body'.$post->id) is-invalid @enderror" 
-                                        placeholder="Add a comment..." 
-                                        value="{{ old('comment_body'.$post->id) }}">
-                                    <button class="btn btn-brown rounded-end" type="submit">
-                                        <i class="fa-solid fa-paper-plane"></i>
-                                    </button>
+                                    <div class="input-group">
+                                        <input type="text" 
+                                            name="comment_body{{ $post->id }}" 
+                                            class="form-control post-input rounded-start @error('comment_body'.$post->id) is-invalid @enderror" 
+                                            placeholder="Add a comment..." 
+                                            value="{{ old('comment_body'.$post->id) }}">
+                                        <button class="btn btn-brown rounded-end" type="submit">
+                                            <i class="fa-solid fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+
                                     @error('comment_body'.$post->id)
-                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                        <div class="text-danger small mt-1">
+                                            {{ $message }}
+                                        </div>
                                     @enderror
                                 </form>
 
-                            {{-- コメント一覧 --}}
+
+                          {{-- コメント一覧 --}}
                                 <div class="comment-list">
                                     @forelse ($post->comments as $comment)
                                         <div class="p-2 mb-2 bg-yellow-light rounded-3">
-                                            <strong class="text-brown">{{ $comment->user->name ?? 'User' }}</strong>
-                                        <span class="text-brown small d-block">{{ $comment->content }}</span>
-                                            <div class="text-end small text-secondary">
-                                                {{ $comment->created_at->format('M d, Y') }}
+
+                                            <!-- アイコン + ユーザーネーム -->
+                                            <div class="d-flex align-items-start justify-content-between mb-1">
+
+                                                <div class="d-flex align-items-start">
+                                                    <a href="{{ route('profile.show', $comment->user->id) }}">
+                                                        @if ($comment->user->avatar)
+                                                            <img src="{{ $comment->user->avatar }}" 
+                                                                alt="{{ $comment->user->name }}" 
+                                                                class="rounded-circle me-2"
+                                                                style="width:32px; height:32px; object-fit:cover;">
+                                                        @else
+                                                            <i class="fa-solid fa-circle-user text-secondary me-2" style="font-size:1.7rem;"></i>
+                                                        @endif
+                                                    </a>
+                                                    <strong class="text-brown" style="position: relative; top: -2px;">
+                                                        {{ $comment->user->name ?? 'User' }}
+                                                    </strong>
+                                                </div>
+
                                                 @if ($comment->user_id === auth()->id())
-                                                    <form action="{{ route('comment.destroy', $comment->id) }}" 
-                                                        method="POST" class="d-inline">
+                                                    <form action="{{ route('comment.destroy', $comment->id) }}" method="POST" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button class="btn p-0 bg-transparent border-0">
-                                                            <i class="fa-regular fa-trash-can ms-2 text-danger"></i>
+                                                            <i class="fa-regular fa-trash-can text-danger"></i>
                                                         </button>
                                                     </form>
                                                 @endif
+
                                             </div>
+
+                                            <span class="text-brown d-block"
+                                                style="font-size:1.0rem; margin-left:42px;">
+                                                {{ $comment->content }}
+                                            </span>
+
+                                            <div class="text-end small text-secondary mt-1">
+                                                {{ $comment->created_at->format('M d, Y') }}
+                                            </div>
+
                                         </div>
                                     @empty
                                         <p class="text-center text-secondary small">No comments yet.</p>
                                     @endforelse
                                 </div>
+
                             </div>
                         </div>
                     </div>
