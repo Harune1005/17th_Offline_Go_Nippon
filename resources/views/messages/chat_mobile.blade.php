@@ -8,7 +8,7 @@
         <a href="{{ route('conversation.show')}}"><i class="fa-solid fa-angle-left" style="font-size:35px; line-height:50px; color: #D9D9D9"></i></a>
 
         @if ($partner->avatar)
-            <img src="{{ asset('storage/avatars/' . $partner->avatar) }}" alt="{{ $partner->name }}" class="rounded-circle" style="width:50px; height:50px;">
+            <img src="{{ $partner->avatar }}" alt="{{ $partner->name }}" class="rounded-circle" style="width:50px; height:50px;">
         @else
             <i class="fa-solid fa-user rounded-circle me-4 align-items-center" style="width:50px; height:50px; font-size:40px; display:flex; align-items:center; justify-content:center; background-color:#ccc; color:#fff;"></i>
         @endif
