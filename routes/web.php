@@ -45,7 +45,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::delete('/categories/{id}/delete', [CategoriesController::class, 'delete'])->name('categories.delete');
 });
 
-
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::controller(HomeController::class)->group(function () {
@@ -110,13 +109,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // direct message
-    Route::controller(DmController::class)->group(function(){
+    Route::controller(DmController::class)->group(function () {
         Route::get('/message', 'show')->name('messages.show');
-        Route::post('/messages/store','store')->name('messages.store');
+        Route::post('/messages/store', 'store')->name('messages.store');
         Route::delete('/messages/destroy/{id}', 'destroy')->name('messages.destroy');
     });
 
-    Route::controller(ConversationController::class)->group(function(){
+    Route::controller(ConversationController::class)->group(function () {
         Route::get('/conversations', 'index')->name('conversation.show');
         Route::get('/conversations/refresh-list', 'refreshList')->name('conversations.refresh_list');
         Route::post('/conversations/start', 'start_conversation')->name('conversations.start');
