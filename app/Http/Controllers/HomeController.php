@@ -159,9 +159,8 @@ class HomeController extends Controller
             $query->orderByDesc('created_at');
         }
 
-        $posts = $query->paginate(30)->appends(request()->all());
-
         $title = implode(' × ', $titleParts) ?: 'RANKING';
+        $posts = $query->paginate(30)->appends($request->query());
 
         return view('users.posts.rank', compact('posts', 'title', 'headerImage', 'order'));
     }

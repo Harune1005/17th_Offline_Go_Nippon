@@ -275,7 +275,7 @@
                     <input type="text" name="search" value="{{ $keyword ?? '' }}" placeholder="Search User ...." class="d-flex form-control me-2" style="width: 75%;">
                     <input type="hidden" name="tab" value="{{ $activeTab ?? 'followers' }}">
                     <button class="btn btn-outline ms-auto">
-                        <i class="fa-solid fa-magnifying-glass"></i>Search
+                        <i class="fa-solid fa-magnifying-glass"></i> Search
                     </button>
                 </form>
 

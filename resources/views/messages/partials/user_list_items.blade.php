@@ -15,7 +15,7 @@
                 <a href="{{ route('conversations.show', $conversation->id )}}" class="text-decoration-none">
                     <div class="d-flex align-items-center">
                         @if ($partner->avatar)
-                            <img src="{{ asset('storage/avatars/' . $partner->avatar) }}" alt="{{ $partner->name }}" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
+                            <img src="{{ $partner->avatar }}" alt="{{ $partner->name }}" class="rounded-circle me-4 align-items-ceter" style="width:75px; height:75px;">
                         @else
                             <i class="fa-solid fa-user rounded-circle me-4 align-items-center" style="width:75px; height:75px; font-size:40px; display:flex; align-items:center; justify-content:center; background-color:#ccc; color:#fff;"></i>
                         @endif

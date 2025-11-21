@@ -45,9 +45,22 @@ h5, span, label {
     color: #9F6B46 !important;
 }
 
+/* Fade-in effect */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* navber */
 .brand-text {
-    font-family: 'Source Serif Pro', serif;
     color: #4a3b2d;
     font-style: italic;
     letter-spacing: 0.5px;
@@ -159,25 +172,32 @@ h5, span, label {
 }
 
 /* analytics */
+.card .card-title {
+    color: #F1BDB2 !important;
+    text-shadow: .5px .5px 1px #9F6B46;
+}
+
+.card .text-decoration-underline {
+    color: #F1BDB2 !important;
+}
+
 .card {
     border: 1px solid #9F6B46;
     background-color: #FFFFFF;
-}
-
-.card h4  {
-    color: #F1BDB2;
 }
 
 div > .text-followers {
     color: #F1BDB2;
 }
 
-div > .text-nonfollowers {
+div > .text-nonfollowers,
+.country-name > span,
+.visit {
     color: #9F6B46;
 }
 
-.country-name > span {
-    color: #000;
+.progress-bar {
+    background-color: #9F6B46;
 }
 
 /* interests */
@@ -191,39 +211,52 @@ div > .text-nonfollowers {
     padding: 10px;
 }
 
-.rank-group-item {
-    position: relative;
-    transition: background-color 0.3s, filter 0.3s;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-  
-  .rank-group-item::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.25); 
-    z-index: 1;
-    transition: background-color 0.3s;
-  }
-  
-  .rank-group-item:hover::before {
-    background-color: rgba(0, 0, 0, 0.6); 
-  }
-  
-  .rank-group-item span, 
-  .rank-group-item a, 
-  .rank-group-item .badge {
-    position: relative;
-    z-index: 2; /* 上に表示するため */
-    transition: transform 0.3s;
-  }
-  
-  .rank-group-item:hover span,
-  .rank-group-item:hover a,
-  .rank-group-item:hover .badge {
-    transform: scale(1.05); /* 軽く拡大してホバー感を演出 */
-  }
-  
+/* admin */
+/* common */
+th, td {
+  color: #9F6B46 !important;
+}
+
+.modal-font {
+  color: #9F6B46 !important;
+}
+
+/* drop down */
+.admin-dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  min-width: 150px;
+  z-index: 10;
+}
+
+.admin-dropdown-item {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #9F6B46;
+}
+
+.admin-dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #9F6B46;
+}
+
+/* tag in category */
+.tag {
+  display: inline-block;
+  border: 1px solid #9F6B46;
+  border-radius: 5px;
+  padding: 3px 10px;
+  color: #9F6B46;
+  background-color: #ffffff;
+}

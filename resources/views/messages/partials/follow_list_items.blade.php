@@ -2,7 +2,7 @@
 @forelse ($followings as $following)
     <div class="d-flex align-items-center rounded-3 p-3">
         @if ($following->following->avatar)
-            <img src="{{ asset('storage/avatars/' . $following->following->avatar) }}" alt="{{ $following->following->name }}" class="rounded-circle me-4 align-items-ceter" style="width:65px; height:65px;">
+            <img src="{{ $following->following->avatar }}" alt="{{ $following->following->name }}" class="rounded-circle me-4 align-items-ceter" style="width:65px; height:65px;">
         @else
             <i class="fa-solid fa-user rounded-circle me-4 align-items-center" style="width:65px; height:65px; font-size:40px; display:flex; align-items:center; justify-content:center; background-color:#ccc; color:#fff;"></i>
         @endif

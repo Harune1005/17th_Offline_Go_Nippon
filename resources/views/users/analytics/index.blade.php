@@ -3,20 +3,14 @@
 @section('title', 'User Analytics') 
 
 @section('content')
-<div class="container">
-  <div class="mb-2 d-flex justify-content-between">
-    <div class="my-2">
-        <a href="{{ route('home') }}" class="text-decoration-none"><< back</a>
-    </div>
-  </div>
-
+<div class="container my-5">
   <div class="row g-4">
     <!-- card 1 -->
     <div class="col-md-4">
-      <div class="card h-100">
+      <div class="card shadow h-100">
         <div class="card-body">
-          <h3 class="card-title text-center">~ Views ~</h3>
-          <h4 class="fs-3 text-center">
+          <h2 class="card-title fw-bold text-center">~ Views ~</h2>
+          <h4 class="fs-3 text-center" style="color: #9F6B46;">
             {{ number_format($viewsTotal) }}
           </h4>
 
@@ -37,15 +31,15 @@
             </span>
           </div>
 
-          <h6 class="text-decoration-underline">Top posts</h6>
+          <h5 class="text-decoration-underline fw-bold">Top posts</h5>
           <div class="d-flex flex-wrap gap-2 mb-5">
             @foreach($topViewedPosts as $post)
               <div class="mx-auto text-center">
                 <a href="{{ route('post.show', $post->id) }}">
                   @if ($post->images->first())
-                    <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail" style="width:110px; height:110px;">
+                    <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
                   @else
-                    <img src="/no-image.png" class="img-thumbnail" style="width:110px; height:110px;">
+                    <img src="/no-image.png" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
                   @endif
                 </a>
                 <div class="small">{{ number_format($post->views_count) }} views</div>
@@ -53,9 +47,9 @@
             @endforeach
           </div>
 
-          <h6 class="text-decoration-underline">Profile activity</h6>
+          <h5 class="text-decoration-underline fw-bold">Profile activity</h5>
           <div class="d-flex justify-content-between">
-            <span class="text-dark">Profile visits:</span>
+            <span class="visit">Profile visits:</span>
             <span>
               {{ number_format($profileVisitsNow) }}
               <span class="{{ $profileVisitChange >= 0 ? 'text-success' : 'text-danger' }}">
@@ -69,10 +63,12 @@
 
     <!-- card 2 -->
     <div class="col-md-4">
-      <div class="card h-100">
+      <div class="card shadow h-100">
         <div class="card-body">
-          <h3 class="card-title text-center">~ Interactions ~</h3>
-          <h4 class="fs-3 text-center">{{ number_format($interactionsTotal) }}</h4>
+          <h2 class="card-title fw-bold text-center">~ Interactions ~</h2>
+          <h4 class="fs-3 text-center" style="color: #9F6B46;">
+            {{ number_format($interactionsTotal) }}
+          </h4>
 
           <div class="mb-1" style="height:180px;">
             <canvas id="interactionsDonutChart" class="w-100 h-100"></canvas>
@@ -87,15 +83,15 @@
             </span>
           </div>
 
-          <h6 class="text-decoration-underline">Top posts</h6>
+          <h5 class="text-decoration-underline fw-bold">Top posts</h5>
           <div class="d-flex flex-wrap gap-2 mb-5">
             @foreach($topInteractionPosts as $post)
             <div class="mx-auto text-center">
               <a href="{{ route('post.show', $post->id) }}">
                 @if ($post->images->first())
-                  <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail" style="width:110px; height:110px;">
+                  <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
                 @else
-                  <img src="/no-image.png" class="img-thumbnail" style="width:110px; height:110px;">
+                  <img src="/no-image.png" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
                 @endif
               </a>
               <div class="small">{{ $post->created_at->format('M j') }}</div>
@@ -103,8 +99,8 @@
             @endforeach
           </div>
 
-          <h6 class="text-decoration-underline">By interaction</h6>
-          <ul class="list-unstyled">
+          <h5 class="text-decoration-underline fw-bold">By interaction</h5>
+          <ul class="list-unstyled" style="color: #9F6B46;">
             <li class="d-flex justify-content-between mb-1">Likes:
               <span>{{ $likes }}</span>
             </li>
@@ -121,34 +117,37 @@
 
     <!-- card 3 -->
     <div class="col-md-4">
-      <div class="card h-100">
+      <div class="card shadow h-100">
         <div class="card-body">
-          <h3 class="card-titl text-center">~ Followers ~</h3>
-          <h4 class="fs-3 text-center">{{ number_format($followersNow) }}</h4>
+          <h2 class="card-title fw-bold text-center">~ Followers ~</h2>
+          <h4 class="fs-3 text-center" style="color: #9F6B46;">
+            {{ number_format($followersNow) }}
+          </h4>
           <div class="text-center text-danger mb-3">
             {{ $followersPercent >= 0 ? '+' : '' }}{{ $followersPercent }}% vs last month
           </div>
 
-          <h6 class="text-decoration-underline">Followers Trend</h6>
+          <h5 class="text-decoration-underline fw-bold">Followers Trend</h5>
           <div class="mb-5" style="height:250px;">
             <canvas id="followersChangeChart" class="w-100 h-100"></canvas>
           </div>
 
-          <h6 class="text-decoration-underline">Top countries</h6>
+          <h5 class="text-decoration-underline fw-bold">Top countries</h5>
           <div class="country-list">
             @foreach($countryStats as $country)
               @php
-                $maxCount = $countryStats->first()->count ?? 1;
+                $total = $countryStats->sum('count') ?: 1;
                 $count = $country->count;
-                $percent = round(($country->count / $maxCount) * 100);
+                $percent = round(($count / $total) * 100);
               @endphp
               <div class="list-group-item p-1">
                 <div class="d-flex justify-content-between country-name">
                   <span>{{ $country->country ?? 'Unknown' }} ({{ $count }})</span>
                   <span>{{ $percent }}%</span>
                 </div>
-                <div class="progress" style="height: 5px;">
-                  <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $percent }}%;"></div>
+
+                <div class="progress" style="height: 8px;" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                  <div class="progress-bar" style="width: {{ $percent }}%"></div>
                 </div>
               </div>
             @endforeach
@@ -190,7 +189,7 @@
       labels: ['Oct 1', 'Oct 5', 'Oct 10', 'Oct 15', 'Oct 20', 'Oct 25', 'Oct 30'],
       datasets: [{
         label: 'Follower Change',
-        data: [250, 260, 340, 120, 500, 440, 600],
+        data: [2, 4, 5, 4, 6, 8, 3],
         borderColor: '#9F6B46',
         backgroundColor: 'rgba(241,189,178,0.25)',
         tension: 0.35,
@@ -202,7 +201,7 @@
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      scales: { y: { min: 0, max: 1000, ticks: { stepSize: 250 } } },
+      scales: { y: { min: 0, max: 10, ticks: { stepSize: 2 } } },
       plugins: { legend: { display: false } }
     }
   });

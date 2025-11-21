@@ -81,7 +81,7 @@
                         <span>{{ $favorite->post->visited_at ? $favorite->post->visited_at->format('Y-m-d') : 'Unknown' }}</span>
                         <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                             @foreach ($favorite->post->categories as $category)
-                                <div style="background-color:#ECF9FF;color:#9F6B46;border-radius: 12px;padding: 2px 8px;font-size: 13px;font-weight: 500;">{{ $category->name }}</div>
+                                <div class="category-name">{{ $category->name }}</div>
                             @endforeach
                         </div>
                     </div>

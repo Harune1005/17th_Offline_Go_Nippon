@@ -1,28 +1,26 @@
 @extends('layouts.app') 
 
-@section('title', 'Admin: Categories') 
+@section('title', 'Admin Categories') 
 
 @section('content')
-@vite(['public/css/admin.css'])
-
 <div class="container my-4 category-page">
 
-    <!-- === ナビゲーション === -->
-    <ul class="nav nav-underline text-center w-25">
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.users') }}">User</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.posts') }}">Post</a>
-        </li>
-        <li class="nav-item">
+    {{-- Navigation --}}
+    <div class="row nav nav-underline text-center">
+        <div class="col-auto">
+            <a class="nav-link px-3" href="{{ route('admin.users') }}">User</a>
+        </div>
+        <div class="col-auto">
+            <a class="nav-link px-3" href="{{ route('admin.posts') }}">Post</a>
+        </div>
+        <div class="col-auto">
             <a class="nav-link active" href="{{ route('admin.categories') }}">Category</a>
-        </li>
-    </ul>
+        </div>
+    </div>
 
     <hr>
 
-    <!-- === カテゴリー追加フォーム === -->
+    {{-- Add Category --}}
     <div class="my-5">
         <form action="{{ route('admin.categories.store') }}" method="post" class="row justify-content-center gap-2">
             @csrf
@@ -43,7 +41,7 @@
         @enderror
     </div>
 
-    <!-- === カテゴリー一覧テーブル === -->
+    {{-- Category List --}}
     <div class="container table-responsive">
         <table class="table table-hover align-middle text-center">
             <thead>
@@ -64,12 +62,12 @@
                     <td>{{ $category->updated_at->format('Y-m-d H:i') }}</td>
                     <td class="text-end">
                         <div class="d-flex flex-wrap gap-1 justify-content-center">
-                            <button class="btn btn-sm btn-warning w-25" data-bs-toggle="modal" data-bs-target="#edit-category-{{ $category->id }}">
+                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#edit-category-{{ $category->id }}">
                                 <i class="fa-solid fa-pen mx-auto"></i>
                             </button>
                             @include('admin.categories.modal.edit')
 
-                            <button class="btn btn-sm btn-danger w-25" data-bs-toggle="modal" data-bs-target="#delete-category-{{ $category->id }}">
+                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-category-{{ $category->id }}">
                                 <i class="fa-solid fa-trash-can mx-auto"></i>
                             </button>
                             @include('admin.categories.modal.delete')
@@ -91,9 +89,9 @@
         </table>
     </div>
 
-    <!-- === ページネーション === -->
+    {{-- Pagination --}}
     <div class="d-flex justify-content-center mt-3">
-        {{ $all_categories->links('vendor.pagination.custom') }}
+        {{ $all_categories->links() }}
     </div>
 
 </div>

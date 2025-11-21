@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="d-flex justify-content-center align-items-center">
-    <div class="card shadow-sm border-0 p-4" style="max-width: 480px; width: 100%;">
+    <div class="card shadow border-0 p-4" style="max-width: 480px; width: 100%;">
         <div class="text-center mb-4">
             <h3 class="fw-bold">Verify Your Email</h3>
             <p class="text-muted mb-0">Check your email for the verification link</p>
@@ -20,7 +20,7 @@
 
         <form method="POST" action="{{ route('verification.send') }}" class="d-flex justify-content-center">
             @csrf
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-outline">
                 Request Another
             </button>
         </form>

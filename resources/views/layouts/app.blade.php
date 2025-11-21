@@ -16,12 +16,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Kosugi+Maru&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
 
 
-        {{-- FontAwesome --}}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {{-- FontAwesome --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        
-
-        <!-- Font Awesome -->
+    <!-- Font Awesome -->
     <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -60,10 +58,9 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto align-items-center gap-1">
+                    <ul class="navbar-nav ms-auto align-items-center gap-3">
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
@@ -76,7 +73,6 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('register') }}" style="color:#9F6B46;">{{ __('Register') }}</a>
                                 </li>
-                        
                             @endif
                         @else
                             <li class="nav-item">
@@ -86,7 +82,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <a href="#" class="nav-link fs-2" style="color:#9F6B46;">
+                                <a href="{{ route('conversation.show') }}" class="nav-link fs-2" style="color:#9F6B46;">
                                     <i class="fa-regular fa-comment "></i>
                                 </a>
                             </li>
@@ -97,18 +93,34 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item dropdown">
-                                <button class="btn shadow-none nav-link d-flex align-items-center"
+                            <li class="nav-item dropdown position-relative">
+                                <button class="btn shadow-none nav-link d-flex align-items-center position-relative"
                                     id="account-dropdown" data-bs-toggle="dropdown" aria-expanded="false"
                                     style="color:#9F6B46;">
+
                                     @if (Auth::user()->avatar)
                                         <img src="{{ Auth::user()->avatar }}" 
                                             alt="{{ Auth::user()->name }}" 
                                             class="rounded-circle" 
-                                            style="width: 40px; height: 40px; object-fit: cover;  flex-shrink: 0;">
+                                            style="width: 40px; height: 40px; object-fit: cover; flex-shrink: 0;">
                                     @else
                                         <i class="fa-solid fa-circle-user text-secondary" 
                                         style="font-size: 40px;"></i>
+                                    @endif
+
+                                    {{-- バッジ（プロフィール右上） --}}
+                                    @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
+                                        <span 
+                                            class="position-absolute badge rounded-pill bg-danger"
+                                            id="notificationBadge"
+                                            style="
+                                                font-size: 0.8rem;
+                                                padding: 3px 6px;
+                                                left: 80%;
+                                                transform: translate(-50%, 0);
+                                            ">
+                                            {{ Auth::user()->unreadNotifications->count() }}
+                                        </span>
                                     @endif
                                 </button>
 
@@ -119,14 +131,19 @@
                                         <hr class="dropdown-divider">
                                     @endcan
 
-                                    
                                     <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-user me-2"></i> Profile</a>
 
                                     <a href="#" class="dropdown-item"
                                         data-bs-toggle="modal"
                                         data-bs-target="#notificationModal"
                                         id="notificationBtn">
-                                        <i class="fa-solid fa-toggle-on me-2"></i>Notification
+                                        <i class="fa-regular fa-bell me-2"></i>Notification
+
+                                         @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
+                                            <span class="badge bg-danger rounded-pill ms-2">
+                                                {{ Auth::user()->unreadNotifications->count() }}
+                                            </span>
+                                        @endif
                                     </a>
 
                                     <a href="{{ route('analytics.index', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-chart-line me-2"></i>Analytics</a>
@@ -151,83 +168,73 @@
                     <span class="brand-text fw-bold fs-3">Go Nippon!</span>
                 </a>
 
-                <button class="btn p-0 border-0 bg-transparent" type="button"
-                        data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
-                    <i class="fa-solid fa-bars fa-2x"></i>
-                </button>
+                @guest
+                    <ul class="d-flex mb-0 gap-3">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}" style="color:#9F6B46;">{{ __('Login') }}</a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('register') }}" style="color:#9F6B46;">{{ __('Register') }}</a>
+                        </li>
+                    </ul>          
+                @else
+                    <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+                        <i class="fa-solid fa-bars fa-2x"></i>
+                    </button>
+                @endguest
             </div>
         </nav>
 
         <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" style="border-left:2px solid #d1a07d;">
-    
             <div class="offcanvas-header border-bottom" style="background-color:#fff5ee;">
                 @if (Auth::check())
                     <a href="{{ route('profile.show', Auth::user()->id) }}" class="d-flex align-items-center text-decoration-none">
                         @if (Auth::user()->avatar)
-                            <img src="{{ Auth::user()->avatar }}" 
-                                alt="{{ Auth::user()->name }}" 
-                                class="rounded-circle me-3" 
+                            <img src="{{ Auth::user()->avatar }}"
+                                alt="{{ Auth::user()->name }}"
+                                class="rounded-circle me-3"
                                 style="width:50px; height:50px; object-fit:cover;">
                         @else
-                            <i class="fa-solid fa-circle-user text-secondary me-3" 
+                            <i class="fa-solid fa-circle-user text-secondary me-3"
                             style="font-size:50px;"></i>
                         @endif
                         <span class="fw-bold" style="color:#9F6B46; font-size:20px;">{{ Auth::user()->name }}</span>
                     </a>
-                @else
-                    <a href="{{ route('login') }}" class="d-flex align-items-center text-decoration-none">
-                        <i class="fa-solid fa-circle-user text-secondary me-3" style="font-size:50px;"></i>
-                        <span class="fw-bold" style="color:#9F6B46; font-size:20px;">Login</span>
-                    </a>
                 @endif
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
 
             <div class="offcanvas-body d-flex flex-column align-items-center justify-content-start text-center pt-4">
                 <ul class="list-unstyled w-100">
                     <li class="mb-3">
-                        <a href="{{ route('home') }}" class="menu-link nav-text-brown">
-                            <i class="fa-solid fa-store me-3"></i> Home
-                        </a>
-                    </li>
-                    <li class="mb-3">
                         <a href="{{ route('post.create') }}" class="menu-link nav-text-brown">
                             <i class="fa-solid fa-circle-plus me-3"></i> Create Post
                         </a>
                     </li>
-                    {{-- <li class="mb-3">
-                        <a href="" class="notificationBtn menu-link nav-text-brown">
-                            <i class="fa-regular fa-heart me-3"></i> Notifications
-                        </a>
-                    </li> --}}
                     <li class="mb-3">
-                        <a href="#" class="notificationBtn menu-link nav-text-brown position-relative">
-                            <i class="fa-regular fa-bell me-3"></i> Notifications
-                            {{-- 未読通知がある場合に赤丸バッジ --}}
-                            {{-- @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    {{ Auth::user()->unreadNotifications->count() }}
-                                </span>
-                            @endif --}}
-                        </a>
-                    </li>
-                    <li class="mb-3">
-                        <a href="" class="menu-link nav-text-brown">
-                            <i class="fa-regular fa-comment me-3"></i>Messages
+                        <a href="{{ route('conversation.show') }}" class="menu-link nav-text-brown">
+                            <i class="fa-regular fa-comment me-3"></i> Messages
                         </a>
                     </li>
                     <li class="mb-3">
                         <a href="{{ route('favorite') }}" class="menu-link nav-text-brown">
-                            <i class="fa-regular fa-star me-3"></i>Favorite Post
+                            <i class="fa-regular fa-star me-3"></i> Favorite Post
                         </a>
                     </li>
                     <li class="mb-3">
                         <a href="#" class="notificationBtn menu-link nav-text-brown">
-                            <i class="fa-solid fa-toggle-on me-3"></i> Notification
+                            <i class="fa-regular fa-bell me-3"></i> Notification
+                        </a>
+                    </li>
+                    <li class="mb-3">
+                        <a href="{{ route('analytics.index') }}" class="notificationBtn menu-link nav-text-brown">
+                            <i class="fa-solid fa-chart-line me-3"></i> Analytics
                         </a>
                     </li>
                 </ul>
 
-                <div class="d-flex justify-content-around mt-3 w-100">
+                <div class="d-flex justify-content-around mt-2 w-100">
                     <a href="{{ route('logout') }}" 
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                     class="btn" style="border: 2px solid #F1BDB2; color: #F1BDB2; font-weight: bold; background-color: transparent; transition: 0.3s;">
@@ -237,9 +244,11 @@
                         @csrf
                     </form>
 
-                    <a href="" class="btn" style="background-color:#F1BDB2; color:white; font-weight:bold; transition:0.3s;">
-                        <i class="fa-solid fa-lock"></i> Admin
-                    </a>
+                    @can('admin')
+                        <a href="{{ route('admin.users') }}" class="btn" style="background-color:#F1BDB2; color:white; font-weight:bold; transition:0.3s;">
+                            <i class="fa-solid fa-lock"></i> Admin
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -318,6 +327,31 @@
         </div>
     </div>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 通知ボタン
+        const notificationBtn = document.getElementById('notificationBtn');
+        const profileBadge = document.getElementById('notificationBadge');
 
+        if(notificationBtn) {
+            notificationBtn.addEventListener('click', function() {
+                fetch("{{ route('notifications.readAll') }}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                        "Content-Type": "application/json"
+                    },
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'ok' && profileBadge) {
+                        profileBadge.style.display = 'none'; // バッジを消す
+                    }
+                })
+                .catch(err => console.error(err));
+            });
+        }
+    });
+    </script>
 </body>
 </html>

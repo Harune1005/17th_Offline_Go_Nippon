@@ -272,9 +272,13 @@
                         @endif
                     </div>
                     <div class="col-auto">
-                        <a href="#" class="btn btn-pink shadow-sm" style="font-weight:bold; width:180px;">
-                            DM
-                        </a>
+                        <form action="{{ route('conversations.start') }}" method="post">
+                            @csrf
+                            <input type="hidden" name="receiver_id" value="{{ $user->id }}">
+                            <button type="submit" class="btn btn-pink shadow-sm" style="font-weight:bold; width:180px;">
+                                DM
+                            </button>
+                        </form>
                     </div>
                 @endif
             </div>

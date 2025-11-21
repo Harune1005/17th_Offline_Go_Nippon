@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container py-5">
-    <h2 class="text-center mb-4 text-decoration-underline">Select up to 3 Categories</h2>
+    <h2 class="fw-bold text-center mb-4 text-decoration-underline">Select up to 3 Categories</h2>
 
     <form action="{{ route('interests.store') }}" method="POST" id="interestForm">
         @csrf
