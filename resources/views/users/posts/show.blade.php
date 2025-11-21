@@ -76,15 +76,13 @@
                                         <a href="{{ route('post.edit', ['id' => $post->id]) }}" class="dropdown-item text-brown">
                                             <i class="fa-regular fa-pen-to-square me-2"></i>Edit
                                         </a>
-                                        <form action="{{ route('post.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="dropdown-item text-danger">
+                                        
+                                        <button class="dropdown-item text-danger" data-bs-toggle="modal"
+                                            data-bs-target="#delete-post-{{ $post->id }}">
                                             <i class="fa-regular fa-trash-can me-2"></i>Delete
                                         </button>
-                                    </form>
-
                                     </div>
+                                     @include('users.posts.modals.delete')
                                 </div>
 
                             {{-- 投稿者本人以外ならフォロー／フォロー解除 --}}

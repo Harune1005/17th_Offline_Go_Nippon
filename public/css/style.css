@@ -26,7 +26,20 @@ body {
 .btn-pink:hover {
     background-color: #F1BDB2;
     color: white;
-}   
+}
+
+.btn-cancel {
+    background-color: #B0B0B0;
+    color: white;
+    border: 2px solid #B0B0B0;
+    transition: 0.3s;
+}
+
+.btn-cancel:hover {
+    background-color: transparent;
+    color: #B0B0B0;
+    border-color: #B0B0B0;
+}
 
 h5, span, label {
     color: #9F6B46;
