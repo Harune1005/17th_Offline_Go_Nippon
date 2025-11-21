@@ -326,8 +326,8 @@ div{
     {{-- Post --}}
     <div class="col mt-1">
         <div class="card mt-5 big-card">
-            <div class="card-header" style="border-radius: 16px 16px 0 0; ">
-                <h1 class="fw-bold  d-flex justify-content-center " style="color:#9F6B46;">&nbsp;</h1>
+            <div class="card-header border-0" style="border-radius: 16px 16px 0 0; ">
+                <h1 class="fw-bold  d-flex justify-content-center m-0" style="color:#9F6B46;">&nbsp;</h1>
             </div>
             <div class="card-body big-card-body" ></div>
         </div>

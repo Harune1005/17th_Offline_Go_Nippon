@@ -26,74 +26,6 @@
     }
 
 
- @media (max-width: 600px) {
-    html, body {
-    overflow-x: hidden; 
-  }
-
-  .col-md-4{
-    padding-right:0;
-  }
-
-  .trip-map-a{
-    padding-right:0%;
-    padding-left: 0.5rem;
-  }
-  .trip-map-a,
-  .profile-row,
-  .click-map {
-    padding-left: 0 !important;
-    padding-right: 10 !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    
-  }
-
-  /* ボタンのマージン調整 */
-  .btn {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-  }
-
-  /* スピナーの位置調整も微修正（右にはみ出ることがあるため） */
-  .spinner-wrapper {
-    right: 10%;
-    transform: translateX(0) scale(0.8);
-  }
-.col-auto{
-    padding: 0;
-}
-  .phone {
-    font-size: 12px;
-    padding: 0;
-  }
-
-  .name{
-    padding-left: 2rem;
-  }
-  .number{
-    padding-left: 2rem;
-  }
- .profile-row{
-   padding-left: 0.5rem;
- }
- /* .spinner-wrapper {
-    bottom: 5px;
-    right: 30px;
-    transform: translateX(10%) scale(0.9);
-  } */
- 
- .btn{
-    margin-left:0.5rem;
-    margin-right:0.5rem;
- }
- .click-map{
-    margin-left: 1rem;
-    padding-right: 0;
-    padding-left: 1rem;
- }
-
- }
     .map-container {
   position: relative;
   width: 100%;
@@ -179,6 +111,82 @@
   max-width: 600px;
   height: auto;
 }
+
+.selected-pref {
+    fill: #ffb08a !important;
+    stroke: #cc6644;
+    stroke-width: 1.5;
+    transition: all 0.3s ease;
+}
+.has-post {
+  fill: #F1BDB2;
+  transition: fill 0.3s;
+}
+
+@media (max-width: 600px) {
+    html, body {
+    overflow-x: hidden; 
+  }
+
+  .col-md-4{
+    padding-right:0;
+  }
+
+  .trip-map-a{
+    padding-right:0%;
+    padding-left: 0.5rem;
+  }
+  .trip-map-a,
+  .profile-row,
+  .click-map {
+    padding-left: 0 !important;
+    padding-right: 10 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    
+  }
+
+  /* ボタンのマージン調整 */
+  .btn {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* スピナーの位置調整も微修正（右にはみ出ることがあるため） */
+  .spinner-wrapper {
+    right: 10%;
+    transform: translateX(0) scale(0.8);
+  }
+.col-auto{
+    padding: 0;
+}
+  .phone {
+    font-size: 12px;
+    padding: 0;
+  }
+
+  .name{
+    padding-left: 2rem;
+  }
+  .number{
+    padding-left: 2rem;
+  }
+ .profile-row{
+   padding-left: 0.5rem;
+ }
+ 
+ .btn{
+    margin-left:0.5rem;
+    margin-right:0.5rem;
+ }
+ .click-map{
+    margin-left: 1rem;
+    padding-right: 0;
+    padding-left: 1rem;
+ }
+
+ }
+
 </style>
 
     {{-- Profile area --}}
@@ -421,6 +429,7 @@ const prefectureNameMap = {
 };
 
      const userId = {{ $user->id ?? 'null' }};
+
     window.onload = function() {
       const baseWidth = 675;
       const baseHeight = 670;
@@ -475,8 +484,21 @@ const prefectureNameMap = {
           })          
           .attr("stroke", "#333")
           .on("mouseover", function() { d3.select(this).attr("fill", "#ff7f50"); })
-          .on("mouseout", function() { d3.select(this).attr("fill", "#dcdcdc"); })
+         // .on("mouseout", function() { d3.select(this).attr("fill", "#dcdcdc"); })
           .on("click", function(event, d) {
+            const [ [x0,y0], [x1,y1 ]] = path.bounds(d);
+
+            svg.transition()
+            .duration(750)
+            .attr("viewBox", `${x0 - 20} ${y0-20} ${x1 - x0 + 40} ${y1 - y0 + 40}`);
+
+            d3.selectAll(".prefecture, .okinawa").each(function(){
+              this.style.fill = '';
+            });
+
+             d3.selectAll(".prefecture, .okinawa").classed("selected-pref", false);
+             d3.select(this).classed("selected-pref", true);
+
             const prefName = d.properties.nam_ja;
             const engName = prefectureNameMap[prefName];
             const prefData = prefectures.find(p => p.name === engName);
@@ -489,7 +511,7 @@ const prefectureNameMap = {
         const okinawaProjection = d3.geoMercator()
           .center([127.6, 26.2])
           .scale(5000)
-          .translate([130, 130]); // ← 左上枠の位置調整
+          .translate([130, 130]); 
         const okinawaPath = d3.geoPath().projection(okinawaProjection);
         const okinawa = data.features.filter(d => d.properties.nam_ja === "沖縄県");
         svg.selectAll(".okinawa")
@@ -507,8 +529,21 @@ const prefectureNameMap = {
           .attr("stroke", "#666")
           .attr("stroke-width", 0.5)
           .on("mouseover", function() { d3.select(this).attr("fill", "#ffb37f"); })
-          .on("mouseout", function() { d3.select(this).attr("fill", "#ffdcb2"); })
+         // .on("mouseout", function() { d3.select(this).attr("fill", "#ffdcb2"); })
           .on("click", function(event, d) {
+            const[[x0, y0], [x1, y1]] = okinawaPath.bounds(d);
+
+            svg.transition()
+                .duration(750)
+                .attr("viewBox", `${x0 - 20} ${y0 - 20} ${x1 - x0 + 40} ${y1 - y0 + 40}`);
+
+            d3.selectAll(".prefecture, .okinawa").each(function(){
+              this.style.fill = '';
+            });
+
+            d3.selectAll(".prefecture, .okinawa").classed("selected-pref", false);
+            d3.select(this).classed("selected-pref", true);
+            
             const prefName = d.properties.nam_ja;
             const prefData = prefectures.find(p => p.name === prefName);
             if(prefData){
@@ -519,8 +554,11 @@ const prefectureNameMap = {
             if(pref.has_post){
                 const prefElement = document.querySelector(`#pref-${pref.code}`);
                 if(prefElement){
-                    prefElement.style.fill = "#F1BDB2";
-                    prefElement.style.transition = "fill 0.3s";
+                    if(pref.has_post){
+                      prefElement.classList.add('has-post');
+                    }else{
+                      prefElement.classList.remove('has-post');
+                    }
                 }
             }
           });
@@ -554,43 +592,33 @@ const prefectureNameMap = {
         adjustProjectionScale();
     
         d3.json("{{ asset('geojson/japan.geojson') }}").then(renderMap);
+
+        svg.on("click", function(event){
+          if(event.target === this){ 
+            svg.transition().duration(750)
+               .attr("viewBox", `0 0 ${baseWidth} ${baseHeight}`);
+            d3.selectAll(".prefecture, .okinawa").classed("selected-pref", false);
+            d3.selectAll(".prefecture, .okinawa").each(function() { this.style.fill = ''; });
+           }
+         });
       }
 
-      function updateSpinner(prefectures) {
-      const completed = prefectures.filter(p => p.has_post).length;
-      console.log(completed);
-      const total = 47;
-      const degree = (360 / total) * completed;
+      drawMap();
 
-      const spinnerFill = document.querySelector('.spinner-fill');
-      if(spinnerFill){
-        spinnerFill.style.transform = `rotate(${degree - 90}deg)`; 
-      }
-
-      const countElement = document.querySelector('.spinner-text .count');
-      if(countElement){
-        countElement.innerHTML = `${completed}<span style="font-size:27px">/47</span>`;
-      }
-    }
-    drawMap();
-
-    const userId = {{ $user->id ?? 'null' }};
-    
-    fetch(`/prefectures/${userId}/posts`)
-      .then(response => response.json())
-      .then(prefectures => {
-        prefectures.forEach(pref => {
-          const area = document.querySelector(`#pref-${pref.code}`); 
-          if (area && pref.has_post) {
-            area.style.fill = "#F1BDB2";
-          }
-        });
-
-      updateSpinner(prefectures);
+      fetch(`/prefectures/${userId}/posts`)
+        .then(response => response.json())
+        .then(prefArr => {
+          prefArr.forEach(pref => {
+            const area = document.querySelector(`#pref-${pref.code}`);
+            if (area && pref.has_post) {
+              // inline ではなくクラスを追加
+              area.classList.add('has-post');
+            }
+      });
+      updateSpinner(prefArr);
     })
     .catch(error => console.error('Error loading prefectures:', error));
 
-        drawMap();
     function updateSpinner(prefectures) {
         
       const completed = prefectures.filter(p => p.has_post).length;
@@ -671,7 +699,7 @@ const prefectureNameMap = {
   "沖縄県": "Okinawa"
 };
 
-    prefHeader.textContent = prefectureEnglishNames[prefId] || prefName;
+    prefHeader.textContent = prefectureNames[prefId] || prefName;
 
           if (!posts || posts.length === 0) {
             postContainer.innerHTML = `<p class="text-center text-muted">There is no post.</p>`;
