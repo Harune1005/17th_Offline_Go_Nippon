@@ -217,13 +217,13 @@ div > .text-nonfollowers {
   .rank-group-item a, 
   .rank-group-item .badge {
     position: relative;
-    z-index: 2; /* 上に表示するため */
+    z-index: 2; 
     transition: transform 0.3s;
   }
   
   .rank-group-item:hover span,
   .rank-group-item:hover a,
   .rank-group-item:hover .badge {
-    transform: scale(1.05); /* 軽く拡大してホバー感を演出 */
+    transform: scale(1.05); 
   }
   
