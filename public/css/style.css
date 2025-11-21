@@ -45,9 +45,22 @@ h5, span, label {
     color: #9F6B46 !important;
 }
 
+/* Fade-in effect */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* navber */
 .brand-text {
-    font-family: 'Source Serif Pro', serif;
     color: #4a3b2d;
     font-style: italic;
     letter-spacing: 0.5px;
