@@ -4,10 +4,11 @@
 
 <style>
   
-    /* 全体とフォント設定 */
     body, html {
         font-family: 'Source Serif Pro', serif; 
         background-color: white; 
+        overflow: hidden; 
+        
     }
 
     .full-page-container {
