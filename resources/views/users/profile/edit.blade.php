@@ -5,7 +5,7 @@
 @section('content')
     <div class="container mt-3">
         <div class="justify-content-center">  
-            <div class="card shadow border-0 rounded-4 p-4 mx-auto" style="max-width: 800px;">
+            <div class="card shadow border-0 rounded-4 p-4 mx-auto fade-in" style="max-width: 800px;">
                 <div class="card-header bg-transparent">
                     <h2 class="fw-bold mb-4 text-center" style="color:#9F6B46;">
                         <i class="fa-solid fa-pen-to-square"></i> Edit Profile

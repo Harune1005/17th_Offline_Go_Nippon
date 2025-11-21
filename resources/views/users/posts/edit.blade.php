@@ -3,8 +3,7 @@
 @section('content')
 
 <div class="container mt-3">
-    <div class="card shadow border-0 rounded-4 p-4 mx-auto" style="max-width: 800px;">
-
+    <div class="card shadow border-0 rounded-4 p-4 mx-auto fade-in" style="max-width: 800px;">
         <!-- Header -->
         <div class="card-header bg-transparent">
             <h2 class="fw-bold text-center mb-4" style="color:#9F6B46;">

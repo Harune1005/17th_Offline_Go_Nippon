@@ -5,7 +5,7 @@
 @section('content')
 <style>
     .uniform-img {
-        height: 600px; 
+        height: 650px; 
         object-fit: cover;
         width: 100%;
     }
@@ -14,23 +14,15 @@
         color: #9F6B46 !important;
     }
 
-    .bg-info-light {
-        background-color: #ECF9FF !important;
-    }
-
     .btn-brown {
-        background-color: #9F6B46;
+        background-color: #ac8161;
         color: #fff;
         border: none;
     }
 
     .btn-brown:hover {
-        background-color: #7e5638;
-    }
-
-    .form-control:focus {
-        border-color: #9F6B46;
-        box-shadow: 0 0 0 0.2rem rgba(159, 107, 70, 0.25);
+        background-color: #956441;
+        color: #fff
     }
 
     .bg-yellow-light {
@@ -49,31 +41,26 @@
         padding-right: 6px;
         min-height: 150px;
     }
-
 </style>
 
     <div class="container mt-3">
         <div class="justify-content-center">
-            <a href="{{ url()->previous() ?? url('/') }}" class="text-decoration-none text-brown mb-3 d-inline-block">
-                <i class="fa-solid fa-angles-left"></i> back
-            </a>
-
-            <div class="card border shadow-sm rounded-2 overflow-hidden">
-                <div class="card-header bg-white py-3 border-bottom border-brown">
+            <div class="card border shadow rounded-2 overflow-hidden">
+                <div class="card-header py-3 border-bottom" style="background: linear-gradient(to right, #fffaf7, #fbefe5, #fffaf7);">
                     <div class="row align-items-center justify-content-between">
                         <div class="col-auto d-flex align-items-center">
                             <a href="{{ route('profile.show', $post->user->id) }}">
-                                 @if (Auth::user()->avatar)
-                                    <img src="{{ Auth::user()->avatar }}" 
-                                        alt="{{ Auth::user()->name }}" 
+                                 @if ($post->user->avatar)
+                                    <img src="{{ $post->user->avatar }}" 
+                                        alt="{{ $post->user->name }}" 
                                         class="rounded-circle me-3" 
-                                        style="width:50px; height:50px; object-fit:cover;">
+                                        style="width:40px; height:40px; object-fit:cover;">
                                 @else
                                     <i class="fa-solid fa-circle-user text-secondary me-3" style="font-size: 2rem;"></i>
                                 @endif
                             </a>
 
-                            <a href="{{ route('profile.show', $post->user->id) }}" class="text-decoration-none fw-bold text-brown">
+                            <a href="{{ route('profile.show', $post->user->id) }}" class="text-decoration-none fw-bold text-brown fs-5">
                                 {{ $post->user->name }}
                             </a>
                         </div>
@@ -157,9 +144,8 @@
                         </div>
 
                         <div class="col-md-5 border-start border-brown">
-                            <div class="p-4 bg-white h-100 comment-section-wrapper" style="max-height: 600px;">
-                                <h4 class="fw-bold text-brown mb-2 text-center">{{ $post->title ?? 'Title' }}</h4>
-
+                            <div class="p-4 bg-white h-100 comment-section-wrapper" style="max-height: 650px;">
+                                <h4 class="fw-bold text-brown mb-3 text-center fs-2">{{ $post->title ?? 'Title' }}</h4>
                                 <div class="row align-items-center mb-3">
                                     <div class="col-auto">
                                         <p class="mb-2 text-brown">
@@ -176,7 +162,7 @@
                                                     <i class="fa-regular fa-heart me-1" style="color:#9F6B46; font-size:18px;"></i>
                                                 @endif
                                             </button>
-                                            <span class="like-count fw-bold" style="color:#9F6B46">{{ $post->likes->count() }}</span>
+                                            <span class="like-count fw-bold" style="color:#9F6B46 ">{{ $post->likes->count() }}</span>
                                         </div>
                                         <div class="d-flex align-items-center">
                                             <button class="btn btn-sm shadow-none favorite-btn" data-post-id="{{ $post->id }}" data-favorited="{{ $post->isFavorited() ? 'true' : 'false' }}">
@@ -191,7 +177,7 @@
                                 </div>
                                 
                                 <div class="d-flex align-items-center justify-content-end text-brown small mb-3 gap-3">
-                                  <span>{{ $post->visited_at ? $post->visited_at->format('Y-m-d') : 'Unknown' }}</span>
+                                  <span><i class="fa-regular fa-calendar me-1 text-info"></i>{{ $post->visited_at ? $post->visited_at->format('Y-m-d') : 'Unknown' }}</span>
                                    <span><i class="fa-solid fa-coins me-1 text-warning"></i>{{ $post->cost ?? 'Cost' }} Yen</span>
                                    <span>
                                     <i class="fa-regular fa-clock me-1 text-secondary"></i>
@@ -221,7 +207,7 @@
                                     @csrf
                                     <input type="text" 
                                         name="comment_body{{ $post->id }}" 
-                                        class="form-control border-brown rounded-start @error('comment_body'.$post->id) is-invalid @enderror" 
+                                        class="form-control post-input rounded-start @error('comment_body'.$post->id) is-invalid @enderror" 
                                         placeholder="Add a comment..." 
                                         value="{{ old('comment_body'.$post->id) }}">
                                     <button class="btn btn-brown rounded-end" type="submit">
