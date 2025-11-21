@@ -254,10 +254,7 @@
                                 @method('DELETE')
                                 <input type="hidden" name="return_url" value="{{ url()->current() }}">
                                 <button type="submit" 
-                                    class="btn shadow-sm"
-                                    style="background-color:#B0B0B0; color:white; font-weight:bold; width:180px; border:2px solid #B0B0B0; transition:0.3s;"
-                                    onmouseover="this.style.backgroundColor='white'; this.style.color='#B0B0B0';"
-                                    onmouseout="this.style.backgroundColor='#B0B0B0'; this.style.color='white';">
+                                    class="btn btn-cancel shadow-sm" style="font-weight:bold; width:180px;">
                                     Following
                                 </button>
                             </form>
