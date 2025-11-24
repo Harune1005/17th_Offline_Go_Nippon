@@ -47,4 +47,9 @@ class LikeNotification extends Notification
             'liker_id' => $this->liker_id,
         ];
     }
+
+    public function scopeLatestLimit($query, $limit = 100)
+    {
+        return $query->orderBy('created_at', 'desc')->limit($limit);
+    }
 }

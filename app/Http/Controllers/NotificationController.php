@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Illuminate\Support\Facades\Notification;
 
 class NotificationController extends Controller
 {
@@ -18,5 +19,9 @@ class NotificationController extends Controller
         });
 
         return response()->json($notifications);
+
+        $notifications = Notification::latestLimit()->get();
+
+        return view('notifications.index', compact('notifications'));
     }
 }

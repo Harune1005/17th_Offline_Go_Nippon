@@ -85,6 +85,17 @@
                                 <a href="{{ route('conversation.show') }}" class="nav-link fs-2" style="color:#9F6B46;">
                                     <i class="fa-regular fa-comment nav-item p-0"></i>
                                 </a>
+                                 {{-- 未読メッセージバッジ --}}
+                                    @php
+                                        $unreadMessagesCount = Auth::user()->receivedMessages()->where('read_at', null)->count();
+                                    @endphp
+                                    @if($unreadMessagesCount > 0)
+                                        <span class="position-absolute badge rounded-pill bg-danger"
+                                            id="dmBadge"
+                                            style="font-size: 0.8rem; padding: 3px 6px; top: -2; right: 0;">
+                                            {{ $unreadMessagesCount }}
+                                        </span>
+                                    @endif
                             </li>
 
                             <li class="nav-item">
@@ -212,9 +223,22 @@
                             <i class="fa-solid fa-circle-plus me-3"></i> Create Post
                         </a>
                     </li>
-                    <li class="mb-3">
-                        <a href="{{ route('conversation.show') }}" class="menu-link nav-text-brown">
+                    <li class="mb-3 position-relative">
+                        <a href="{{ route('conversation.show') }}" class="menu-link nav-text-brown" id="mobileDmBtn">
                             <i class="fa-regular fa-comment me-3"></i> Messages
+
+                            @auth
+                                @php
+                                    $unreadMessagesCount = Auth::user()->receivedMessages()->where('read_at', null)->count();
+                                @endphp
+                                @if($unreadMessagesCount > 0)
+                                    <span class="position-absolute badge rounded-pill bg-danger"
+                                        id="mobileDmBadge"
+                                        style="font-size: 0.8rem; padding: 3px 6px; top: 0; right: 0;">
+                                        {{ $unreadMessagesCount }}
+                                    </span>
+                                @endif
+                            @endauth
                         </a>
                     </li>
                     <li class="mb-3">
@@ -223,8 +247,17 @@
                         </a>
                     </li>
                     <li class="mb-3">
-                        <a href="#" class="notificationBtn menu-link nav-text-brown">
-                            <i class="fa-regular fa-bell me-3"></i> Notification
+                        <a href="#"
+                        class="notificationBtn menu-link nav-text-brown"
+                        id="mobileNotificationBtn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#notificationModal">
+                        <i class="fa-regular fa-bell me-3"></i> Notification
+                        @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
+                            <span class="badge bg-danger rounded-pill ms-2" id="mobileNotificationBadge">
+                                {{ Auth::user()->unreadNotifications->count() }}
+                            </span>
+                        @endif
                         </a>
                     </li>
                     <li class="mb-3">
@@ -346,6 +379,55 @@
                 .then(data => {
                     if(data.status === 'ok' && profileBadge) {
                         profileBadge.style.display = 'none'; // バッジを消す
+                    }
+                })
+                .catch(err => console.error(err));
+            });
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const dmBtn = document.getElementById('dmBtn');
+        const dmBadge = document.getElementById('dmBadge');
+
+        if(dmBtn) {
+            dmBtn.addEventListener('click', function() {
+                fetch("/messages/mark-read", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                        "Content-Type": "application/json"
+                    },
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'ok' && dmBadge) {
+                        dmBadge.style.display = 'none';
+                    }
+                })
+                .catch(err => console.error(err));
+            });
+        }
+    });
+
+    // スマホ版
+    document.addEventListener('DOMContentLoaded', function () {
+        const mobileNotificationBtn = document.getElementById('mobileNotificationBtn');
+        const mobileNotificationBadge = document.getElementById('mobileNotificationBadge');
+
+        if(mobileNotificationBtn) {
+            mobileNotificationBtn.addEventListener('click', function() {
+                fetch("{{ route('notifications.readAll') }}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                        "Content-Type": "application/json"
+                    },
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'ok' && mobileNotificationBadge) {
+                        mobileNotificationBadge.style.display = 'none';
                     }
                 })
                 .catch(err => console.error(err));
