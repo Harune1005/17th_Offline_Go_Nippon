@@ -256,7 +256,7 @@ div > .text-nonfollowers,
   
   .rank-group-item:hover span,
   .rank-group-item:hover a,
-  .rank-group-item:hover .badge {
+  .rank-group-item:hover .badge{
     transform: scale(1.05); 
   }
   
@@ -310,6 +310,13 @@ th, td {
   background-color: #ffffff;
 }
 
+.nav-item:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px var(--shadow);
+}
+.brand:hover{
+    transform: scale(1.05); 
+}
 .admin a {
     color: #9F6B46;
 }
