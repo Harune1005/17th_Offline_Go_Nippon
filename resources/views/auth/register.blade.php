@@ -172,7 +172,7 @@
     <div class="register-container">
         
         <div class="text-center">
-            <h2 class="register-title">Register</h2>
+            <h2 class="register-title">{{ __('messages.register.title') }}</h2>
         </div>
 
         <form method="POST" action="{{ route('register') }}">
@@ -181,8 +181,8 @@
             <div class="d-flex flex-column align-items-center">
 
                 <div class="mb-3">
-                    <label for="name" class="form-label register-label">Name</label>
-                    <input id="name" type="text" class="form-control register-input @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="Enter your name">
+                    <label for="name" class="form-label register-label">{{ __('messages.register.name') }}</label>
+                    <input id="name" type="text" class="form-control register-input @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="{{ __('messages.register.name_placeholder') }}">
 
                     @error('name')
                         <span class="invalid-feedback" role="alert">
@@ -192,8 +192,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="email" class="form-label register-label">Email</label>
-                    <input id="email" type="email" class="form-control register-input @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Enter your email">
+                    <label for="email" class="form-label register-label">{{ __('messages.register.email') }}</label>
+                    <input id="email" type="email" class="form-control register-input @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="{{ __('messages.register.email_placeholder') }}">
 
                     @error('email')
                         <span class="invalid-feedback" role="alert">
@@ -211,9 +211,9 @@
                 @endphp
 
                 <div class="mb-3">
-                    <label for="country" class="form-label register-label">Country</label>
+                    <label for="country" class="form-label register-label">{{ __('messages.register.country') }}</label>
                     <select id="country" name="country" class="form-select register-input @error('country') is-invalid @enderror" required>
-                        <option value="" disabled selected>Select your country</option>
+                        <option value="" disabled selected>{{ __('messages.register.country_placeholder') }}</option>
 
                         @foreach ($groupedCountries as $letter => $group)
                             <optgroup label="{{ $letter }}">
@@ -234,9 +234,9 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="password" class="form-label register-label">Password</label>
+                    <label for="password" class="form-label register-label">{{ __('messages.register.password') }}</label>
                     <div class="password-field-container">
-                        <input id="password" type="password" class="form-control register-input @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" placeholder="Password">
+                        <input id="password" type="password" class="form-control register-input @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" placeholder="{{ __('messages.register.password_placeholder') }}">
                         <span class="password-toggle-icon" onclick="togglePasswordVisibility('password', 'passwordIcon')">
                             <i id="passwordIcon" class="fa-solid fa-eye-slash text-secondary"></i>
                         </span>
@@ -250,9 +250,9 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="password-confirm" class="form-label register-label">Confirm Password</label>
+                    <label for="password-confirm" class="form-label register-label">{{ __('messages.register.password_confirm') }}</label>
                     <div class="password-field-container">
-                        <input id="password-confirm" type="password" class="form-control register-input" name="password_confirmation" required autocomplete="new-password" placeholder="Confirm Password">
+                        <input id="password-confirm" type="password" class="form-control register-input" name="password_confirmation" required autocomplete="new-password" placeholder="{{ __('messages.register.password_confirm_placeholder') }}">
                         <span class="password-toggle-icon" onclick="togglePasswordVisibility('password-confirm', 'confirmPasswordIcon')">
                              <i id="confirmPasswordIcon" class="fa-solid fa-eye-slash text-secondary"></i>
                         </span>
@@ -261,22 +261,21 @@
 
                 <div class="d-grid mb-3">
                     <button type="submit" class="btn custom-sign-up-btn text-white">
-                        Sign up
+                        {{ __('messages.register.submit') }}
                     </button>
                 </div>
 
                 <div class="d-grid mb-4">
                     <a href="{{ route('social.redirect', 'google') }}" 
                     class="btn google-sign-up-btn d-flex justify-content-center align-items-center">
-                        <i class="fa-brands fa-google me-2"></i> Sign up with Google
+                        <i class="fa-brands fa-google me-2"></i> {{ __('messages.register.submit_google') }}
                     </a>
                 </div>
             </div>
             
             <div class="text-center signin-text text-secondary">
-                Already have an account? <a href="{{ route('login') ?? '#' }}" class="signin-link">Sign in</a>
+                {{ __('messages.register.to_signin') }} <a href="{{ route('login') ?? '#' }}" class="signin-link">{{ __('messages.register.signin') }}</a>
             </div>
-
         </form>
     </div>
 </div>

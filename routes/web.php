@@ -20,8 +20,10 @@ use App\Http\Controllers\SocialAuthController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 Auth::routes();
 
@@ -171,3 +173,13 @@ Route::middleware('auth')->group(function () {
 // Login API
 Route::get('auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
+
+// Translation
+Route::get('/lang/{locale}', function ($locale) {
+    if (!in_array($locale, ['en', 'ja'])) {
+        abort(400);
+    }
+    Session::put('locale', $locale);
+    App::setLocale($locale);
+    return redirect()->back();
+})->name('lang.switch');

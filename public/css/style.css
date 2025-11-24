@@ -58,6 +58,18 @@ h5, span, label {
     color: #9F6B46 !important;
 }
 
+.translation {
+    color: #9F6B46 ;
+}
+
+.translation a {
+    color: #9F6B46 ;
+}
+
+.translation > .active {
+    text-decoration: underline;
+}
+
 /* Fade-in effect */
 .fade-in {
     opacity: 0;

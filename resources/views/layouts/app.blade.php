@@ -155,6 +155,25 @@
                                 </div>
                             </li>
                         @endguest
+                        <!-- Language Dropdown -->
+                        <li class="nav-item dropdown d-flex align-items-center">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="langDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-globe fa-lg translation"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('lang.switch', ['locale' => 'en']) }}">
+                                        <img src="https://flagcdn.com/us.svg" width="24" class="me-2 border"> English
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('lang.switch', ['locale' => 'ja']) }}">
+                                        <img src="https://flagcdn.com/jp.svg" width="24" class="me-2 border"> 日本語
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>  
             </div>
@@ -176,6 +195,25 @@
                         
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('register') }}" style="color:#9F6B46;">{{ __('Register') }}</a>
+                        </li>
+                        <!-- Language Dropdown -->
+                        <li class="nav-item dropdown d-flex align-items-center">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="langDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-globe fa-lg translation"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('lang.switch', ['locale' => 'en']) }}">
+                                        <img src="https://flagcdn.com/us.svg" width="24" class="me-2 border"> English
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('lang.switch', ['locale' => 'ja']) }}">
+                                        <img src="https://flagcdn.com/jp.svg" width="24" class="me-2 border"> 日本語
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>          
                 @else
@@ -231,6 +269,24 @@
                         <a href="{{ route('analytics.index') }}" class="notificationBtn menu-link nav-text-brown">
                             <i class="fa-solid fa-chart-line me-3"></i> Analytics
                         </a>
+                    </li>
+                    <!-- Language Dropdown -->
+                    <li class="mb-3 d-flex justify-content-center">
+                        <ul class="nav">
+                            <li class="nav-item translation">
+                                <a class="nav-link d-flex align-items-center {{ App::getLocale() === 'en' ? 'active' : '' }}" href="{{ route('lang.switch', ['locale' => 'en']) }}">
+                                    <img src="https://flagcdn.com/us.svg" width="24" class="border"> English
+                                </a>
+                            </li>
+                            <li class="translation d-flex align-items-center">
+                                /
+                            </li>
+                            <li class="nav-item translation">
+                                <a class="nav-link d-flex align-items-center {{ App::getLocale() === 'ja' ? 'active' : '' }}" href="{{ route('lang.switch', ['locale' => 'ja']) }}">
+                                    <img src="https://flagcdn.com/jp.svg" width="24" class="border"> 日本語
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
 
