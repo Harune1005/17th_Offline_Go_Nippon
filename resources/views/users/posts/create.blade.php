@@ -50,10 +50,10 @@
 
                 {{-- Categories --}}
                 <div class="mb-4">
-                    <label cclass="form-label fw-bold">Categories</label>
-                    <div class="d-flex flex-wrap gap-3 mt-2">
+                    <label cclass="form-label fw-bold">Categories (max 3)</label>
+                    <div class="d-flex flex-wrap gap-2 mt-2">
                         @foreach($all_categories as $category)
-                            <div class="form-check">
+                            <div class="form-check" style="width: 130px">
                                 <input type="checkbox" name="category[]" value="{{ $category->id }}" id="cat_{{ $category->id }}" class="form-check-input category-checkbox"
                                 {{ in_array($category->id, old('category',[])) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="cat_{{ $category->id }}">{{ ucfirst($category->name) }}</label>

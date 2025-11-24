@@ -58,9 +58,9 @@
 
                 <div class="mb-4">
                     <label class="form-label fw-bold">Categories (max 3)</label>
-                    <div class="d-flex flex-wrap gap-3">
+                    <div class="d-flex flex-wrap gap-2" >
                         @foreach ($all_categories as $category)
-                            <div class="form-check">
+                            <div class="form-check" style="width: 130px">
                                 <input type="checkbox" name="category[]" value="{{ $category->id }}"
                                     class="form-check-input category-checkbox"
                                     {{ in_array($category->id, $old_categories) ? 'checked' : '' }}>
