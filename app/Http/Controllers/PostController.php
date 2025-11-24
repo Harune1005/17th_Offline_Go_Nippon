@@ -138,90 +138,90 @@ class PostController extends Controller
         );
     }
 
-   public function update(Request $request, $id)
-{
-    $post = Post::findOrFail($id);
+    public function update(Request $request, $id)
+    {
+        $post = Post::findOrFail($id);
 
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'content' => 'required|string',
-        'date' => 'nullable|date',
-        'time_hour' => 'nullable|integer|min:0|max:23',
-        'time_min' => 'nullable|integer|min:0|max:59',
-        'category' => 'nullable|array|max:3',
-        'category.*' => 'integer|exists:categories,id',
-        'prefecture_id' => 'required|integer|exists:prefectures,id',
-        'cost' => 'nullable|integer|min:0|max:10000',
-        'deleted_images' => 'nullable|array',
-        'deleted_images.*' => 'exists:images,id',
-        'new_image' => 'nullable|array|max:3',
-        'new_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:5048',
-    ]);
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'date' => 'nullable|date',
+            'time_hour' => 'nullable|integer|min:0|max:23',
+            'time_min' => 'nullable|integer|min:0|max:59',
+            'category' => 'nullable|array|max:3',
+            'category.*' => 'integer|exists:categories,id',
+            'prefecture_id' => 'required|integer|exists:prefectures,id',
+            'cost' => 'nullable|integer|min:0|max:10000',
+            'deleted_images' => 'nullable|array',
+            'deleted_images.*' => 'exists:images,id',
+            'new_image' => 'nullable|array|max:3',
+            'new_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:5048',
+        ]);
 
-    // 既存画像の数と削除予定の数を計算
-    $currentImageCount = $post->images->count();
-    $deletedCount = count($request->deleted_images ?? []);
-    $remainingCount = $currentImageCount - $deletedCount;
+        // 既存画像の数と削除予定の数を計算
+        $currentImageCount = $post->images->count();
+        $deletedCount = count($request->deleted_images ?? []);
+        $remainingCount = $currentImageCount - $deletedCount;
 
-    $newImageCount = count($request->file('new_image') ?? []);
+        $newImageCount = count($request->file('new_image') ?? []);
 
-    // 画像必須チェック
-    if ($remainingCount + $newImageCount === 0) {
-        return redirect()->back()->withInput()->withErrors(['new_image' => 'At least one image is required.']);
-    }
+        // 画像必須チェック
+        if ($remainingCount + $newImageCount === 0) {
+            return redirect()->back()->withInput()->withErrors(['new_image' => 'At least one image is required.']);
+        }
 
-    if ($remainingCount + $newImageCount > 3) {
-        return redirect()->back()->withInput()->withErrors(['new_image' => 'You can have a maximum of 3 images total (current remaining + new uploads).']);
-    }
+        if ($remainingCount + $newImageCount > 3) {
+            return redirect()->back()->withInput()->withErrors(['new_image' => 'You can have a maximum of 3 images total (current remaining + new uploads).']);
+        }
 
-    $post->title = $validated['title'];
-    $post->content = $validated['content'];
-    $post->prefecture_id = $validated['prefecture_id'];
-    $post->cost = $validated['cost'] ?? 0;
-    $post->time_hour = $validated['time_hour'];
-    $post->time_min = $validated['time_min'];
-    $post->save();
-
-    if (!empty($validated['date']) && isset($validated['time_hour'], $validated['time_min'])) {
-        $post->visited_at = sprintf(
-            '%s %02d:%02d:00',
-            $validated['date'],
-            $validated['time_hour'],
-            $validated['time_min']
-        );
+        $post->title = $validated['title'];
+        $post->content = $validated['content'];
+        $post->prefecture_id = $validated['prefecture_id'];
+        $post->cost = $validated['cost'] ?? 0;
+        $post->time_hour = $validated['time_hour'];
+        $post->time_min = $validated['time_min'];
         $post->save();
-    }
 
-    if (isset($validated['category'])) {
-        $post->categories()->sync($validated['category']);
-    } else {
-        $post->categories()->detach();
-    }
-
-    // 既存画像の削除
-    if ($request->has('deleted_images')) {
-        $deletedImageIds = $request->deleted_images;
-        $imagesToDelete = Image::whereIn('id', $deletedImageIds)->where('post_id', $post->id)->get();
-        foreach ($imagesToDelete as $image) {
-            Storage::disk('public')->delete($image->image);
-            $image->delete();
+        if (! empty($validated['date']) && isset($validated['time_hour'], $validated['time_min'])) {
+            $post->visited_at = sprintf(
+                '%s %02d:%02d:00',
+                $validated['date'],
+                $validated['time_hour'],
+                $validated['time_min']
+            );
+            $post->save();
         }
-    }
 
-    // 新規画像アップロード
-    if ($request->hasFile('new_image')) {
-        foreach ($request->file('new_image') as $newImageFile) {
-            $path = $newImageFile->store('images/posts', 'public');
-            $post->images()->create([
-                'image' => $path,
-            ]);
+        if (isset($validated['category'])) {
+            $post->categories()->sync($validated['category']);
+        } else {
+            $post->categories()->detach();
         }
-    }
 
-    return redirect()
-        ->route('post.show', $post->id)
-        ->with('success', 'Post updated successfully!');
-}
+        // 既存画像の削除
+        if ($request->has('deleted_images')) {
+            $deletedImageIds = $request->deleted_images;
+            $imagesToDelete = Image::whereIn('id', $deletedImageIds)->where('post_id', $post->id)->get();
+            foreach ($imagesToDelete as $image) {
+                Storage::disk('public')->delete($image->image);
+                $image->delete();
+            }
+        }
+
+        // 新規画像アップロード
+        if ($request->hasFile('new_image')) {
+            foreach ($request->file('new_image') as $newImageFile) {
+                $path = $newImageFile->store('images/posts', 'public');
+                $post->images()->create([
+                    'image' => $path,
+                ]);
+            }
+        }
+
+        return redirect()
+            ->route('post.show', $post->id)
+            ->with('success', 'Post updated successfully!');
+    }
 
     /**
      * 投稿削除
