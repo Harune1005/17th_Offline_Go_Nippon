@@ -77,13 +77,29 @@
           <tr>
             <td>{{ $post->id }}</td>
             <td>
-              @if ($post->trashed())
+              @php
+                  $firstImage = $post->images->first();
+              @endphp
+              @if ($firstImage)
+                  {{-- post has image --}}
+                  @if ($post->trashed())
+                      <img src="{{ asset('storage/' . $firstImage->image) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
+                  @else
+                      <a href="{{ route('post.show', $post->id) }}">
+                          <img src="{{ asset('storage/' . $firstImage->image) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover; max-width: none;">
+                      </a>
+                  @endif
+              @else
+                  {{-- no image --}}
+                  <div class="text-muted">No Image</div>
+              @endif
+              {{-- @if ($post->trashed())
                 <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
               @else
                 <a href="{{ route('post.show', $post->id) }}">
                   <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover; max-width: none;">
                 </a>
-              @endif
+              @endif --}}
 
             </td>
             <td>
