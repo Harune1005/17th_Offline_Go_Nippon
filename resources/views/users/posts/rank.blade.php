@@ -149,7 +149,7 @@
             </div>
         @endforelse
         <div class="d-flex justify-content-center mt-4">
-            {{ $posts->appends(request()->query())->links() }}
+            {{ $posts->links() }}
         </div>
     </div>
 </div>

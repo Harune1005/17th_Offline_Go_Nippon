@@ -15,7 +15,24 @@
 
                 {{-- body --}}
                 <div class="modal-body d-flex justify-content-center align-items-center">
-                    <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" alt="No post" class="img-thumbnail me-3" style="width:110px; height:110px; object-fit: cover;">
+                    {{-- post has image --}}
+                    @php
+                        $firstImage = $post->images->first();
+                    @endphp
+                    @if ($firstImage)
+                        @if ($post->trashed())
+                            <img src="{{ asset('storage/' . $firstImage->image) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
+                        @else
+                            <a href="{{ route('post.show', $post->id) }}">
+                                <img src="{{ asset('storage/' . $firstImage->image) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover; max-width: none;">
+                            </a>
+                        @endif
+                    @else
+                        {{-- no image --}}
+                        <div class="text-muted me-3">No Image
+                        </div>
+                    @endif
+                    {{-- <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" alt="No post" class="img-thumbnail me-3" style="width:110px; height:110px; object-fit: cover;"> --}}
                     <p class="mb-0 modal-font">Are you sure you want to visible this post?</p>
                 </div>
 
@@ -50,7 +67,23 @@
 
                 {{-- body --}}
                 <div class="modal-body d-flex justify-content-center align-items-center">
-                    <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" alt="No post" class="img-thumbnail me-3" style="width:110px; height:110px; object-fit: cover;">
+                    @php
+                        $firstImage = $post->images->first();
+                    @endphp
+                    @if ($firstImage)
+                        {{-- post has image --}}
+                        @if ($post->trashed())
+                            <img src="{{ asset('storage/' . $firstImage->image) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
+                        @else
+                            <a href="{{ route('post.show', $post->id) }}">
+                                <img src="{{ asset('storage/' . $firstImage->image) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover; max-width: none;">
+                            </a>
+                        @endif
+                    @else
+                        {{-- no image --}}
+                        <div class="text-muted me-3">No Image</div>
+                    @endif
+                    {{-- <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" alt="No post" class="img-thumbnail me-3" style="width:110px; height:110px; object-fit: cover;"> --}}
                     <p class="mb-0 modal-font">Are you sure you want to hide this post?</p>
                 </div>
 

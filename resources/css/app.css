@@ -243,7 +243,7 @@ body {
 }
 
 .chat-message {
-  display: inline-block; 
+  display: block; 
   max-width: 70%;               
   padding: 10px 14px;
   margin: 8px 0;

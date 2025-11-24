@@ -3,8 +3,7 @@
 @section('content')
 
 <div class="container mt-3">
-    <div class="card shadow border-0 rounded-4 p-4 mx-auto" style="max-width: 800px;">
-
+    <div class="card shadow border-0 rounded-4 p-4 mx-auto fade-in" style="max-width: 800px;">
         <!-- Header -->
         <div class="card-header bg-transparent">
             <h2 class="fw-bold text-center mb-4" style="color:#9F6B46;">
@@ -59,9 +58,9 @@
 
                 <div class="mb-4">
                     <label class="form-label fw-bold">Categories (max 3)</label>
-                    <div class="d-flex flex-wrap gap-3">
+                    <div class="d-flex flex-wrap gap-2" >
                         @foreach ($all_categories as $category)
-                            <div class="form-check">
+                            <div class="form-check" style="width: 130px">
                                 <input type="checkbox" name="category[]" value="{{ $category->id }}"
                                     class="form-check-input category-checkbox"
                                     {{ in_array($category->id, $old_categories) ? 'checked' : '' }}>
@@ -118,10 +117,8 @@
                 {{-- Buttons --}}
                 <div class="text-end mt-4">
                     <a onclick="window.history.back()"
-                       class="btn shadow-sm me-3"
-                       style="min-width:150px; border:2px solid #B0B0B0; color:white; font-weight:bold; background-color:#B0B0B0; transition:0.3s;"
-                       onmouseover="this.style.backgroundColor='white'; this.style.color='#B0B0B0';"
-                       onmouseout="this.style.backgroundColor='#B0B0B0'; this.style.color='white';">
+                       class="btn btn-cancel shadow-sm me-3"
+                       style="min-width:150px; font-weight:bold;">
                         Cancel
                     </a>
 

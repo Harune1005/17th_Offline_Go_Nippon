@@ -7,7 +7,7 @@
   <div class="row g-4">
     <!-- card 1 -->
     <div class="col-md-4">
-      <div class="card h-100">
+      <div class="card shadow h-100">
         <div class="card-body">
           <h2 class="card-title fw-bold text-center">~ Views ~</h2>
           <h4 class="fs-3 text-center" style="color: #9F6B46;">
@@ -63,7 +63,7 @@
 
     <!-- card 2 -->
     <div class="col-md-4">
-      <div class="card h-100">
+      <div class="card shadow h-100">
         <div class="card-body">
           <h2 class="card-title fw-bold text-center">~ Interactions ~</h2>
           <h4 class="fs-3 text-center" style="color: #9F6B46;">
@@ -117,7 +117,7 @@
 
     <!-- card 3 -->
     <div class="col-md-4">
-      <div class="card h-100">
+      <div class="card shadow h-100">
         <div class="card-body">
           <h2 class="card-title fw-bold text-center">~ Followers ~</h2>
           <h4 class="fs-3 text-center" style="color: #9F6B46;">

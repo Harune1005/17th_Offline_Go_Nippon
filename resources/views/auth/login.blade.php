@@ -7,6 +7,7 @@
     body, html {
         font-family: 'Source Serif Pro', serif; 
         background-color: white; 
+         overflow: hidden; 
         
     }
 
@@ -214,3 +215,20 @@
     </div>
 </div>
 @endsection
+
+<script>
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('password');
+    const icon = document.querySelector('.password-toggle-icon i');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    }
+}
+</script>

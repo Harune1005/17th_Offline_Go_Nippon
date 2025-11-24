@@ -29,7 +29,7 @@ class AdminpostController extends Controller
 
         // 投稿の基本クエリ（必要なリレーションをロード）
         $query = Post::withTrashed()
-            ->with(['categoryPost.category', 'prefecture', 'user'])
+            ->with(['images', 'categoryPost.category', 'prefecture', 'user'])
             ->orderBy('id', 'asc');
 
         // カテゴリで絞る（post -> categoryPost -> category の構成を想定）

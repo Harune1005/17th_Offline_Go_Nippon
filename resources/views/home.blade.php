@@ -46,51 +46,55 @@
                         <div class="carousel-inner">
                             {{-- Category Ranking --}}
                             <div class="carousel-item active">
-                                <div class="card-header border-0" style="background: rgba(159, 107, 70, 0.3);">
-                                    <h5 class="mb-0 fw-bold text-center">🏆 Category Ranking</h5>
+                                <div class="card-header border0 " style="background:#fbefe5; ">
+                                    <h5 class="mb-0 fw-bold text-center">Category Ranking</h5>
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     @forelse ($categoryRanked as $item)
-                                        <li class="list-group-item d-flex justify-content-between align-items-center px-5">
-                                            <span>
-                                                <i class="fa-solid fa-crown" style="color:#9F6B46;"></i> {{ $item['rank'] }}.
-                                                <br>
-                                                &nbsp;>>>
-                                                <a href="{{ route('ranking.post', ['category_id' => $item['id']]) }}" class="text-decoration-none">
+                                        <li class="list-group-item rank-group-item d-flex justify-content-between align-items-center px-5"
+                                        style=" background-image: url('{{ asset($item['image']) }}');">
+
+
+                                            <span class="rank-text d-flex justify-content-center align-items-center fs-4 text-white  fw-light" style="position: relative; z-index: 2;">
+                                                <i class="fa-solid fa-crown text-white "></i> &nbsp;{{ $item['rank'] }}.
+                                                &nbsp;
+                                                <a href="{{ route('ranking.post', ['category_id' => $item['id']]) }}" class="text-decoration-none fs-4 ms-3 text-white fw-normal">
                                                     {{ $item['name'] }}
                                                 </a>
                                             </span>
-                                            <div class="badge rounded-pill">
-                                               <span style="font-weight: bold; font-size: 1.5em;">{{ $item['count'] }}</span>
+                                            <div class="badge rounded-pill" style="position: relative; z-index:2;">
+                                               <span style="font-weight: bold; font-size: 2em; color:#FFFF">{{ $item['count'] }}</span>
                                             </div>
                                         </li>
                                     @empty
-                                        <li class="list-group-item text-center text-muted">No data</li>
+                                        <li class="list-group-item rank-group-item text-center text-muted">No data</li>
                                     @endforelse
                                 </ul>
                             </div>
 
                             {{-- Prefecture Ranking --}}
                             <div class="carousel-item">
-                                <div class="card-header border-0" style="background: rgba(159, 107, 70, 0.3);">
-                                    <h5 class="mb-0 fw-bold text-center">🏆 Prefecture Ranking</h5>
+                                <div class="card-header border-0" style="background:#fbefe5;">
+                                    <h5 class="mb-0 fw-bold text-center">Prefecture Ranking</h5>
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     @forelse ($prefectureRanked as $item)
-                                        <li class="list-group-item d-flex justify-content-between align-items-center px-5">
-                                            <span>
-                                                <i class="fa-solid fa-crown" style="color:#9F6B46;"></i> {{ $item['rank'] }}.
-                                                <br>&nbsp;>>>
-                                                <a href="{{ route('ranking.post', ['prefecture_id' => $item['prefecture_id']]) }}" class="text-decoration-none">
+                                        <li class="list-group-item rank-group-item d-flex justify-content-between align-items-center px-5"
+                                        style="
+                                        background-image: url('{{ asset($item['image']) }}');">
+                                         <span class="rank-text d-flex justify-content-center align-items-center fs-4 text-white" style="position: relative; z-index: 2";>
+                                                <i class="fa-solid fa-crown text-white"></i> &nbsp;{{ $item['rank'] }}.
+                                                &nbsp;
+                                                <a href="{{ route('ranking.post', ['prefecture_id' => $item['prefecture_id']]) }}" class="text-decoration-none fs-4 ms-3 text-white">
                                                     {{ $item['prefecture_name'] }}
                                                 </a>
                                             </span>
-                                            <div class="badge rounded-pill">
-                                                <span style="font-weight: bold; font-size: 1.5em;">{{ $item['count'] }}</span>
+                                            <div class="badge rounded-pill" style="position: relative; z-index:2;">
+                                                <span style="font-weight: bold; font-size: 2em; color:#FFFF">{{ $item['count'] }}</span>
                                             </div>
                                         </li>
                                     @empty
-                                        <li class="list-group-item text-center text-muted">No data</li>
+                                        <li class="rank-group-item text-center text-muted">No data</li>
                                     @endforelse
                                 </ul>
                             </div>

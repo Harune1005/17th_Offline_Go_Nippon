@@ -26,80 +26,11 @@
     }
 
 
- @media (max-width: 600px) {
-    html, body {
-    overflow-x: hidden; 
-  }
-
-  .col-md-4{
-    padding-right:0;
-  }
-
-  .trip-map-a{
-    padding-right:0%;
-    padding-left: 0.5rem;
-  }
-  .trip-map-a,
-  .profile-row,
-  .click-map {
-    padding-left: 0 !important;
-    padding-right: 10 !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    
-  }
-
-  /* ボタンのマージン調整 */
-  .btn {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-  }
-
-  /* スピナーの位置調整も微修正（右にはみ出ることがあるため） */
-  .spinner-wrapper {
-    right: 10%;
-    transform: translateX(0) scale(0.8);
-  }
-.col-auto{
-    padding: 0;
-}
-  .phone {
-    font-size: 12px;
-    padding: 0;
-  }
-
-  .name{
-    padding-left: 2rem;
-  }
-  .number{
-    padding-left: 2rem;
-  }
- .profile-row{
-   padding-left: 0.5rem;
- }
- /* .spinner-wrapper {
-    bottom: 5px;
-    right: 30px;
-    transform: translateX(10%) scale(0.9);
-  } */
- 
- .btn{
-    margin-left:0.5rem;
-    margin-right:0.5rem;
- }
- .click-map{
-    margin-left: 1rem;
-    padding-right: 0;
-    padding-left: 1rem;
- }
-
- }
     .map-container {
   position: relative;
-  width: 100%;
+  width: 420px;
   height: 350px;
   background-color: #E6F4FA;
-  border-radius: 20px;
   overflow: hidden;
 }
 
@@ -116,7 +47,7 @@
 .spinner-wrapper {
   position: absolute;
   bottom: 5%;
-  left: 65%;
+  left: 63%;
   z-index: 10;
 }
 
@@ -179,13 +110,103 @@
   max-width: 600px;
   height: auto;
 }
+
+.selected-pref {
+    fill: #ffb08a !important;
+    stroke: #cc6644;
+    stroke-width: 1.5;
+    transition: all 0.3s ease;
+}
+.has-post {
+  fill: #F1BDB2;
+  transition: fill 0.3s;
+}
+.tooltip {
+  position: absolute;
+  padding: 5px 10px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 5px;
+  font-size: 0.9em;
+  display: none;
+  pointer-events: none; /* ホバーを妨げない */
+  white-space: nowrap;
+  z-index: 10;
+}
+
+
+
+@media (max-width: 600px) {
+    html, body {
+    overflow-x: hidden; 
+  }
+
+  .col-md-4{
+    padding-right:0;
+  }
+
+  .trip-map-a{
+    padding-right:0%;
+    padding-left: 0.5rem;
+  }
+  .trip-map-a,
+  .profile-row,
+  .click-map {
+    padding-left: 0 !important;
+    padding-right: 10 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    
+  }
+
+  /* ボタンのマージン調整 */
+  .btn {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* スピナーの位置調整も微修正（右にはみ出ることがあるため） */
+  .spinner-wrapper {
+    right: 10%;
+    transform: translateX(0) scale(0.8);
+  }
+.col-auto{
+    padding: 0;
+}
+  .phone {
+    font-size: 12px;
+    padding: 0;
+  }
+
+  .name{
+    padding-left: 2rem;
+  }
+  .number{
+    padding-left: 2rem;
+  }
+ .profile-row{
+   padding-left: 0.5rem;
+ }
+ 
+ .btn{
+    margin-left:0.5rem;
+    margin-right:0.5rem;
+ }
+ .click-map{
+    margin-left: 1rem;
+    padding-right: 0;
+    padding-left: 1rem;
+ }
+
+ }
+
 </style>
 
     {{-- Profile area --}}
 <div class="container">
     <div class="row mt-2 profile-row p-0">
         <div class="col-md-4">
-            <div class="d-flex align-items-start ps-2 profile-row flex-wrap">
+            <div class="d-flex align-items-start profile-row flex-wrap">
                 <div class="me-3 mb-3">
                     @if ($user->avatar)
                         <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="rounded-circle shadow-sm mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #9F6B46;">
@@ -246,10 +267,7 @@
                                 @method('DELETE')
                                 <input type="hidden" name="return_url" value="{{ url()->current() }}">
                                 <button type="submit" 
-                                    class="btn shadow-sm"
-                                    style="background-color:#B0B0B0; color:white; font-weight:bold; width:180px; border:2px solid #B0B0B0; transition:0.3s;"
-                                    onmouseover="this.style.backgroundColor='white'; this.style.color='#B0B0B0';"
-                                    onmouseout="this.style.backgroundColor='#B0B0B0'; this.style.color='white';">
+                                    class="btn btn-cancel shadow-sm" style="font-weight:bold; width:180px;">
                                     Following
                                 </button>
                             </form>
@@ -264,33 +282,42 @@
                         @endif
                     </div>
                     <div class="col-auto">
-                        <a href="#" class="btn btn-pink shadow-sm" style="font-weight:bold; width:180px;">
-                            DM
-                        </a>
+                        <form action="{{ route('conversations.start') }}" method="post">
+                            @csrf
+                            <input type="hidden" name="receiver_id" value="{{ $user->id }}">
+                            <button type="submit" class="btn btn-pink shadow-sm" style="font-weight:bold; width:180px;">
+                                DM
+                            </button>
+                        </form>
                     </div>
                 @endif
             </div>
 
         {{-- Map --}}
             <div class="row">
-                <p class="fw-bold h5 click-map text-center">Click map <span>to view full map</span></p>
-                <div class="map-container">
+                <div class="map-container rounded-2 ms-2">
+                  <p class="fw-bold h5 click-map text-center mt-3">Click map <span>to view full map</span></p>
+
                   <a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
                     <div id="map" style="width: 100%; height: 350px;"></div>
                   </a>
                     <div class="spinner-wrapper">
                         <div class="spinner-outer">
-                            <div class="spinner-fill"></div>
+                          @foreach ($prefectures as $pref)
+                            @if ($pref->has_post)
+                            <div class="spinner-fill" data-prefecture="{{ $pref->name }}"></div>
+                            @endif
+                          @endforeach
                             <div class="spinner-text">
                                 <p class="label">Completed</p>
                                 <p class="count">5 
                                   <span style="font-size: 20px;">/47</span>
                                 </p>
                                 <p class="small-text">Prefectures</p>
-
                             </div>
                         </div>
                     </div>
+                    <div id="spinner-tooltip" class="tooltip"></div> 
                 </div>
             </div>
         </div>
@@ -417,11 +444,31 @@ const prefectureNameMap = {
 };
 
      const userId = {{ $user->id ?? 'null' }};
+
     window.onload = function() {
       const baseWidth = 675;
       const baseHeight = 670;
       let svg;
     
+      // window.onload の中
+const spinnerFill = document.querySelector('.spinner-fill');
+const tooltip = document.getElementById('spinner-tooltip');
+
+spinnerFill.addEventListener('mouseenter', (e) => {
+    const prefName = e.target.dataset.prefecture;
+    tooltip.textContent = prefName;
+    tooltip.style.display = 'block';
+});
+
+spinnerFill.addEventListener('mousemove', (e) => {
+    tooltip.style.left = e.pageX + 10 + 'px';
+    tooltip.style.top = e.pageY + 10 + 'px';
+});
+
+spinnerFill.addEventListener('mouseleave', () => {
+    tooltip.style.display = 'none';
+});
+
       const projection = d3.geoMercator()
         .center([133, 42]) 
         .translate([baseWidth / 2, baseHeight / 2]);
@@ -471,8 +518,21 @@ const prefectureNameMap = {
           })          
           .attr("stroke", "#333")
           .on("mouseover", function() { d3.select(this).attr("fill", "#ff7f50"); })
-          .on("mouseout", function() { d3.select(this).attr("fill", "#dcdcdc"); })
+         // .on("mouseout", function() { d3.select(this).attr("fill", "#dcdcdc"); })
           .on("click", function(event, d) {
+            const [ [x0,y0], [x1,y1 ]] = path.bounds(d);
+
+            svg.transition()
+            .duration(750)
+            .attr("viewBox", `${x0 - 20} ${y0-20} ${x1 - x0 + 40} ${y1 - y0 + 40}`);
+
+            d3.selectAll(".prefecture, .okinawa").each(function(){
+              this.style.fill = '';
+            });
+
+             d3.selectAll(".prefecture, .okinawa").classed("selected-pref", false);
+             d3.select(this).classed("selected-pref", true);
+
             const prefName = d.properties.nam_ja;
             const engName = prefectureNameMap[prefName];
             const prefData = prefectures.find(p => p.name === engName);
@@ -485,7 +545,7 @@ const prefectureNameMap = {
         const okinawaProjection = d3.geoMercator()
           .center([127.6, 26.2])
           .scale(5000)
-          .translate([130, 130]); // ← 左上枠の位置調整
+          .translate([130, 130]); 
         const okinawaPath = d3.geoPath().projection(okinawaProjection);
         const okinawa = data.features.filter(d => d.properties.nam_ja === "沖縄県");
         svg.selectAll(".okinawa")
@@ -503,8 +563,21 @@ const prefectureNameMap = {
           .attr("stroke", "#666")
           .attr("stroke-width", 0.5)
           .on("mouseover", function() { d3.select(this).attr("fill", "#ffb37f"); })
-          .on("mouseout", function() { d3.select(this).attr("fill", "#ffdcb2"); })
+         // .on("mouseout", function() { d3.select(this).attr("fill", "#ffdcb2"); })
           .on("click", function(event, d) {
+            const[[x0, y0], [x1, y1]] = okinawaPath.bounds(d);
+
+            svg.transition()
+                .duration(750)
+                .attr("viewBox", `${x0 - 20} ${y0 - 20} ${x1 - x0 + 40} ${y1 - y0 + 40}`);
+
+            d3.selectAll(".prefecture, .okinawa").each(function(){
+              this.style.fill = '';
+            });
+
+            d3.selectAll(".prefecture, .okinawa").classed("selected-pref", false);
+            d3.select(this).classed("selected-pref", true);
+            
             const prefName = d.properties.nam_ja;
             const prefData = prefectures.find(p => p.name === prefName);
             if(prefData){
@@ -515,8 +588,11 @@ const prefectureNameMap = {
             if(pref.has_post){
                 const prefElement = document.querySelector(`#pref-${pref.code}`);
                 if(prefElement){
-                    prefElement.style.fill = "#F1BDB2";
-                    prefElement.style.transition = "fill 0.3s";
+                    if(pref.has_post){
+                      prefElement.classList.add('has-post');
+                    }else{
+                      prefElement.classList.remove('has-post');
+                    }
                 }
             }
           });
@@ -550,43 +626,33 @@ const prefectureNameMap = {
         adjustProjectionScale();
     
         d3.json("{{ asset('geojson/japan.geojson') }}").then(renderMap);
+
+        svg.on("click", function(event){
+          if(event.target === this){ 
+            svg.transition().duration(750)
+               .attr("viewBox", `0 0 ${baseWidth} ${baseHeight}`);
+            d3.selectAll(".prefecture, .okinawa").classed("selected-pref", false);
+            d3.selectAll(".prefecture, .okinawa").each(function() { this.style.fill = ''; });
+           }
+         });
       }
 
-      function updateSpinner(prefectures) {
-      const completed = prefectures.filter(p => p.has_post).length;
-      console.log(completed);
-      const total = 47;
-      const degree = (360 / total) * completed;
+      drawMap();
 
-      const spinnerFill = document.querySelector('.spinner-fill');
-      if(spinnerFill){
-        spinnerFill.style.transform = `rotate(${degree - 90}deg)`; 
-      }
-
-      const countElement = document.querySelector('.spinner-text .count');
-      if(countElement){
-        countElement.innerHTML = `${completed}<span style="font-size:27px">/47</span>`;
-      }
-    }
-    drawMap();
-
-    const userId = {{ $user->id ?? 'null' }};
-    
-    fetch(`/prefectures/${userId}/posts`)
-      .then(response => response.json())
-      .then(prefectures => {
-        prefectures.forEach(pref => {
-          const area = document.querySelector(`#pref-${pref.code}`); 
-          if (area && pref.has_post) {
-            area.style.fill = "#F1BDB2";
-          }
-        });
-
-      updateSpinner(prefectures);
+      fetch(`/prefectures/${userId}/posts`)
+        .then(response => response.json())
+        .then(prefArr => {
+          prefArr.forEach(pref => {
+            const area = document.querySelector(`#pref-${pref.code}`);
+            if (area && pref.has_post) {
+              // inline ではなくクラスを追加
+              area.classList.add('has-post');
+            }
+      });
+      updateSpinner(prefArr);
     })
     .catch(error => console.error('Error loading prefectures:', error));
 
-        drawMap();
     function updateSpinner(prefectures) {
         
       const completed = prefectures.filter(p => p.has_post).length;
@@ -667,7 +733,7 @@ const prefectureNameMap = {
   "沖縄県": "Okinawa"
 };
 
-    prefHeader.textContent = prefectureEnglishNames[prefId] || prefName;
+    prefHeader.textContent = prefectureNames[prefId] || prefName;
 
           if (!posts || posts.length === 0) {
             postContainer.innerHTML = `<p class="text-center text-muted">There is no post.</p>`;

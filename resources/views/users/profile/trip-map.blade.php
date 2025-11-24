@@ -12,9 +12,8 @@
   --shadow: rgba(0, 0, 0, 0.15);
 }
 
-.card, .big-card, .post-card {
+.big-card, .post-card {
   overflow: hidden;   
-  border-radius: 16px;
   box-shadow: 0 4px 12px var(--shadow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -42,7 +41,6 @@ height: 100%;
   background-color: #E6F4FA;
   overflow-x: hidden; 
   overflow-y: auto; 
-  
 }
 p span {
   margin-left: 0.5em;
@@ -64,10 +62,13 @@ div{
    background-color:#ECF9FF;
    color:#9F6B46;
  }
-
+ .carousel-item {
+  height: 320px; 
+}
  .post-image{
     width: 100%; 
     height:320px;
+    object-fit:cover;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
  }
 .post-col-12{
@@ -312,7 +313,6 @@ div{
                  <div id="map" class="map"></div>
                     <div class="spinner-wrapper">
                         <div class="spinner-outer">
-                            <div class="spinner-fill"></div>
                             <div class="spinner-text">
                                 <p class="label  p-0 m-0">Completed</p>
                                 <p class="count p-0 m-0">0<span style="font-size: 27px">/47</span></p>
@@ -326,8 +326,8 @@ div{
     {{-- Post --}}
     <div class="col mt-1">
         <div class="card mt-5 big-card">
-            <div class="card-header" style="border-radius: 16px 16px 0 0; ">
-                <h1 class="fw-bold  d-flex justify-content-center " style="color:#9F6B46;">&nbsp;</h1>
+            <div class="card-header border-0 rounded-1" {{--style="border-radius: 16px 16px 0 0; "--}}>
+                <h1 class="fw-bold  d-flex justify-content-center m-0" style="color:#9F6B46;">&nbsp;</h1>
             </div>
             <div class="card-body big-card-body" ></div>
         </div>

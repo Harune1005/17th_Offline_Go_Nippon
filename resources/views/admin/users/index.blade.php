@@ -1,30 +1,26 @@
 @extends('layouts.app')
 
-@section('title', 'User Management')
+@section('title', 'Admin Users')
 
 @section('content')
-{{-- ================= ユーザー管理ページ ================= --}}
-@vite(['public/css/admin.css'])
+<div class="container my-4 admin user-page">
 
-
-<div class="container my-4 user-page">
-
-  <!-- === ナビゲーション === -->
-  <ul class="nav nav-underline text-center w-25">
-      <li class="nav-item">
-          <a class="nav-link active" href="{{ route('admin.users') }}">User</a>
-      </li>
-      <li class="nav-item">
-          <a class="nav-link" href="{{ route('admin.posts') }}">Post</a>
-      </li>
-      <li class="nav-item">
-          <a class="nav-link" href="{{ route('admin.categories') }}">Category</a>
-      </li>
-  </ul>
+  {{-- Navigation --}}
+  <div class="row nav nav-underline text-center">
+    <div class="col-auto">
+      <a class="nav-link px-3 active" href="{{ route('admin.users') }}">User</a>
+    </div>
+    <div class="col-auto">
+      <a class="nav-link px-3" href="{{ route('admin.posts') }}">Post</a>
+    </div>
+    <div class="col-auto">
+      <a class="nav-link" href="{{ route('admin.categories') }}">Category</a>
+    </div>
+  </div>
 
   <hr>
 
-  {{-- === 検索バー === --}}
+  {{-- Search --}}
   <div class="my-5">
     <form action="{{ route('admin.users.search') }}" class="row justify-content-center gap-2">
       @csrf
@@ -39,7 +35,7 @@
     </form>
   </div>
 
-  {{-- === ユーザー一覧テーブル === --}}
+  {{-- Users List --}}
   <div class="container table-responsive">
     <table class="table table-hover align-middle text-center">
       <thead>
@@ -85,7 +81,6 @@
             @endif
           </td>
           <td>
-            {{-- @if (Auth::user()->id !== $user->id) --}}
             <div class="dropdown">
               <button class="btn-dropdown" type="button" data-bs-toggle="dropdown">
                 <i class="fa-solid fa-ellipsis me-3"></i>
@@ -103,7 +98,6 @@
               </div>
             </div>
             @include('admin.users.modal.status')
-            {{-- @endif --}}
           </td>
         </tr>
         @empty
@@ -116,9 +110,9 @@
   </div>
   
 
-  {{-- === ページネーション === --}}
+  {{-- Pagination --}}
   <div class="d-flex justify-content-center">
-    {{ $all_users->links('vendor.pagination.custom') }}
+    {{ $all_users->links() }}
   </div>
 
 </div>

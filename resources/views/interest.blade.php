@@ -4,17 +4,16 @@
 
 @section('content')
 <div class="container py-5">
-    <h2 class="text-center mb-4 text-decoration-underline">Select up to 3 Categories</h2>
+    <h2 class="fw-bold text-center mb-4 text-decoration-underline">Select up to 3 Categories</h2>
 
     <form action="{{ route('interests.store') }}" method="POST" id="interestForm">
         @csrf
 
         <div class="row g-3">
             @foreach($categories as $category)
-            @php
-                $imageName = $category->name . '.jpeg';
-                $imagePath = asset("images/categories/{$imageName}");
-            @endphp
+                @php
+                    $imagePath = asset($category->image ?? 'images/default.jpeg');
+                @endphp
                 <div class="col-md-4">
                     <div class="form-check border rounded p-3 h-100">
                         <input type="checkbox" name="categories[]" value="{{ $category->id }}" id="cat{{ $category->id }}" class="form-check-input category-checkbox">

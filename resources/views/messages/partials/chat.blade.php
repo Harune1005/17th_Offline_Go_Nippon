@@ -29,31 +29,52 @@
     @else
         <div class="messages-list mb-4 p-4 flex-grow-1" style="overflow-y:auto;">
             @foreach ($conversation->messages as $message)
-                <div id="message-{{ $message->id }}" class="chat-message {{ $message->sender_id == $user_id ? 'sent' : 'received' }}">
-                    @if ($message->content)
-                        <p class="px-1 mb-1">{{ $message->content }}</p>
+                <div class="d-flex mb-2 {{ $message->sender_id == $user_id ? 'justify-content-end' : 'justify-content-start' }} align-items-start">
+                    {{-- if this message is partner, show partnar icon --}}
+                    @if ($message->sender_id != $user_id)
+                        <div class="chat-avatar me-2">
+                            <a href="{{ route('profile.show', $partner->id) }}">
+                                <img src="{{ $partner->avatar ?? asset('images/default-avatar.png') }}" 
+                                alt="{{ $partner->name }}" 
+                                class="rounded-circle" style="width:40px; height:40px; object-fit:cover;">
+                            </a>
+                        </div>
+                    @endif
+                    {{-- if this message is login user, don't show icon --}}
+                    @if ($message->sender_id == $user_id)
+                        <div class="ms-2"></div>
                     @endif
 
-                    @if ($message->image_path)
-                        <img src="{{ asset('storage/'.$message->image_path) }}" alt="image" style="max-width:200px; border-radius:10px; margin-top:5px;">
-                    @endif
+                    <div id="message-{{ $message->id }}" class="chat-message {{ $message->sender_id == $user_id ? 'sent' : 'received' }}">
                     
-                    <small class="message-time text-muted d-inline me-2">
-                        {{ $message->created_at->format('m/d H:i') }}
-                    </small>
-
-                    @if ($message->sender_id == $user_id)
-                        @if ($message->read_at)
-                            <small class="ms-1" style="font-size: 11px;">Read</small>
+                        @if ($message->content)
+                            <p class="px-1 mb-1">{{ $message->content }}</p>
                         @endif
-                    @endif
 
-                    @if ($message->sender_id == $user_id)
-                        <button class="delete-message-btn" data-url="{{ route('messages.destroy', $message->id) }}" style="color:#f1bdb2;">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    @endif
+                        @if ($message->image_path)
+                            <img src="{{ asset('storage/'.$message->image_path) }}" alt="image" style="max-width:200px; border-radius:10px; margin-top:5px;">
+                        @endif
+                        
+                        <small class="message-time text-muted d-inline me-2">
+                            {{ $message->created_at->format('m/d H:i') }}
+                        </small>
+
+                        @if ($message->sender_id == $user_id)
+                            @if ($message->read_at)
+                                <small class="ms-1" style="font-size: 11px;">Read</small>
+                            @endif
+                        @endif
+
+                        @if ($message->sender_id == $user_id)
+                            <button class="delete-message-btn" data-url="{{ route('messages.destroy', $message->id) }}" style="color:#f1bdb2;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        @endif
+                    </div>
                 </div>
+                
+
+                
             @endforeach
         </div>
     @endif  

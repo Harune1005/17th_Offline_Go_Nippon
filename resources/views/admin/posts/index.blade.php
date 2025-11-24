@@ -1,29 +1,26 @@
 @extends('layouts.app') 
 
-@section('title', 'Admin: Posts') 
+@section('title', 'Admin Posts') 
 
 @section('content')
-@vite(['public/css/admin.css'])
+<div class="container my-4 admin post-page">
 
-
-<div class="container my-4 post-page">
-
-  <!-- ナビゲーション部分 -->
-  <ul class="nav nav-underline text-center w-25">
-      <li class="nav-item">
-          <a class="nav-link" href="{{ route('admin.users') }}">User</a>
-      </li>
-      <li class="nav-item">
-          <a class="nav-link active" href="{{ route('admin.posts') }}">Post</a>
-      </li>
-      <li class="nav-item">
-          <a class="nav-link" href="{{ route('admin.categories') }}">Category</a>
-      </li>
-  </ul>
+  {{-- Navigation --}}
+  <div class="row nav nav-underline text-center">
+    <div class="col-auto">
+      <a class="nav-link px-3" href="{{ route('admin.users') }}">User</a>
+    </div>
+    <div class="col-auto">
+      <a class="nav-link px-3 active" href="{{ route('admin.posts') }}">Post</a>
+    </div>
+    <div class="col-auto">
+      <a class="nav-link" href="{{ route('admin.categories') }}">Category</a>
+    </div>
+  </div>
 
   <hr>
 
-    <!-- フィルター部分 -->
+    {{-- Search --}}
     <div class="container my-5">
       <form method="GET" action="{{ route('admin.posts') }}" class="d-flex justify-content-center gap-3">
         <!-- Category -->
@@ -52,7 +49,7 @@
           </select>
         </div>
 
-        <!-- 検索ボタン -->
+        <!-- Button -->
         <div class="align-self-end">
           <button type="submit" class="btn btn-outline">
             <i class="fa-solid fa-magnifying-glass"></i> Search
@@ -61,7 +58,7 @@
       </form>
     </div>
 
-    <!-- 投稿一覧テーブル -->
+    {{-- Post List --}}
     <div class="container table-responsive">
     <table class="table table-hover align-middle text-center">
       <thead>
@@ -80,13 +77,29 @@
           <tr>
             <td>{{ $post->id }}</td>
             <td>
-              @if ($post->trashed())
+              @php
+                  $firstImage = $post->images->first();
+              @endphp
+              @if ($firstImage)
+                  {{-- post has image --}}
+                  @if ($post->trashed())
+                      <img src="{{ asset('storage/' . $firstImage->image) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
+                  @else
+                      <a href="{{ route('post.show', $post->id) }}">
+                          <img src="{{ asset('storage/' . $firstImage->image) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover; max-width: none;">
+                      </a>
+                  @endif
+              @else
+                  {{-- no image --}}
+                  <div class="text-muted">No Image</div>
+              @endif
+              {{-- @if ($post->trashed())
                 <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
               @else
                 <a href="{{ route('post.show', $post->id) }}">
-                  <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
+                  <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover; max-width: none;">
                 </a>
-              @endif
+              @endif --}}
 
             </td>
             <td>
@@ -108,24 +121,22 @@
               @endif
             </td>
             <td>
-            {{-- @if (Auth::user()->id !== $post->user->id) --}}
-                <div class="dropdown">
-                    <button class="btn-dropdown" type="button" data-bs-toggle="dropdown">
-                        <i class="fa-solid fa-ellipsis me-3"></i>
-                    </button>
-                    <div class="dropdown-menu admin-dropdown-menu">
-                        @if ($post->trashed())
-                            <button class="dropdown-item admin-dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
-                                <i class="fa-solid fa-check-to-slot"></i>&nbsp; Visible
-                            </button>
-                        @else
+              <div class="dropdown">
+                <button class="btn-dropdown" type="button" data-bs-toggle="dropdown">
+                    <i class="fa-solid fa-ellipsis me-3"></i>
+                </button>
+                <div class="dropdown-menu admin-dropdown-menu">
+                    @if ($post->trashed())
                         <button class="dropdown-item admin-dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
-                            <i class="fa-solid fa-ban"></i>&nbsp; Hide
+                            <i class="fa-solid fa-check-to-slot"></i>&nbsp; Visible
                         </button>
-                        @endif
-                    </div>
+                    @else
+                    <button class="dropdown-item admin-dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
+                        <i class="fa-solid fa-ban"></i>&nbsp; Hide
+                    </button>
+                    @endif
                 </div>
-            {{-- @endif --}}
+              </div>
             @include('admin.posts.modal.status')
           </td>
           </tr>
@@ -138,9 +149,9 @@
     </table>
     </div>
 
-    <!-- === ページネーション === -->
+    {{-- Pagination --}}
     <div class="d-flex justify-content-center">
-        {{ $all_posts->links('vendor.pagination.custom') }}
+        {{ $all_posts->links() }}
     </div> 
 </div>
 @endsection

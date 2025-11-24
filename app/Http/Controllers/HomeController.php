@@ -40,21 +40,12 @@ class HomeController extends Controller
             $postsQuery->orderByDesc('created_at');
         }
         $posts = $postsQuery->paginate(30)->appends(['order' => $order]);
-        // ->when($order === 'most_liked', fn ($q) => $q->orderByDesc('likes_count'))
-        // ->when($order === 'recommend' && !empty($categoryIds), fn ($q) =>
-        //     $q->withCount(['categories as relevance' => fn($q2) => $q2->whereIn('categories.id', $categoryIds)])
-        //       ->orderByDesc('relecance')
-        //       ->orderByDesc('created_at')
-        // )
-        // ->when($order === 'newest', fn ($q) => $q->orderByDesc('created_at'))
-        // ->paginate(30)
-        // ->appends(['order' => $order]);
 
         $notifications = auth()->user()->notifications()->take(20)->get();
 
         $categoryCounts = DB::table('category_posts')
             ->join('categories', 'category_posts.category_id', '=', 'categories.id')
-            ->select('categories.id', 'categories.name', DB::raw('COUNT(category_posts.post_id) as count'))
+            ->select('categories.id', 'categories.name', 'categories.image', DB::raw('COUNT(category_posts.post_id) as count'))
             ->groupBy('categories.id', 'categories.name')
             ->orderByDesc('count')
             ->get();
@@ -71,6 +62,7 @@ class HomeController extends Controller
                 'id' => $item->id,
                 'name' => $item->name,
                 'count' => $item->count,
+                'image' => $item->image ?? 'images/default.jpeg',
             ];
             $prevCount = $item->count;
         }
@@ -78,7 +70,7 @@ class HomeController extends Controller
 
         $prefectureCounts = DB::table('posts')
             ->join('prefectures', 'posts.prefecture_id', '=', 'prefectures.id')
-            ->select('prefectures.id as prefecture_id', 'prefectures.name as prefecture_name', DB::raw('COUNT(posts.id) as count'))
+            ->select('prefectures.id as prefecture_id', 'prefectures.name as prefecture_name', 'prefectures.image', DB::raw('COUNT(posts.id) as count'))
             ->groupBy('prefectures.id', 'prefectures.name')
             ->orderByDesc('count')
             ->get();
@@ -90,11 +82,15 @@ class HomeController extends Controller
             if ($item->count !== $prevCount) {
                 $currentRank = $index + 1;
             }
+
+            $prefectureModel = Prefecture::find($item->prefecture_id);
+
             $prefectureRanked[] = [
                 'rank' => $currentRank,
                 'prefecture_id' => $item->prefecture_id,
                 'prefecture_name' => $item->prefecture_name,
                 'count' => $item->count,
+                'image' => $prefectureModel->image ?? 'images/default.jpeg',
             ];
             $prevCount = $item->count;
         }
@@ -107,61 +103,61 @@ class HomeController extends Controller
     {
         $order = $request->get('order', 'newest');
 
+        $user = Auth::user();
+        $categoryIds = $user->categories()->pluck('categories.id')->toArray();
+
         $query = Post::with(['categories', 'prefecture', 'images']);
 
         $titleParts = [];
         $headerImage = 'images/default.jpeg';
-
         $prefectureSelected = false;
         $categorySelected = false;
 
+        // 都道府県で絞り込み
         if ($request->filled('prefecture_id')) {
             $prefecture = Prefecture::find($request->prefecture_id);
             if ($prefecture) {
                 $query->where('prefecture_id', $prefecture->id);
                 $titleParts[] = $prefecture->name;
-
-                $headerImage = $prefecture->image ?? 'images_default.jpeg';
-
+                $headerImage = $prefecture->image ?? 'images/default.jpeg';
                 $prefectureSelected = true;
             }
         }
 
+        // カテゴリーで絞り込み
         if ($request->filled('category_id')) {
             $category = Category::find($request->category_id);
             if ($category) {
                 $query->whereHas('categories', fn ($q) => $q->where('id', $category->id));
                 $titleParts[] = $category->name;
-                $headerImage = $category->image ?? 'images_default.jpeg';
-
+                $headerImage = $category->image ?? 'images/default.jpeg';
                 $categorySelected = true;
-
             }
         }
 
+        // 検索キーワードで絞り込み
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('content', 'like', "%{$search}%");
-            });
-            $titleParts[] = ''.$search.'';
+            $query->where(fn ($q) => $q->where('title', 'like', "%{$search}%")
+                ->orWhere('content', 'like', "%{$search}%")
+            );
+            $titleParts[] = $search;
 
             if (! $prefectureSelected && ! $categorySelected) {
                 $headerImage = 'images/nippon.jpg';
-                // $randomPrefecture = Prefecture::inRandomOrder()->first();
-                // $headerImage = $randomPrefecture->image ?? 'images_default.jpeg';
             }
         }
 
-        if ($prefectureSelected) {
-            $headerImage = $prefecture->image ?? 'images_default.jpeg';
+        // 並び替え処理
+        if ($order === 'most_liked') {
+            $query->withCount('likes')->orderByDesc('likes_count');
+        } elseif ($order === 'recommend' && ! empty($categoryIds)) {
+            $query->withCount(['categories as relevance' => function ($q) use ($categoryIds) {
+                $q->whereIn('categories.id', $categoryIds);
+            }])->orderByDesc('relevance')->orderByDesc('created_at');
+        } else { // newest
+            $query->orderByDesc('created_at');
         }
-
-        $query->withCount(['likes', 'favorites'])
-            ->when($order === 'most_liked', fn ($q) => $q->orderByDesc('likes_count'))
-            ->when($order === 'recommend', fn ($q) => $q->orderByDesc('favorites_count'))
-            ->when($order === 'newest', fn ($q) => $q->orderByDesc('created_at'));
 
         $title = implode(' × ', $titleParts) ?: 'RANKING';
         $posts = $query->paginate(30)->appends($request->query());
