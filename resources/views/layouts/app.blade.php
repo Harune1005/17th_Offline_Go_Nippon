@@ -49,7 +49,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-lg shadow-sm fixed-top py-1" style="background-color:#fbefe5;">
             <div class="container">
-                <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+                <a class="navbar-brand d-flex align-items-center brand" href="{{ url('/') }}">
                     <img src="{{ asset('images/image_480.png') }}" alt="Logo" width="50" class="me-2">
                     <span class="brand-text fw-bold fs-1 ms-2">Go Nippon!</span>
                 </a>
@@ -60,36 +60,36 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    <ul class="navbar-nav ms-auto align-items-center gap-1">
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}" style="color:#9F6B46;">{{ __('Login') }}</a>
+                                    <a class="nav-link nav-item p-0" href="{{ route('login') }}" style="color:#9F6B46;">{{ __('Login') }}</a>
                                 </li>
                             @endif
 
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}" style="color:#9F6B46;">{{ __('Register') }}</a>
+                                    <a class="nav-link nav-item ps-4" href="{{ route('register') }}" style="color:#9F6B46;">{{ __('Register') }}</a>
                                 </li>
                             @endif
                         @else
                             <li class="nav-item">
                                 <a href="{{ route('post.create') }}" class="nav-link fs-2" style="color:#9F6B46;">
-                                    <i class="fa-solid fa-circle-plus"></i>
+                                    <i class="fa-solid fa-circle-plus nav-item p-0"></i>
                                 </a>
                             </li>
 
                             <li class="nav-item">
                                 <a href="{{ route('conversation.show') }}" class="nav-link fs-2" style="color:#9F6B46;">
-                                    <i class="fa-regular fa-comment "></i>
+                                    <i class="fa-regular fa-comment nav-item p-0"></i>
                                 </a>
                             </li>
 
                             <li class="nav-item">
                                 <a href="{{ route('favorite') }}" class="nav-link fs-3" style="color:#9F6B46;">
-                                    <i class="fa-regular fa-star"></i>
+                                    <i class="fa-regular fa-star nav-item p-0"></i>
                                 </a>
                             </li>
 
