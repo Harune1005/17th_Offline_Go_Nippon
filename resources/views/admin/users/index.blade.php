@@ -3,7 +3,7 @@
 @section('title', 'Admin Users')
 
 @section('content')
-<div class="container my-4 user-page">
+<div class="container my-4 admin user-page">
 
   {{-- Navigation --}}
   <div class="row nav nav-underline text-center">
@@ -112,7 +112,7 @@
 
   {{-- Pagination --}}
   <div class="d-flex justify-content-center">
-    {{ $all_users->links('vendor.pagination.custom') }}
+    {{ $all_users->links() }}
   </div>
 
 </div>

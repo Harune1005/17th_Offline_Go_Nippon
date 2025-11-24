@@ -3,7 +3,7 @@
 @section('title', 'Admin Categories') 
 
 @section('content')
-<div class="container my-4 category-page">
+<div class="container my-4 admin category-page">
 
     {{-- Navigation --}}
     <div class="row nav nav-underline text-center">

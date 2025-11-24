@@ -3,7 +3,7 @@
 @section('title', 'Admin Posts') 
 
 @section('content')
-<div class="container my-4 post-page">
+<div class="container my-4 admin post-page">
 
   {{-- Navigation --}}
   <div class="row nav nav-underline text-center">
@@ -135,7 +135,7 @@
 
     {{-- Pagination --}}
     <div class="d-flex justify-content-center">
-        {{ $all_posts->links('vendor.pagination.custom') }}
+        {{ $all_posts->links() }}
     </div> 
 </div>
 @endsection
