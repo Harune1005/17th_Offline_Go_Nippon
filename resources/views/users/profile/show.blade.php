@@ -28,10 +28,9 @@
 
     .map-container {
   position: relative;
-  width: 100%;
+  width: 420px;
   height: 350px;
   background-color: #E6F4FA;
-  border-radius: 20px;
   overflow: hidden;
 }
 
@@ -48,7 +47,7 @@
 .spinner-wrapper {
   position: absolute;
   bottom: 5%;
-  left: 65%;
+  left: 63%;
   z-index: 10;
 }
 
@@ -122,6 +121,20 @@
   fill: #F1BDB2;
   transition: fill 0.3s;
 }
+.tooltip {
+  position: absolute;
+  padding: 5px 10px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 5px;
+  font-size: 0.9em;
+  display: none;
+  pointer-events: none; /* ホバーを妨げない */
+  white-space: nowrap;
+  z-index: 10;
+}
+
+
 
 @media (max-width: 600px) {
     html, body {
@@ -193,7 +206,7 @@
 <div class="container">
     <div class="row mt-2 profile-row p-0">
         <div class="col-md-4">
-            <div class="d-flex align-items-start ps-2 profile-row flex-wrap">
+            <div class="d-flex align-items-start profile-row flex-wrap">
                 <div class="me-3 mb-3">
                     @if ($user->avatar)
                         <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="rounded-circle shadow-sm mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #9F6B46;">
@@ -285,24 +298,29 @@
 
         {{-- Map --}}
             <div class="row">
-                <p class="fw-bold h5 click-map text-center">Click map <span>to view full map</span></p>
-                <div class="map-container">
+                <div class="map-container rounded-2 ms-2">
+                  <p class="fw-bold h5 click-map text-center mt-3">Click map <span>to view full map</span></p>
+
                   <a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
                     <div id="map" style="width: 100%; height: 350px;"></div>
                   </a>
                     <div class="spinner-wrapper">
                         <div class="spinner-outer">
-                            <div class="spinner-fill"></div>
+                          @foreach ($prefectures as $pref)
+                            @if ($pref->has_post)
+                            <div class="spinner-fill" data-prefecture="{{ $pref->name }}"></div>
+                            @endif
+                          @endforeach
                             <div class="spinner-text">
                                 <p class="label">Completed</p>
                                 <p class="count">5 
                                   <span style="font-size: 20px;">/47</span>
                                 </p>
                                 <p class="small-text">Prefectures</p>
-
                             </div>
                         </div>
                     </div>
+                    <div id="spinner-tooltip" class="tooltip"></div> 
                 </div>
             </div>
         </div>
@@ -435,6 +453,25 @@ const prefectureNameMap = {
       const baseHeight = 670;
       let svg;
     
+      // window.onload の中
+const spinnerFill = document.querySelector('.spinner-fill');
+const tooltip = document.getElementById('spinner-tooltip');
+
+spinnerFill.addEventListener('mouseenter', (e) => {
+    const prefName = e.target.dataset.prefecture;
+    tooltip.textContent = prefName;
+    tooltip.style.display = 'block';
+});
+
+spinnerFill.addEventListener('mousemove', (e) => {
+    tooltip.style.left = e.pageX + 10 + 'px';
+    tooltip.style.top = e.pageY + 10 + 'px';
+});
+
+spinnerFill.addEventListener('mouseleave', () => {
+    tooltip.style.display = 'none';
+});
+
       const projection = d3.geoMercator()
         .center([133, 42]) 
         .translate([baseWidth / 2, baseHeight / 2]);

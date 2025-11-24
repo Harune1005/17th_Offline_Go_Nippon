@@ -46,7 +46,7 @@
                         <div class="carousel-inner">
                             {{-- Category Ranking --}}
                             <div class="carousel-item active">
-                                <div class="card-header border-0" style="background: #fbefe5;">
+                                <div class="card-header border0 " style="background:#fbefe5; ">
                                     <h5 class="mb-0 fw-bold text-center">Category Ranking</h5>
                                 </div>
                                 <ul class="list-group list-group-flush">
@@ -55,10 +55,10 @@
                                         style=" background-image: url('{{ asset($item['image']) }}');">
 
 
-                                            <span class="rank-text d-flex justify-content-center align-items-center fs-4 text-white" style="position: relative; z-index: 2;">
-                                                <i class="fa-solid fa-crown text-white"></i> &nbsp;{{ $item['rank'] }}.
+                                            <span class="rank-text d-flex justify-content-center align-items-center fs-4 text-white  fw-light" style="position: relative; z-index: 2;">
+                                                <i class="fa-solid fa-crown text-white "></i> &nbsp;{{ $item['rank'] }}.
                                                 &nbsp;
-                                                <a href="{{ route('ranking.post', ['category_id' => $item['id']]) }}" class="text-decoration-none fs-4 ms-3 text-white">
+                                                <a href="{{ route('ranking.post', ['category_id' => $item['id']]) }}" class="text-decoration-none fs-4 ms-3 text-white fw-normal">
                                                     {{ $item['name'] }}
                                                 </a>
                                             </span>
