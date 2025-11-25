@@ -227,20 +227,21 @@ class PostController extends Controller
      * 投稿削除
      */
     public function destroy($id)
-    {
-        $post = Post::findOrFail($id);
+{
+    $post = Post::findOrFail($id);
 
-        if (Auth::id() != $post->user_id) {
-            return redirect()->route('home')->with('error', 'Unauthorized');
-        }
-
-        foreach ($post->images as $image) {
-            Storage::disk('public')->delete($image->image);
-        }
-        $post->images()->delete();
-
-        $post->delete();
-
-        return redirect()->route('home')->with('success', 'Post deleted successfully!');
+    if (Auth::id() != $post->user_id) {
+        return redirect()->route('home')->with('error', 'Unauthorized');
     }
+
+    foreach ($post->images as $image) {
+        Storage::disk('public')->delete($image->image);
+        $image->delete();
+    }
+
+    $post->forceDelete();
+
+    return redirect()->route('home')->with('success', 'Post deleted successfully!');
+}
+
 }
