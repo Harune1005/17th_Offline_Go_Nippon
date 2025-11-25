@@ -53,4 +53,31 @@ return [
         'title' => 'Select up to 3 Categories',
         'save' => 'Save',
     ],
+
+    // home
+    'home' => [
+        'search_placeholder' => 'Search..',
+        'prefecture' => 'Prefecture',
+        'prefecture_placeholder' => 'Select',
+        'category' => 'Category',
+        'category_placeholder' => 'Select',
+        'search' => 'Search',
+        'category_ranking_title' => 'Category Ranking',
+        'prefecture_ranking_title' => 'Prefecture Ranking',
+        'sort_1' => 'Newest',
+        'sort_2' => 'Most liked',
+        'sort_3' => 'Recommend',
+    ],
+
+    // header
+    'header' => [
+        'create_post' => 'Create Post',
+        'messages' => 'Messages',
+        'favorite_post' => 'Favorite Post',
+        'notification' => ' Notification',
+        'analytics' => 'Analytics',
+        'logout' => 'Logout',
+        'admin' => 'Admin',
+        'profile' => 'Profile',
+    ],
 ];
