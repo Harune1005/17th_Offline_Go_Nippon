@@ -8,7 +8,7 @@
                 <div class="modal-header">
                     <h3 class="fs-4 fw-bold modal-title modal-font ps-0">
                         <i class="fa-solid fa-user-check"></i> 
-                        Activate User
+                        {{ __('messages.user.a_modal_title') }}
                     </h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -20,7 +20,7 @@
                     @else
                         <i class="fa-solid fa-circle-user fa-3x d-block text-center text-secondary icon-md me-3"></i>
                     @endif
-                    <p class="mb-0 modal-font">Are you sure you want to activate <span class="fs-5 fw-bold text-decoration-underline">{{ $user->name }}</span> ?</p>
+                    <p class="mb-0 modal-font">{{ __('messages.user.a_modal_text') }} <span class="fs-5 fw-bold text-decoration-underline">{{ $user->name }}</span> ?</p>
                 </div>
 
                 {{-- footer --}}
@@ -29,8 +29,12 @@
                         @csrf
                         @method('PATCH')
 
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-outline">Activate</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            {{ __('messages.user.cancel') }}
+                        </button>
+                        <button type="submit" class="btn btn-outline">
+                            {{ __('messages.user.activate') }}
+                        </button>
                     </form>
                 </div>
 
@@ -48,7 +52,7 @@
                 <div class="modal-header">
                     <h3 class="fs-4 fw-bold modal-title modal-font ps-0">
                         <i class="fa-solid fa-user-slash"></i> 
-                        Deactivate User
+                        {{ __('messages.user.d_modal_title') }}
                     </h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -60,7 +64,7 @@
                     @else
                         <i class="fa-solid fa-circle-user fa-3x d-block text-center text-secondary icon-md me-3"></i>
                     @endif
-                    <p class="mb-0 modal-font">Are you sure you want to deactivate <span class="fs-5 fw-bold text-decoration-underline">{{ $user->name }}</span> ?</p>
+                    <p class="mb-0 modal-font">{{ __('messages.user.d_modal_text') }} <span class="fs-5 fw-bold text-decoration-underline">{{ $user->name }}</span> ?</p>
                 </div>
 
                 {{-- footer --}}
@@ -69,8 +73,12 @@
                         @csrf
                         @method('DELETE')
 
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-outline">Deactivate</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            {{ __('messages.user.cancel') }}
+                        </button>
+                        <button type="submit" class="btn btn-outline">
+                            {{ __('messages.user.deactivate') }}
+                        </button>
                     </form>
                 </div>
 

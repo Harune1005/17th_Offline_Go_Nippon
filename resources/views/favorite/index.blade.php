@@ -8,31 +8,41 @@
         <form id="search-form" action="{{ route('favorite') }}" method="get">
             <div class="row align-items-end">
                 <div class="col-12 col-md-4 mb-3 mb-md-0">
-                    <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ $search }}">
+                    <input type="text" name="search" class="form-control" placeholder="{{ __('messages.favorite.search_placeholder') }}" value="{{ $search }}">
                 </div>
 
                 <div class="col-12 col-md-8">
                     <div class="row g-2  align-items-end">
                         <div class="col-6 col-md-5 mb-3 mb-md-0">
-                            <label for="" class="form-label">Prefecture</label>
+                            <label for="" class="form-label">
+                                {{ __('messages.favorite.prefecture') }}
+                            </label>
                             <select name="prefecture" class="form-select text-muted">
-                                <option value="" selected>Select</option>
+                                <option value="" selected>
+                                    {{ __('messages.favorite.prefecture_placeholder') }}
+                                </option>
                                 @foreach ($all_prefectures as $prefecture)
                                     <option value="{{$prefecture->id}}" {{ $prefecture_id == $prefecture->id ? 'selected' : '' }}>{{$prefecture->name}}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-6 col-md-5 mb-3 mb-md-0">
-                            <label for="" class="form-label">Category</label>
+                            <label for="" class="form-label">
+                                {{ __('messages.favorite.category') }}
+                            </label>
                             <select name="category" class="form-select text-muted">
-                                <option value="" selected>Select</option>
+                                <option value="" selected>
+                                    {{ __('messages.favorite.category_placeholder') }}
+                                </option>
                                 @foreach ($all_categories as $category)
                                     <option value="{{$category->id}}" {{ $category_id == $category->id ? 'selected' : '' }}>{{$category->name}}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-12 col-md-2 d-grid">
-                            <button type="submit" class="btn btn-outline w-100">Search</button>
+                            <button type="submit" class="btn btn-outline w-100">
+                                {{ __('messages.favorite.search') }}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -48,18 +58,18 @@
                 @php $query = request()->all(); @endphp
                 <li class="nav-item tab-item">
                     <a href="{{ route('favorite', ['order' => 'newest']) }}" class="tab-btn {{ $order === 'newest' ? 'active' : '' }}" data-order="newest">
-                    Newest
+                    {{ __('messages.favorite.sort_1') }}
                     </a>
                 </li>
 
                 <li class="nav-item tab-item">
                     <a href="{{ route('favorite', ['order' => 'oldest']) }}" class="tab-btn {{ $order === 'oldest' ? 'active' : '' }}" data-order="oldest">
-                    Oldest
+                    {{ __('messages.favorite.sort_2') }}
                     </a>
                 </li>
                 <li class="nav-item tab-item">
                     <a href="{{ route('favorite', array_merge($query, ['order' => 'most_liked'])) }}" class="tab-btn {{ $order === 'most_liked' ? 'active' : '' }}" data-order="most_liked">
-                        Most liked
+                        {{ __('messages.favorite.sort_3') }}
                     </a>
                 </li>
             </ul>

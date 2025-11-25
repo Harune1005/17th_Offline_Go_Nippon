@@ -6,7 +6,7 @@
     <div class="card shadow border-0 rounded-4 p-4 mx-auto fade-in" style="max-width: 800px;">
         <div class="card-header bg-transparent">
             <h2 class="fw-bold text-center mb-4" style="color:#9F6B46;">
-                <i class="fa-solid fa-circle-plus"></i> Create Post
+                <i class="fa-solid fa-circle-plus"></i> {{ __('messages.create_post.main_title') }}
             </h2>
         </div>
 
@@ -16,14 +16,14 @@
 
                 {{-- Title --}}
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Title</label>
+                    <label class="form-label fw-bold">{{ __('messages.create_post.title') }}</label>
                     <input type="text" name="title" class="form-control post-input" value="{{ old('title') }}" required>
                     @error('title') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 {{-- Description --}}
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Description</label>
+                    <label class="form-label fw-bold">{{ __('messages.create_post.description') }}</label>
                     <textarea name="content" class="form-control post-input" rows="4" required>{{ old('content') }}</textarea>
                     @error('content') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
@@ -31,17 +31,17 @@
                 {{-- Date / Time --}}
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Date</label>
+                        <label class="form-label fw-bold">{{ __('messages.create_post.date') }}</label>
                         <input type="date" name="date" class="form-control post-input" value="{{ old('date', date('Y-m-d')) }}">
                         @error('date') <div class="text-danger small">{{ $message }}</div> @enderror
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Time</label>
+                        <label class="form-label fw-bold">{{ __('messages.create_post.time') }}</label>
                         <div class="d-flex align-items-center gap-1">
                             <input type="number" name="time_hour" class="form-control post-input" min="0" max="23" value="{{ old('time_hour',0) }}">
-                            <span>hour</span>
+                            <span>{{ __('messages.create_post.hour') }}</span>
                             <input type="number" name="time_min" class="form-control post-input" min="0" max="59" value="{{ old('time_min',0) }}">
-                            <span>min</span>
+                            <span>{{ __('messages.create_post.min') }}</span>
                         </div>
                         @error('time_hour') <div class="text-danger small">{{ $message }}</div> @enderror
                         @error('time_min') <div class="text-danger small">{{ $message }}</div> @enderror
@@ -50,7 +50,7 @@
 
                 {{-- Categories --}}
                 <div class="mb-4">
-                    <label cclass="form-label fw-bold">Categories (max 3)</label>
+                    <label cclass="form-label fw-bold">{{ __('messages.create_post.categories') }}</label>
                     <div class="d-flex flex-wrap gap-2 mt-2">
                         @foreach($all_categories as $category)
                             <div class="form-check" style="width: 130px">
@@ -65,9 +65,9 @@
 
                 {{-- Prefecture --}}
                 <div class="mb-4" style="max-width:300px;">
-                    <label class="form-label fw-bold">Prefecture</label>
+                    <label class="form-label fw-bold">{{ __('messages.create_post.prefecture') }}</label>
                     <select name="prefecture_id" class="form-select post-input" required>
-                        <option value="">Select Prefecture</option>
+                        <option value="">{{ __('messages.create_post.prefecture_placeholder') }}</option>
                         @foreach($prefectures as $prefecture)
                             <option value="{{ $prefecture->id }}" {{ old('prefecture_id')==$prefecture->id ? 'selected' : '' }}>
                                 {{ $prefecture->name }}
@@ -79,9 +79,9 @@
 
                 {{-- Cost --}}
                 <div class="mb-4" style="max-width:350px;">
-                    <label class="form-label fw-bold">Cost</label>
+                    <label class="form-label fw-bold">{{ __('messages.create_post.cost') }}</label>
                     <div class="d-flex align-items-center gap-2">
-                        <span id="cost-current">¥{{ old('cost',100) }}</span>
+                        <span id="cost-current">{{ __('messages.create_post.$') }}{{ old('cost',100) }}</span>
                         <input type="range" name="cost" min="0" max="10000" step="100" value="{{ old('cost',100) }}" id="cost-slider" class="form-range">
                     </div>
                     @error('cost') <div class="text-danger small">{{ $message }}</div> @enderror
@@ -89,10 +89,10 @@
 
                 {{-- Images --}}
                 <div class="mb-5">
-                    <label class="form-label fw-bold">Images (max 3 total)</label>
+                    <label class="form-label fw-bold">{{ __('messages.create_post.image') }}</label>
                     <div class="d-flex flex-wrap gap-3" id="image-upload-area">
                         <div class="image-slot add-new-slot" id="add-slot" style="width:100px; height:100px;">
-                            <label for="new_image_file_0">+ Add</label>
+                            <label for="new_image_file_0">{{ __('messages.create_post.add') }}</label>
                             <input type="file" class="d-none new-image-input" name="image[]" id="new_image_file_0"
                                 onchange="previewNewImage(this)" accept="image/*">
                         </div>
@@ -105,12 +105,12 @@
                     <a onclick="window.history.back()"
                        class="btn btn-cancel shadow-sm me-3"
                        style="min-width:150px; font-weight:bold;">
-                        Cancel
+                        {{ __('messages.create_post.cancel') }}
                     </a>
 
                     <button type="submit" class="btn btn-outline shadow-sm"
                         style="min-width:150px; font-weight:bold; transition:0.3s;">
-                        Post
+                        {{ __('messages.create_post.button') }}
                     </button>
                 </div>
             </form>

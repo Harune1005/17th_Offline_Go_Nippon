@@ -80,4 +80,93 @@ return [
         'admin' => 'Admin',
         'profile' => 'Profile',
     ],
+
+    // admin
+    // user
+    'user' => [
+        'user' => 'User',
+        'post' => 'Post',
+        'category' => 'Category',
+        'search_placeholder' => 'Search by Name...',
+        'search' => 'Search',
+        'avatar' => 'Avatar',
+        'name' => 'Name',
+        'country' => 'Country',
+        'email' => 'Email',
+        'created_at' => 'Created at',
+        'status' => 'Status',
+        'active' => 'Active',
+        'deactive' => 'Deactive',
+        'a_modal_title' => 'Activate User',
+        'a_modal_text' => 'Are you sure you want to activate',
+        'cancel' => 'Cancel',
+        'activate' => 'Activate',
+        'd_modal_title' => 'Deactivate User',
+        'd_modal_text' => 'Are you sure you want to deactivate',
+        'cancel' => 'Cancel',
+        'deactivate' => 'Deactivate'
+    ],
+
+    // post
+    'post' => [
+
+    ],
+
+    // category
+    'category' => [
+
+    ],
+
+    // create post
+    'create_post' => [
+        'main_title' => 'Create Post',
+        'title' => 'Title',
+        'description' => 'Description',
+        'date' => 'Date',
+        'time' => 'Time',
+        'hour' => 'hour',
+        'min' => 'min',
+        'categories' => 'Categories(Max 3)',
+        'prefecture' => 'Prefecture',
+        'prefecture_placeholder' => 'Select Prefecture',
+        'cost' => 'Cost',
+        '$' => '$',
+        'image' => 'Images(Max 3 total)',
+        'add' => '+ Add',
+        'cancel' => 'Cancel',
+        'button' => 'Post',
+    ],
+
+    // edit post
+    'edit_post' => [
+        'main_title' => 'Edit Post',
+        'title' => 'Title',
+        'description' => 'Description',
+        'date' => 'Date',
+        'time' => 'Time',
+        'hour' => 'hour',
+        'min' => 'min',
+        'categories' => 'Categories(Max 3)',
+        'prefecture' => 'Prefecture',
+        'prefecture_placeholder' => 'Select Prefecture',
+        'cost' => 'Cost',
+        '$' => '$',
+        'image' => 'Images(Max 3 total)',
+        'add' => '+ Add',
+        'cancel' => 'Cancel',
+        'button' => 'Update',
+    ],
+
+    // favorite post
+    'favorite' => [
+        'search_placeholder' => 'Search..',
+        'prefecture' => 'Prefecture',
+        'prefecture_placeholder' => 'Select',
+        'category' => 'Category',
+        'category_placeholder' => 'Select',
+        'search' => 'Search',
+        'sort_1' => 'Newest',
+        'sort_2' => 'Oldest',
+        'sort_3' => 'Most liked',
+    ],
 ];
