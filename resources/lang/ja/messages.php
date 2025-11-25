@@ -1,8 +1,7 @@
 <?php
 
 return [
-    // auth
-    // register.blade.php
+    // register
     'register' => [
         'title' => 'アカウント作成',
         'name' => '氏名',
@@ -24,7 +23,7 @@ return [
         'signin' => 'ログイン',
     ],
 
-    // login.blade.php
+    // login
     'login' => [
         'title' => 'ログイン',
         'message_1' => 'おかえりなさい!',
@@ -39,5 +38,19 @@ return [
         'submit_google' => 'Googleでログイン',
         'to_signup' => 'アカウントをお持ちでない場合',
         'signup' => '新規登録',
+    ],
+
+    // verify-email
+    'verify_email' => [
+        'title' => 'メールアドレス認証',
+        'text' => '認証リンクをメールで確認してください',
+        'text_2' => 'メールが届かない方はこちら',
+        'request' => '再送信する',
+    ],
+
+    // select-interest
+    'interest' => [
+        'title' => '最大3つのカテゴリーを選択してください',
+        'save' => '保存',
     ],
 ];

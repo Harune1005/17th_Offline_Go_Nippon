@@ -1,8 +1,7 @@
 <?php
 
 return [
-    // auth
-    // register.blade.php
+    // register
     'register' => [
         'title' => 'Register',
         'name' => 'Name',
@@ -24,7 +23,7 @@ return [
         'signin' => 'Sign in',
     ],
 
-    // login.blade.php
+    // login
     'login' => [
         'title' => 'Login',
         'message_1' => 'Welcome back!',
@@ -39,5 +38,19 @@ return [
         'submit_google' => 'Sign in with Google',
         'to_signup' => "Don't have an account?",
         'signup' => 'Sign up',
+    ],
+
+    // verify-email
+    'verify_email' => [
+        'title' => 'Verify Your Email',
+        'text' => 'Check your email for the verification link',
+        'text_2' => "Didn't receive email?",
+        'request' => 'Request Another',
+    ],
+
+    // select-interest
+    'interest' => [
+        'title' => 'Select up to 3 Categories',
+        'save' => 'Save',
     ],
 ];
