@@ -138,17 +138,17 @@
                                 <div class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-2"
                                     aria-labelledby="account-dropdown">
                                     @can('admin')
-                                        <a href="{{ route('admin.users') }}" class="dropdown-item"><i class="fa-solid fa-lock me-2"></i></i> Admin</a>
+                                        <a href="{{ route('admin.users') }}" class="dropdown-item"><i class="fa-solid fa-lock me-2"></i></i> {{ __('messages.header.admin') }}</a>
                                         <hr class="dropdown-divider">
                                     @endcan
 
-                                    <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-user me-2"></i> Profile</a>
+                                    <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-user me-2"></i> {{ __('messages.header.profile') }}</a>
 
                                     <a href="#" class="dropdown-item"
                                         data-bs-toggle="modal"
                                         data-bs-target="#notificationModal"
                                         id="notificationBtn">
-                                        <i class="fa-regular fa-bell me-2"></i>Notification
+                                        <i class="fa-regular fa-bell me-2"></i>{{ __('messages.header.notification') }}
 
                                          @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
                                             <span class="badge bg-danger rounded-pill ms-2">
@@ -157,7 +157,7 @@
                                         @endif
                                     </a>
 
-                                    <a href="{{ route('analytics.index', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-chart-line me-2"></i>Analytics</a>
+                                    <a href="{{ route('analytics.index', Auth::user()->id) }}" class="dropdown-item"><i class="fa-solid fa-chart-line me-2"></i>{{ __('messages.header.analytics') }}</a>
 
                                     <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> {{ __('Logout') }}</a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -258,12 +258,12 @@
                 <ul class="list-unstyled w-100">
                     <li class="mb-3">
                         <a href="{{ route('post.create') }}" class="menu-link nav-text-brown">
-                            <i class="fa-solid fa-circle-plus me-3"></i> Create Post
+                            <i class="fa-solid fa-circle-plus me-3"></i> {{ __('messages.header.create_post') }}
                         </a>
                     </li>
                     <li class="mb-3 position-relative">
                         <a href="{{ route('conversation.show') }}" class="menu-link nav-text-brown" id="mobileDmBtn">
-                            <i class="fa-regular fa-comment me-3"></i> Messages
+                            <i class="fa-regular fa-comment me-3"></i> {{ __('messages.header.messages') }}
 
                             @auth
                                 @php
@@ -281,7 +281,7 @@
                     </li>
                     <li class="mb-3">
                         <a href="{{ route('favorite') }}" class="menu-link nav-text-brown">
-                            <i class="fa-regular fa-star me-3"></i> Favorite Post
+                            <i class="fa-regular fa-star me-3"></i> {{ __('messages.header.favorite_post') }}
                         </a>
                     </li>
                     <li class="mb-3">
@@ -290,7 +290,7 @@
                         id="mobileNotificationBtn"
                         data-bs-toggle="modal"
                         data-bs-target="#notificationModal">
-                        <i class="fa-regular fa-bell me-3"></i> Notification
+                        <i class="fa-regular fa-bell me-3"></i> {{ __('messages.header.notification') }}
                         @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
                             <span class="badge bg-danger rounded-pill ms-2" id="mobileNotificationBadge">
                                 {{ Auth::user()->unreadNotifications->count() }}
@@ -300,7 +300,7 @@
                     </li>
                     <li class="mb-3">
                         <a href="{{ route('analytics.index') }}" class="notificationBtn menu-link nav-text-brown">
-                            <i class="fa-solid fa-chart-line me-3"></i> Analytics
+                            <i class="fa-solid fa-chart-line me-3"></i> {{ __('messages.header.analytics') }}
                         </a>
                     </li>
                     <!-- Language Dropdown -->
@@ -327,7 +327,7 @@
                     <a href="{{ route('logout') }}" 
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                     class="btn" style="border: 2px solid #F1BDB2; color: #F1BDB2; font-weight: bold; background-color: transparent; transition: 0.3s;">
-                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                        <i class="fa-solid fa-right-from-bracket"></i> {{ __('messages.header.logout') }}
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
@@ -335,7 +335,7 @@
 
                     @can('admin')
                         <a href="{{ route('admin.users') }}" class="btn" style="background-color:#F1BDB2; color:white; font-weight:bold; transition:0.3s;">
-                            <i class="fa-solid fa-lock"></i> Admin
+                            <i class="fa-solid fa-lock"></i> {{ __('messages.header.admin') }}
                         </a>
                     @endcan
                 </div>

@@ -53,4 +53,31 @@ return [
         'title' => '最大3つのカテゴリーを選択してください',
         'save' => '保存',
     ],
+
+    // home
+    'home' => [
+        'search_placeholder' => '検索する',
+        'prefecture' => '都道府県',
+        'prefecture_placeholder' => '選択する',
+        'category' => 'カテゴリー',
+        'category_placeholder' => '選択する',
+        'search' => '検索',
+        'category_ranking_title' => 'カテゴリーランキング',
+        'prefecture_ranking_title' => '都道府県ランキング',
+        'sort_1' => '最新',
+        'sort_2' => 'いいね数',
+        'sort_3' => 'おすすめ',
+    ],
+
+    // header
+    'header' => [
+        'create_post' => '投稿作成',
+        'messages' => 'メッセージ',
+        'favorite_post' => 'お気に入り投稿',
+        'notification' => ' 通知',
+        'analytics' => '分析',
+        'logout' => 'ログアウト',
+        'admin' => '管理',
+        'profile' => 'プロフィール',
+    ],
 ];

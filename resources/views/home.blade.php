@@ -5,15 +5,15 @@
     <form action="{{ route('ranking.post') }}" method="get">
         <div class="row align-items-end">
             <div class="col-12 col-md-4 mb-3 mb-md-0">
-                <input type="text" name="search" class="form-control" placeholder="Search...">
+                <input type="text" name="search" class="form-control" placeholder="{{ __('messages.home.search_placeholder') }}">
             </div>
 
             <div class="col-12 col-md-8">
                 <div class="row g-2  align-items-end">
                     <div class="col-6 col-md-5 mb-3 mb-md-0">
-                        <label for="prefecture" class="form-label">Prefecture</label>
+                        <label for="prefecture" class="form-label">{{ __('messages.home.prefecture') }}</label>
                         <select name="prefecture_id" class="form-select text-muted">
-                            <option value="" selected hidden>Select</option>
+                            <option value="" selected hidden>{{ __('messages.home.prefecture_placeholder') }}</option>
                             @foreach ($prefectures as $prefecture)
                                 <option value="{{ $prefecture->id }}">{{ $prefecture->name }}</option>
                             @endforeach
@@ -21,16 +21,16 @@
                     </div>
 
                     <div class="col-6 col-md-5 mb-3 mb-md-0">
-                        <label for="category" class="form-label">Category</label>
+                        <label for="category" class="form-label">{{ __('messages.home.category') }}</label>
                         <select name="category_id" class="form-select text-muted">
-                            <option value="" selected hidden>Select</option>
+                            <option value="" selected hidden>{{ __('messages.home.category_placeholder') }}</option>
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-12 col-md-2 d-grid">
-                        <button type="submit" class="btn btn-outline w-100">Search</button>
+                        <button type="submit" class="btn btn-outline w-100">{{ __('messages.home.search') }}</button>
                     </div>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                             {{-- Category Ranking --}}
                             <div class="carousel-item active">
                                 <div class="card-header border0 " style="background:#fbefe5; ">
-                                    <h5 class="mb-0 fw-bold text-center">Category Ranking</h5>
+                                    <h5 class="mb-0 fw-bold text-center">{{ __('messages.home.category_ranking_title') }}</h5>
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     @forelse ($categoryRanked as $item)
@@ -75,7 +75,7 @@
                             {{-- Prefecture Ranking --}}
                             <div class="carousel-item">
                                 <div class="card-header border-0" style="background:#fbefe5;">
-                                    <h5 class="mb-0 fw-bold text-center">Prefecture Ranking</h5>
+                                    <h5 class="mb-0 fw-bold text-center">{{ __('messages.home.prefecture_ranking_title') }}</h5>
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     @forelse ($prefectureRanked as $item)
@@ -120,17 +120,17 @@
                             <ul class="nav nav-tabs d-flex flex-nowrap custom-tabs text-center">
                                 <li class="nav-item tab-item">
                                     <a href="{{ route('home', ['order' => 'newest']) }}" class="tab-btn {{ request('order') === 'newest' || !request()->has('order') ? 'active' : '' }}">
-                                        Newest
+                                        {{ __('messages.home.sort_1') }}
                                     </a>
                                 </li>
                                 <li class="nav-item tab-item">
                                     <a href="{{ route('home', ['order' => 'most_liked']) }}" class="tab-btn {{ request('order') === 'most_liked' ? 'active' : '' }}">
-                                        Most liked
+                                        {{ __('messages.home.sort_2') }}
                                     </a>
                                 </li>
                                 <li class="nav-item tab-item">
                                     <a href="{{ route('home', ['order' => 'recommend']) }}" class="tab-btn {{ request('order') === 'recommend' ? 'active' : '' }}">
-                                        Recommend
+                                        {{ __('messages.home.sort_3') }}
                                     </a>
                                 </li>
                             </ul>
