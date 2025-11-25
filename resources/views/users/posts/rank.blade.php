@@ -32,21 +32,21 @@
                 <li class="nav-item tab-item">
                     <a href="{{ route('ranking.post', array_merge($query, ['order' => 'newest'])) }}"
                     class="tab-btn {{ $order === 'newest' ? 'active' : '' }}">
-                        Newest
+                        {{ __('messages.home.sort_1') }}
                     </a>
                 </li>
 
                 <li class="nav-item tab-item">
                     <a href="{{ route('ranking.post', array_merge($query, ['order' => 'most_liked'])) }}"
                     class="tab-btn {{ $order === 'most_liked' ? 'active' : '' }}">
-                        Most liked
+                        {{ __('messages.home.sort_2') }}
                     </a>
                 </li>
 
                 <li class="nav-item tab-item">
                     <a href="{{ route('ranking.post', array_merge($query, ['order' => 'recommend'])) }}"
                     class="tab-btn {{ $order === 'recommend' ? 'active' : '' }}">
-                        Recommend
+                        {{ __('messages.home.sort_3') }}
                     </a>
                 </li>
             </ul>

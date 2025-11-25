@@ -5,7 +5,7 @@
     <div class="card shadow border-0 rounded-4 p-4 mx-auto fade-in" style="max-width: 800px;">
         <div class="card-header bg-transparent">
             <h2 class="fw-bold text-center mb-4" style="color:#9F6B46;">
-                <i class="fa-solid fa-pen-to-square"></i> Edit Post
+                <i class="fa-solid fa-pen-to-square"></i> {{ __('messages.edit_post.main_title') }}
             </h2>
         </div>
 
@@ -15,31 +15,31 @@
                 @method('PATCH')
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Title</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.title') }}</label>
                     <input type="text" name="title" class="form-control post-input"
                         value="{{ old('title', $post->title) }}" required>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Description</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.description') }}</label>
                     <textarea name="content" class="form-control post-input" rows="4" required>{{ old('content', $post->content) }}</textarea>
                 </div>
 
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Date</label>
+                        <label class="form-label fw-bold">{{ __('messages.edit_post.date') }}</label>
                         <input type="date" name="date" class="form-control post-input"
                             value="{{ old('date', \Carbon\Carbon::parse($post->visited_at)->format('Y-m-d')) }}">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Time</label>
+                        <label class="form-label fw-bold">{{ __('messages.edit_post.time') }}</label>
                         <div class="d-flex align-items-center gap-1">
                             <input type="number" name="time_hour" class="form-control post-input"
                                 min="0" max="23" value="{{ old('time_hour', $post->time_hour) }}">
-                            <span>hour</span>
+                            <span>{{ __('messages.edit_post.hour') }}</span>
                             <input type="number" name="time_min" class="form-control post-input"
                                 min="0" max="59" value="{{ old('time_min', $post->time_min) }}">
-                            <span>min</span>
+                            <span>{{ __('messages.edit_post.min') }}</span>
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                     $old_categories = old('category', $post->categories->pluck('id')->toArray());
                 @endphp
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Categories (max 3)</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.categories') }}</label>
                     <div class="d-flex flex-wrap gap-2" >
                         @foreach ($all_categories as $category)
                             <div class="form-check" style="width: 130px">
@@ -62,9 +62,9 @@
                 </div>
 
                 <div class="mb-4" style="max-width:300px;">
-                    <label class="form-label fw-bold">Prefecture</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.prefecture') }}</label>
                     <select name="prefecture_id" class="form-select post-input" required>
-                        <option value="">Select Prefecture</option>
+                        <option value="">{{ __('messages.edit_post.prefecture_placeholder') }}</option>
                         @foreach($prefectures as $prefecture)
                             <option value="{{ $prefecture->id }}"
                                 {{ old('prefecture_id', $post->prefecture_id) == $prefecture->id ? 'selected' : '' }}>
@@ -75,16 +75,16 @@
                 </div>
 
                 <div class="mb-4" style="max-width:350px;">
-                    <label class="form-label fw-bold">Cost</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.cost') }}</label>
                     <div class="d-flex align-items-center gap-2">
-                        <span id="cost-current">¥{{ old('cost', $post->cost) }}</span>
+                        <span id="cost-current">{{ __('messages.edit_post.$') }}{{ old('cost', $post->cost) }}</span>
                         <input type="range" name="cost" min="0" max="10000" step="100"
                             value="{{ old('cost', $post->cost) }}" id="cost-slider" class="form-range">
                     </div>
                 </div>
 
                 <div class="mb-5">
-                    <label class="form-label fw-bold">Images (max 3 total)</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.image') }}</label>
                     <div class="d-flex gap-3" id="image-upload-area">
                         @foreach ($post->images as $image)
                         <div class="image-slot existing-image position-relative" data-image-id="{{ $image->id }}" 
@@ -109,7 +109,7 @@
                             <label class="d-flex justify-content-center align-items-center rounded-3 h-100 w-100"
                                 style="cursor: pointer; background-color: #f0f0f0; border: 1px solid #B0B0B0; color: #555;"
                                 for="new_image_file_0">
-                                <span class="small font-weight-bold">+ Add</span>
+                                <span class="small font-weight-bold">{{ __('messages.edit_post.add') }}</span>
                             </label>
                             <input type="file" class="d-none new-image-input" name="new_image[]" id="new_image_file_0" onchange="previewNewImage(this)" accept="image/*">
                         </div>
@@ -122,13 +122,13 @@
                     <a onclick="window.history.back()"
                        class="btn btn-cancel shadow-sm me-3"
                        style="min-width:150px; font-weight:bold;">
-                        Cancel
+                        {{ __('messages.edit_post.cancel') }}
                     </a>
 
                     <button type="submit"
                         class="btn btn-outline shadow-sm"
                         style="min-width:150px; font-weight:bold; transition:0.3s;">
-                        Update
+                        {{ __('messages.edit_post.button') }}
                     </button>
                 </div>
             </form>

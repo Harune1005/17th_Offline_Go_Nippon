@@ -80,4 +80,93 @@ return [
         'admin' => '管理',
         'profile' => 'プロフィール',
     ],
+
+    // admin
+    // user
+    'user' => [
+        'user' => 'ユーザー',
+        'post' => 'ポスト',
+        'category' => 'カテゴリー',
+        'search_placeholder' => '名前で検索する',
+        'search' => '検索',
+        'avatar' => 'アバター',
+        'name' => '名前',
+        'country' => '国',
+        'email' => 'メールアドレス',
+        'created_at' => '作成日時',
+        'status' => '状態',
+        'active' => '有効',
+        'deactive' => '無効',
+        'a_modal_title' => 'ユーザーを有効化',
+        'a_modal_text' => '本当にこのユーザーを有効にしますか',
+        'cancel' => 'キャンセル',
+        'activate' => '有効',
+        'd_modal_title' => 'ユーザーを無効化',
+        'd_modal_text' => '本当にこのユーザーを無効にしますか',
+        'cancel' => 'キャンセル',
+        'deactivate' => '無効',
+    ],
+
+    // post
+    'post' => [
+
+    ],
+
+    // category
+    'category' => [
+
+    ],
+
+    // create post
+    'create_post' => [
+        'main_title' => 'ポスト作成',
+        'title' => 'タイトル',
+        'description' => '説明',
+        'date' => '日程',
+        'time' => '所要時間',
+        'hour' => '時間',
+        'min' => '分',
+        'categories' => 'カテゴリー(最大3つ)',
+        'prefecture' => '都道府県',
+        'prefecture_placeholder' => '都道府県を選択',
+        'cost' => '値段',
+        '$' => '¥',
+        'image' => '写真(最大3つ)',
+        'add' => '+ 追加',
+        'cancel' => 'キャンセル',
+        'button' => '投稿',
+    ],
+
+    // edit post
+    'edit_post' => [
+        'main_title' => 'ポスト編集',
+        'title' => 'タイトル',
+        'description' => '説明',
+        'date' => '日程',
+        'time' => '所要時間',
+        'hour' => '時間',
+        'min' => '分',
+        'categories' => 'カテゴリー(最大3つ)',
+        'prefecture' => '都道府県',
+        'prefecture_placeholder' => '都道府県を選択',
+        'cost' => '値段',
+        '$' => '¥',
+        'image' => '写真(最大3つ)',
+        'add' => '+ 追加',
+        'cancel' => 'キャンセル',
+        'button' => '更新',
+    ],
+
+    // favorite post
+    'favorite' => [
+        'search_placeholder' => '検索する',
+        'prefecture' => '都道府県',
+        'prefecture_placeholder' => '選択する',
+        'category' => 'カテゴリー',
+        'category_placeholder' => '選択する',
+        'search' => '検索',
+        'sort_1' => '最新',
+        'sort_2' => '最古',
+        'sort_3' => 'いいね数',
+    ],
 ];
