@@ -224,6 +224,6 @@ return [
 
     // map
     'map' => [
-        'map_title' => 'Click prefecture toview your posts'
+        'map_title' => 'Click prefecture toview your posts',
     ],
 ];
