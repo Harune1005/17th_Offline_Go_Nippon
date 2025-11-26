@@ -169,4 +169,61 @@ return [
         'sort_2' => '最古',
         'sort_3' => 'いいね数',
     ],
+
+    // analytics
+    'analytics' => [
+        'title_1' => '~ 閲覧数 ~',
+        'followers' => 'フォロワー',
+        'non-followers' => '非フォロワー',
+        'subtitle_1' => 'トップ投稿',
+        'subtitle_2' => 'プロフィールのアクティビティ',
+        'visit' => 'プロフィール訪問数:',
+
+        'title_2' => '~ 反応 ~',
+        'subtitle_3' => '反応別',
+        'like' => 'いいね',
+        'comment' => 'コメント:',
+        'favorite' => 'お気に入り',
+
+        'title_3' => '~ フォロワー ~',
+        'subtitle_4' => 'フォロワー推移',
+        'country' => '上位の国',
+        'percent' => '% vs 前月',
+    ],
+
+    // profile
+    'profile' => [
+        'posts' => '投稿',
+        'followers' => 'フォロワー',
+        'following' => 'フォロー',
+        'country' => '国名: ',
+        'left_btn' => 'プロフィール編集',
+        'right_btn' => 'お気に入り投稿',
+        'map_title1' => 'マップをクリック！',
+        'map_title2' => '',
+    ],
+
+    // edit profile
+    'edit_profile' => [
+        'title' => 'プロフィール編集',
+        'formats' => '対応形式: jpeg, jpg, png, gif',
+        'size' => '最大ファイルサイズ: 1048Kb',
+        'name' => '名前',
+        'email' => 'メールアドレス',
+        'country' => '国',
+        'introduction' => '自己紹介',
+        'interest' => '興味',
+        'interest_sub' => '(最大3つまで)',
+        'password' => 'パスワード変更',
+        'password_placeholder' => '現在のパスワード',
+        'new_password_placeholder' => '新しいパスワード',
+        'confirm_password_placeholder' => '新しいパスワードの再確認',
+        'cancel' => 'キャンセル',
+        'save' => '保存',
+    ],
+
+    // map
+    'map' => [
+        'map_title' => '都道府県をクリック！',
+    ],
 ];

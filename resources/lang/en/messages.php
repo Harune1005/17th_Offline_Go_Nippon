@@ -169,4 +169,61 @@ return [
         'sort_2' => 'Oldest',
         'sort_3' => 'Most liked',
     ],
+
+    // analytics
+    'analytics' => [
+        'title_1' => '~ Views ~',
+        'followers' => 'Followers',
+        'non-followers' => 'Non-Followers',
+        'subtitle_1' => 'Top posts',
+        'subtitle_2' => 'Profile Activity',
+        'visit' => 'Profile visits:',
+
+        'title_2' => '~ Interaction ~',
+        'subtitle_3' => 'Byinterection',
+        'like' => 'Likes',
+        'comment' => 'Comments:',
+        'favorite' => 'Favorite',
+
+        'title_3' => '~ Followers ~',
+        'subtitle_4' => 'Followers Trend',
+        'country' => 'Top Countries',
+        'percent' => '% vs last month',
+    ],
+
+    // profile
+    'profile' => [
+        'posts' => 'Posts',
+        'followers' => 'Followers',
+        'following' => 'Following',
+        'country' => 'country: ',
+        'left_btn' => 'Edit profile',
+        'right_btn' => 'Favorite',
+        'map_title1' => 'Click map ',
+        'map_title2' => 'to view full map',
+    ],
+
+    // edit profile
+    'edit_profile' => [
+        'title' => 'Edit Profile',
+        'formats' => 'Acceptable formats: jpeg,jpg,png,gif',
+        'size' => 'Max file size: 1048Kb',
+        'name' => 'Name',
+        'email' => 'Email',
+        'country' => 'Country',
+        'introduction' => 'Introduction',
+        'interest' => 'Interest',
+        'interest_sub' => '(choose up to 3)',
+        'password' => 'CHange Password',
+        'password_placeholder' => 'Current Password',
+        'new_password_placeholder' => 'New Password',
+        'confirm_password_placeholder' => 'Confirm New Password',
+        'cancel' => 'Cancel',
+        'save' => 'Save',
+    ],
+
+    // map
+    'map' => [
+        'map_title' => 'Click prefecture toview your posts',
+    ],
 ];
