@@ -44,12 +44,6 @@
     fill: #F1BDB2;
   }
 
-.spinner-wrapper {
-  position: absolute;
-  bottom: 5%;
-  left: 63%;
-  z-index: 10;
-}
 
 .spinner-outer {
   position: relative;
@@ -207,13 +201,18 @@
     <div class="row mt-2 profile-row p-0">
         <div class="col-md-4">
             <div class="d-flex align-items-start profile-row flex-wrap">
-                <div class="me-3 mb-3">
+                <div class=" avatar-wrapper position-relative d-inline-block me-3 mb-3">
                     @if ($user->avatar)
                         <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="rounded-circle shadow-sm mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #9F6B46;">
                     @else
                         <i class="fa-solid fa-circle-user text-secondary mb-3" style="font-size: 110px; border: 5px solid #9F6B46; border-radius: 50%; 
                         padding:0;" ></i>
                     @endif
+                    <img  src="{{ asset($latestBadge->image_path) }}" 
+                          alt="{{ $latestBadge->name }}"
+                          class="latest-badge position-absolute"
+                          style="width: 55px; height: 55px; object-fit: cover;bottom: 10%; right: -20%;"
+                          >
                 </div>
                 <div class="flex-grow-1 text-start">
                     <h3 style="margin-left: 15px;">{{ $user->name }}</h3>
@@ -227,7 +226,6 @@
                             <div class="fs-5 fw-bold">{{ $user->followers->count() }}</div>
                             <div class="small">{{ $user->followers->count() == 1 ? 'Follower' : 'Followers' }}</div>
                         </a>
-
                         <a href="{{ route('profile.following', ['id' => $user->id, 'tab' => 'following']) }}" class="text-decoration-none flex-fill">
                             <div class="fs-5 fw-bold">{{ $user->following->count() }}</div>
                             <div class="small">Following</div>
@@ -293,7 +291,27 @@
                 @endif
             </div>
 
-        {{-- Map --}}
+        {{-- Badge --}}
+            <div class="d-flex flex-wrap gap-3 mb-3">
+              <p class="fw-bold text-center">Your <br> &nbsp; Badges</p>
+              @foreach ($allBadges as $badge)
+                  <div class="d-flex flex-column align-items-center">
+                      <img 
+                          src="{{ asset($badge->image_path) }}" 
+                          alt="{{ $badge->name }}" 
+                          class="brand"
+                          style="width: 50px; height:50px;
+                              @if(!in_array($badge->id, $earnedBadgeIds)) 
+                                  filter: grayscale(100%); opacity: 0.3;
+                              @endif
+                          "
+                      >
+                      <p class="mb-0 text-center" style="color: #CAAE99; font-size:10px;">{{ $badge->name }}</p>
+                  </div>
+              @endforeach
+            </div>
+                      
+      {{-- Map --}}
             <div class="row">
                 <div class="map-container rounded-2 ms-2">
                   <p class="fw-bold h5 click-map text-center mt-3">Click map <span>to view full map</span></p>

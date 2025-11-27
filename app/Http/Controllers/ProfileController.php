@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Badge;
 use App\Models\Category;
 use App\Models\Follow;
 use App\Models\Post;
 use App\Models\Prefecture;
 use App\Models\ProfileVisit;
 use App\Models\User;
+use App\Services\BadgeService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -63,14 +65,25 @@ class ProfileController extends Controller
             ->get()
             ->map(function ($pref) use ($prefecture_ids) {
                 $pref->has_post = $prefecture_ids->contains($pref->id);
-
                 return $pref;
             });
+        
+        $allBadges = Badge::all();
+        $earnedBadges = $user->badges()->get();
+        $earnedBadgeIds = $earnedBadges->pluck('id')->toArray(); 
+        $latestBadge = $user->badges()->orderBy('badge_user.awarded_at', 'desc')->first();
+        $notEarnedBadges = Badge::whereNotIn('id', $earnedBadges->pluck('id'))->get();    
 
         return view('users.profile.show')
             ->with('user', $user)
             ->with('prefectures', $prefectures)
-            ->with('posts', $posts);
+            ->with('posts', $posts)
+            ->with('earnedBadges', $earnedBadges)
+            ->with('notEarnedBadges', $notEarnedBadges)
+            ->with('allBadges', $allBadges)
+            ->with('earnedBadgeIds', $earnedBadgeIds)
+            ->with('latestBadge', $latestBadge); 
+
 
     }
 
@@ -95,7 +108,7 @@ class ProfileController extends Controller
             'introduction' => 'max:100',
             'avatar' => 'mimes:jpg,jpeg,png,gif|max:1048',
             'category' => 'nullable|array|max:3',
-            'category.*' => 'exists:categories,id', // ← 実在するIDのみ
+            'category.*' => 'exists:categories,id', 
             'current_password' => 'nullable|required_with:password|string',
             'password' => 'nullable|min:8|confirmed',
         ]);

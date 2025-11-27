@@ -353,5 +353,40 @@
         }
     });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
+
+    @if(session('new_badge'))
+    <div class="modal fade" id="badgeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content d-flex justify-content-center align-items-center text-center p-4">
+                {{-- modal header --}}
+                <div class="modal-header" style="background-color:#b4a08b; color: #fff; border-bottom: none;">
+                    <h3 class="h5 modal-title fw-bold mb-0">New Badge Earned!</h3>
+                </div>
+                {{-- modal body --}}
+                <div class="modal-body text-center">
+                    <img src="{{ asset(session('new_badge')['image_path']) }}" 
+                        alt="{{ session('new_badge')['name'] }}"
+                        style="width:140px; height:140px; object-fit:cover;">
+                    <h6 class="mt-2 fw-bold" style="color: #9F6B46;">{{ session('new_badge')['name'] }}</h6>
+                    <p class="text-sm" style="color: #CAAE99;">{{ session('new_badge')['description'] }}</p>
+                    <p class="mb-2 text-sm" style="color:#CAAE99">You can see your whole badge in Profile Page.</p>
+                    <button type="button" class="btn btn-outline mt-2" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var badgeModalEl = document.getElementById('badgeModal');
+            if (badgeModalEl) {
+                var badgeModal = new bootstrap.Modal(badgeModalEl);
+                badgeModal.show();
+            }
+        });
+    </script>
+@endif
+
 </body>
 </html>

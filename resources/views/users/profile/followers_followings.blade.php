@@ -90,10 +90,9 @@
     }
         .map-container {
     position: relative;
-    width: 100%;
+    width: 420px;
     height: 350px;
     background-color: #E6F4FA;
-    border-radius: 20px;
     overflow: hidden;
     }
 
@@ -107,7 +106,6 @@
         fill: #F1BDB2;
     }
 
-    /* 外円 */
     .spinner-outer {
     position: relative;
     width: 150px;
@@ -117,8 +115,8 @@
     }
     .spinner-wrapper {
     position: absolute;
-    bottom: 5%;
-    left: 65%;
+    bottom: 10px;
+    right: 10px;
     z-index: 10;
     }
 
@@ -130,19 +128,24 @@
     transition: background 0.5s ease;
     }
 
-    /* 中央のテキスト */
-    .spinner-text {
+    .spinner-text  {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
+
     }
 
     .spinner-text p {
     margin: 0;
     }
 
+    .spinner-text .small-text {
+    font-size: 15px;
+    color: #CAAE99;
+    
+}
     .spinner-text .label {
     font-family: 'Source Serif Pro', serif;
     color: #9F6B46;
@@ -155,22 +158,28 @@
     color: #9F6B46;
     font-weight: bold;
     font-size: 45px;
+    line-height: 1;
     }
 
 </style>
 
 <div class="container">
-    <div class="row mt-2 justify-content-center">
-        <div class="col d-none d-md-block">
+    <div class="row mt-2  profile-row p-0">
+        <div class="col-md-4">
             {{-- profile --}}
-            <div class="d-flex align-items-start ps-2 profile-row flex-wrap">
-                <div class="me-3 mb-3">
+            <div class="d-flex align-items-start  profile-row flex-wrap ">
+                <div class=" avatar-wrapper position-relative d-inline-block me-3 mb-3">
                     @if ($user->avatar)
                         <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="rounded-circle shadow-sm mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #9F6B46;">
                     @else
                         <i class="fa-solid fa-circle-user text-secondary mb-3" style="font-size: 110px; border: 5px solid #9F6B46; border-radius: 50%; 
                         padding:0;" ></i>
                     @endif
+                    {{-- <img  src="{{ asset($latestBadge->image_path) }}" 
+                          alt="{{ $latestBadge->name }}"
+                          class="latest-badge position-absolute"
+                          style="width: 55px; height: 55px; object-fit: cover;bottom: 10%; right: -20%;"
+                          > --}}
                 </div>
                 <div class="flex-grow-1 text-start">
                     <h3 style="margin-left: 15px;">{{ $user->name }}</h3>
@@ -245,11 +254,31 @@
                     </div>
                 @endif
             </div>
-            
+            {{-- Badge
+            <div class="d-flex flex-wrap gap-3 mb-3">
+                <p class="fw-bold text-center">Your <br> &nbsp; Badges</p>
+                @foreach ($allBadges as $badge)
+                    <div class="d-flex flex-column align-items-center">
+                        <img 
+                            src="{{ asset($badge->image_path) }}" 
+                            alt="{{ $badge->name }}" 
+                            class="brand"
+                            style="width: 50px; height:50px;
+                                @if(!in_array($badge->id, $earnedBadgeIds)) 
+                                    filter: grayscale(100%); opacity: 0.3;
+                                @endif
+                            "
+                        >
+                        <p class="mb-0 text-center" style="color: #CAAE99; font-size:10px;">{{ $badge->name }}</p>
+                    </div>
+                @endforeach
+            </div>
+ --}}
             {{-- map --}}
            <div class="row">
-                <p class="fw-bold h5 click-map text-center">Click map <span>to view full map</span></p>
-                <div class="map-container">
+                <div class="map-container rounded-2 ms-2">
+                    <p class="fw-bold h5 click-map text-center mt-3">Click map <span>to view full map</span></p>
+
                     <a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
                         <div id="map" style="width: 100%; height: 350px;"></div>
                     </a>
@@ -258,7 +287,10 @@
                             <div class="spinner-fill"></div>
                             <div class="spinner-text">
                                 <p class="label">Completed</p>
-                                <p class="count">5 <span style="font-size: 20px">/47</span></p>
+                                <p class="count">5
+                                     <span style="font-size: 20px">/47</span>
+                                </p>
+                                <p class="small-text">Prefectures</p>
                             </div>
                         </div>
                     </div>
@@ -313,15 +345,18 @@
 
                             @foreach ($user->followers as $follower)
                                 <div class="d-flex align-items-center rounded-3 p-3 mt-3" style="height: 100px;">
-                                    <a href="{{ route('profile.show', $follower->id) }}" class="text-decoration-none">
-                                        @if ($follower->avatar)
-                                            <img src="{{ $follower->avatar }}" alt="{{ $follower->name }}"
-                                                class="rounded-circle me-4 align-items-center" style="width:60px; height:60px;">
-                                        @else
-                                            <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4" style="font-size:60px;"></i>
-                                        @endif
-                                    </a>
-
+                                        <a href="{{ route('profile.show', $follower->id) }}" class="text-decoration-none avatar-wrapper position-relative d-inline-block">
+                                            @if ($follower->avatar)
+                                                <img src="{{ $follower->avatar }}" alt="{{ $follower->name }}"
+                                                    class="rounded-circle me-4 align-items-center" style="width:60px; height:60px;">
+                                            @else
+                                                <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4" style="font-size:60px;"></i>
+                                            @endif
+                                                 {{-- badge --}}
+                                            <img src="{{ asset('images/badges/fujisan02.png') }}" alt="Badge" class="position-absolute border-0"
+                                            style="width: 40px; height: 40px; bottom: 10px; right: 0;">                      
+                                        </a>
+                                        
                                     <div class="d-flex flex-column align-items-start">
                                         <h6 class="mb-0 fw-bold">{{ $follower->name }}</h6>
                                     </div>
@@ -679,22 +714,6 @@ const prefectureNameMap = {
     updateSpinner(prefectures);
 }
 
-    //   function updateSpinner(prefectures) {
-    //   const completed = prefectures.filter(p => p.has_post).length;
-    //   console.log(completed);
-    //   const total = 47;
-    //   const degree = (360 / total) * completed;
-
-    //   const spinnerFill = document.querySelector('.spinner-fill');
-    //   if(spinnerFill){
-    //     spinnerFill.style.transform = `rotate(${degree - 90}deg)`; 
-    //   }
-
-    //   const countElement = document.querySelector('.spinner-text .count');
-    //   if(countElement){
-    //     countElement.innerHTML = `${completed}<span style="font-size:27px">/47</span>`;
-    //   }
-    // }
     drawMap();
 
     const userId = {{ $user->id ?? 'null' }};

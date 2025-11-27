@@ -42,8 +42,8 @@ class FollowController extends Controller
         } elseif ($tab === 'followers') {
             return redirect()->route('profile.followers', $currentUser->id);
         }
-
-        return redirect()->route('profile.show', $user_id);
+        
+        return redirect()->route('profile.show',$user_id);
     }
 
     public function destroy(Request $request, $user_id)

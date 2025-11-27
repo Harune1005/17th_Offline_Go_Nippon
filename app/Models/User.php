@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -20,7 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // protected $dates = ['deleted_at'];
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable ,SoftDeletes;
 
     const ADMIN_ROLE_ID = 1;
 
@@ -101,22 +102,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->following()->where('following_id', $userId)->exists();
     }
 
-    // use HasFactory, SoftDeletes;
-
-    // public function up()
-    // {
-    //     Schema::table('users', function (Blueprint $table) {
-    //         $table->softDeletes(); // deleted_at カラムを追加
-    //     });
-    // }
-
-    // public function down()
-    // {
-    //     Schema::table('users', function (Blueprint $table) {
-    //         $table->dropSoftDeletes();
-    //     });
-    // }
-
     public function isAdmin(): bool
     {
         return $this->role_id === 1;
@@ -130,11 +115,18 @@ class User extends Authenticatable implements MustVerifyEmail
     public function conversations()
     {
         return $this->hasMany(Conversation::class, 'user1_id')
-            ->onWhere('user2_id', $this->id);
+                    ->onWhere('user2_id', $this->id);
     }
 
     public function messages()
     {
         return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function badges()
+    {
+        return $this->BelongsToMany(Badge::class, 'badge_user')
+                    ->withPivot('awarded_at')
+                    ->withTimestamps();
     }
 }
