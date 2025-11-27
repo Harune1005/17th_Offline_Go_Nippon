@@ -159,17 +159,17 @@
     <div class="login-container">
         
         <div class="text-center">
-            <h2 class="log-in-title">Log in</h2>
-            <p class="welcome-message">Welcome back!</p>
-            <p class="stay-connected-message">To stay connected, please login with your details.</p>
+            <h2 class="log-in-title">{{ __('messages.login.title') }}</h2>
+            <p class="welcome-message">{{ __('messages.login.message_1') }}</p>
+            <p class="stay-connected-message">{{ __('messages.login.message_2') }}</p>
         </div>
 
         <form method="POST" action="{{ route('login') }}" class="login-form">
             @csrf
 
             <div class="mb-3">
-                <label for="email" class="form-label login-label">Email</label>
-                <input id="email" type="email" class="form-control login-input @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Enter your email">
+                <label for="email" class="form-label login-label">{{ __('messages.login.email') }}</label>
+                <input id="email" type="email" class="form-control login-input @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="{{ __('messages.login.email_placeholder') }}">
 
                 @error('email')
                     <span class="invalid-feedback" role="alert">
@@ -179,9 +179,9 @@
             </div>
 
             <div class="mb-4">
-                <label for="password" class="form-label login-label">Password</label>
+                <label for="password" class="form-label login-label">{{ __('messages.login.password') }}</label>
                 <div class="password-field-container">
-                    <input id="password" type="password" class="form-control login-input @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Password">
+                    <input id="password" type="password" class="form-control login-input @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="{{ __('messages.login.password') }}">
                     <span class="password-toggle-icon" onclick="togglePasswordVisibility()">
                        <i class="fa-solid fa-eye-slash text-secondary"></i>
                     </span>
@@ -196,19 +196,19 @@
 
             <div class="d-grid mb-3">
                 <button type="submit" class="btn custom-sign-in-btn text-white">
-                    Sign in
+                    {{ __('messages.login.submit') }}
                 </button>
             </div>
 
             <div class="d-grid mb-4">
                 <a href="{{ route('social.redirect', 'google') }}" 
                 class="btn google-sign-in-btn d-flex justify-content-center align-items-center">
-                    <i class="fa-brands fa-google me-2"></i> Sign in with Google
+                    <i class="fa-brands fa-google me-2"></i> {{ __('messages.login.submit_google') }}
                 </a>
             </div>
 
             <div class="text-center signup-text text-secondary">
-                Don't have an account? <a href="{{ route('register') ?? '#' }}" class="signup-link">Sign up</a>
+                {{ __('messages.login.to_signup') }} <a href="{{ route('register') ?? '#' }}" class="signup-link">{{ __('messages.login.signup') }}</a>
             </div>
 
         </form>

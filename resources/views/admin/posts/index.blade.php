@@ -8,13 +8,19 @@
   {{-- Navigation --}}
   <div class="row nav nav-underline text-center">
     <div class="col-auto">
-      <a class="nav-link px-3" href="{{ route('admin.users') }}">User</a>
+      <a class="nav-link px-3" href="{{ route('admin.users') }}">
+        {{ __('messages.user.user') }}
+      </a>
     </div>
     <div class="col-auto">
-      <a class="nav-link px-3 active" href="{{ route('admin.posts') }}">Post</a>
+      <a class="nav-link px-3 active" href="{{ route('admin.posts') }}">
+        {{ __('messages.user.post') }}
+      </a>
     </div>
     <div class="col-auto">
-      <a class="nav-link" href="{{ route('admin.categories') }}">Category</a>
+      <a class="nav-link" href="{{ route('admin.categories') }}">
+        {{ __('messages.user.category') }}
+      </a>
     </div>
   </div>
 

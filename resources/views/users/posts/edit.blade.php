@@ -1,13 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-
 <div class="container mt-3">
     <div class="card shadow border-0 rounded-4 p-4 mx-auto fade-in" style="max-width: 800px;">
-        <!-- Header -->
         <div class="card-header bg-transparent">
             <h2 class="fw-bold text-center mb-4" style="color:#9F6B46;">
-                <i class="fa-solid fa-pen-to-square"></i> Edit Post
+                <i class="fa-solid fa-pen-to-square"></i> {{ __('messages.edit_post.main_title') }}
             </h2>
         </div>
 
@@ -16,48 +14,41 @@
                 @csrf
                 @method('PATCH')
 
-                {{-- Title --}}
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Title</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.title') }}</label>
                     <input type="text" name="title" class="form-control post-input"
                         value="{{ old('title', $post->title) }}" required>
                 </div>
 
-                {{-- Description --}}
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Description</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.description') }}</label>
                     <textarea name="content" class="form-control post-input" rows="4" required>{{ old('content', $post->content) }}</textarea>
                 </div>
 
-                {{-- Date / Time --}}
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Date</label>
+                        <label class="form-label fw-bold">{{ __('messages.edit_post.date') }}</label>
                         <input type="date" name="date" class="form-control post-input"
                             value="{{ old('date', \Carbon\Carbon::parse($post->visited_at)->format('Y-m-d')) }}">
                     </div>
-
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Time</label>
+                        <label class="form-label fw-bold">{{ __('messages.edit_post.time') }}</label>
                         <div class="d-flex align-items-center gap-1">
                             <input type="number" name="time_hour" class="form-control post-input"
                                 min="0" max="23" value="{{ old('time_hour', $post->time_hour) }}">
-                            <span>hour</span>
-
+                            <span>{{ __('messages.edit_post.hour') }}</span>
                             <input type="number" name="time_min" class="form-control post-input"
                                 min="0" max="59" value="{{ old('time_min', $post->time_min) }}">
-                            <span>min</span>
+                            <span>{{ __('messages.edit_post.min') }}</span>
                         </div>
                     </div>
                 </div>
 
-                {{-- Categories --}}
                 @php
                     $old_categories = old('category', $post->categories->pluck('id')->toArray());
                 @endphp
-
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Categories (max 3)</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.categories') }}</label>
                     <div class="d-flex flex-wrap gap-2" >
                         @foreach ($all_categories as $category)
                             <div class="form-check" style="width: 130px">
@@ -70,11 +61,10 @@
                     </div>
                 </div>
 
-                {{-- Prefecture --}}
                 <div class="mb-4" style="max-width:300px;">
-                    <label class="form-label fw-bold">Prefecture</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.prefecture') }}</label>
                     <select name="prefecture_id" class="form-select post-input" required>
-                        <option value="">Select Prefecture</option>
+                        <option value="">{{ __('messages.edit_post.prefecture_placeholder') }}</option>
                         @foreach($prefectures as $prefecture)
                             <option value="{{ $prefecture->id }}"
                                 {{ old('prefecture_id', $post->prefecture_id) == $prefecture->id ? 'selected' : '' }}>
@@ -84,48 +74,61 @@
                     </select>
                 </div>
 
-                {{-- Cost --}}
                 <div class="mb-4" style="max-width:350px;">
-                    <label class="form-label fw-bold">Cost</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.cost') }}</label>
                     <div class="d-flex align-items-center gap-2">
-                        <span id="cost-current">¥{{ old('cost', $post->cost) }}</span>
+                        <span id="cost-current">{{ __('messages.edit_post.$') }}{{ old('cost', $post->cost) }}</span>
                         <input type="range" name="cost" min="0" max="10000" step="100"
                             value="{{ old('cost', $post->cost) }}" id="cost-slider" class="form-range">
                     </div>
                 </div>
 
-                {{-- Existing Images --}}
-                <div class="mb-4">
-                    <label class="form-label fw-bold">Current Images</label>
-                    <div id="existing-images" class="image-preview-area">
-                        @foreach($post->images as $image)
-                            <div class="image-item" data-id="{{ $image->id }}">
-                                <img src="{{ asset('storage/' . $image->image) }}" alt="">
-                                <span class="remove-btn">×</span>
-                            </div>
+                <div class="mb-5">
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.image') }}</label>
+                    <div class="d-flex gap-3" id="image-upload-area">
+                        @foreach ($post->images as $image)
+                        <div class="image-slot existing-image position-relative" data-image-id="{{ $image->id }}" 
+                            style="width: 100px; height: 100px; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.15);">
+                            <img src="{{ asset('storage/' . $image->image) }}" alt="existing image" 
+                                style="width:100%; height:100%; object-fit:cover;">
+                            <button type="button"
+                                class="delete-existing-image position-absolute"
+                                style="top: 4px;right: 4px; width: 20px; height: 20px; font-size: 0.8rem; border: none; border-radius: 50%;
+                                    background-color: #9F6B46; color: white; cursor: pointer; display: flex; align-items: center;justify-content: center;opacity: 1;"
+                                aria-label="Delete Image"
+                                data-image-id="{{ $image->id }}"
+                                onclick="deleteExistingImage(this)"
+                            >
+                                &times;
+                            </button>
+                            <input type="hidden" name="deleted_images[]" class="deleted-image-input" value="" disabled>
+                        </div>
                         @endforeach
+
+                        <div class="image-slot add-new-slot" id="add-slot" style="width: 100px; height: 100px;">
+                            <label class="d-flex justify-content-center align-items-center rounded-3 h-100 w-100"
+                                style="cursor: pointer; background-color: #f0f0f0; border: 1px solid #B0B0B0; color: #555;"
+                                for="new_image_file_0">
+                                <span class="small font-weight-bold">{{ __('messages.edit_post.add') }}</span>
+                            </label>
+                            <input type="file" class="d-none new-image-input" name="new_image[]" id="new_image_file_0" onchange="previewNewImage(this)" accept="image/*">
+                        </div>
                     </div>
+                    @error('new_image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                    @error('new_image.*') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                 </div>
 
-                {{-- Add new images --}}
-                <div class="mb-4">
-                    <label class="form-label fw-bold">Add New Images (max 3 total)</label>
-                    <div id="image-inputs"></div>
-                    <div id="image-previews" class="image-preview-area"></div>
-                </div>
-
-                {{-- Buttons --}}
                 <div class="text-end mt-4">
                     <a onclick="window.history.back()"
                        class="btn btn-cancel shadow-sm me-3"
                        style="min-width:150px; font-weight:bold;">
-                        Cancel
+                        {{ __('messages.edit_post.cancel') }}
                     </a>
 
                     <button type="submit"
                         class="btn btn-outline shadow-sm"
                         style="min-width:150px; font-weight:bold; transition:0.3s;">
-                        Update
+                        {{ __('messages.edit_post.button') }}
                     </button>
                 </div>
             </form>
@@ -135,101 +138,123 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const MAX_IMAGES = 3;
-    const form = document.getElementById('edit-form');
-    const existingImages = document.querySelector('#existing-images');
-    const container = document.getElementById('image-inputs');
-    const previewArea = document.getElementById('image-previews');
-    let count = existingImages.querySelectorAll('.image-item').length;
+    updateAddSlotVisibility();
 
-    // --- 既存画像削除 ---
-    existingImages.addEventListener('click', function(e) {
-        if (!e.target.classList.contains('remove-btn')) return;
+    document.querySelector('form').addEventListener('submit', function(e) {
+        if (getCurrentImageCount() > 3) {
+            alert('You can upload up to 3 images.');
+            e.preventDefault();
+        }
+    });
+});
 
-        const imageDiv = e.target.closest('.image-item');
-        const imageId = imageDiv.dataset.id;
+function getCurrentImageCount() {
+    const existingCount = document.querySelectorAll('.existing-image:not(.d-none)').length;
+    const newCount = document.querySelectorAll('.new-image-slot').length;
+    return existingCount + newCount;
+}
 
-        if (imageId) {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'deleted_images[]';
-            input.value = imageId;
-            form.appendChild(input);
+function updateAddSlotVisibility() {
+    const addSlot = document.getElementById('add-slot');
+    if (addSlot) {
+        getCurrentImageCount() >= 3 ? addSlot.classList.add('d-none') : addSlot.classList.remove('d-none');
+    }
+}
+
+let newImageIndex = 0;
+
+function previewNewImage(input) {
+    const file = input.files[0];
+    const addSlot = input.closest('.add-new-slot');
+    if (!file || !addSlot) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        addSlot.classList.remove('add-new-slot');
+        addSlot.classList.add('new-image-slot');
+        addSlot.style.position = 'relative';
+        addSlot.innerHTML = `
+            <img src="${e.target.result}" alt="new image" class="rounded-3" style="width: 100%; height: 100%; object-fit: cover; border: 1px solid #ccc;">
+            <button type="button" class="delete-new-image position-absolute"
+                style="top:4px; right:4px; width:20px; height:20px; font-size:0.8rem; border:none; border-radius:50%; background-color:#9F6B46; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:1;"
+                aria-label="Delete Image"
+                onclick="deleteNewImage(this)">&times;</button>
+            <input type="file" class="d-none new-image-input" name="new_image[]" accept="image/*">
+        `;
+
+        const newFileInput = addSlot.querySelector('input[type="file"]');
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        newFileInput.files = dataTransfer.files;
+
+        addSlot.removeAttribute('id');
+
+        if (getCurrentImageCount() < 3) {
+            newImageIndex++;
+            const newAddSlot = document.createElement('div');
+            newAddSlot.className = 'image-slot add-new-slot';
+            newAddSlot.id = 'add-slot';
+            newAddSlot.style.cssText = 'width:100px; height:100px;';
+            newAddSlot.innerHTML = `
+                <label class="d-flex justify-content-center align-items-center rounded-3 h-100 w-100"
+                    style="cursor:pointer; background-color:#f0f0f0; border:1px solid #ccc; color:#555;"
+                    for="new_image_file_${newImageIndex}">
+                    <span class="small font-weight-bold">+ Add</span>
+                </label>
+                <input type="file" class="d-none new-image-input" name="new_image[]" id="new_image_file_${newImageIndex}" onchange="previewNewImage(this)" accept="image/*">
+            `;
+            document.getElementById('image-upload-area').appendChild(newAddSlot);
         }
 
-        imageDiv.remove();
-        count--;
-        if (count < MAX_IMAGES && !container.querySelector('input[type=file]')) addInput();
-    });
+        updateAddSlotVisibility();
+    };
+    reader.readAsDataURL(file);
+}
 
-    // --- 新規画像追加 ---
-    function addInput() {
-        if (count >= MAX_IMAGES) return;
+function deleteExistingImage(button) {
+    const slot = button.closest('.image-slot');
+    const imageId = button.getAttribute('data-image-id');
+    const hiddenInput = slot.querySelector('.deleted-image-input');
+    hiddenInput.value = imageId;
+    hiddenInput.disabled = false;
+    slot.classList.add('d-none');
+    updateAddSlotVisibility();
+}
 
-        const wrapper = document.createElement('div');
-        const label = document.createElement('label');
-        const input = document.createElement('input');
-
-        wrapper.classList.add('image-controls');
-        label.textContent = '+ Add';
-        label.classList.add('image-btn');
-        input.type = 'file';
-        input.name = 'new_image[]';
-        input.accept = 'image/*';
-        input.style.display = 'none';
-
-        label.addEventListener('click', () => input.click());
-        wrapper.append(label, input);
-        container.appendChild(wrapper);
-
-        input.addEventListener('change', function() {
-            if (!this.files[0]) return;
-            count++;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const div = document.createElement('div');
-                div.classList.add('image-item');
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                const removeBtn = document.createElement('span');
-                removeBtn.classList.add('remove-btn');
-                removeBtn.textContent = '×';
-
-                removeBtn.addEventListener('click', () => {
-                    div.remove();
-                    input.remove();
-                    count--;
-                    if (count < MAX_IMAGES && !container.querySelector('input[type=file]')) addInput();
-                });
-
-                div.append(img, removeBtn);
-                previewArea.appendChild(div);
-            };
-            reader.readAsDataURL(this.files[0]);
-            label.style.display = 'none';
-
-            if (count < MAX_IMAGES) addInput();
-        });
+function deleteNewImage(button) {
+    const slot = button.closest('.image-slot');
+    slot.remove();
+    if (!document.querySelector('.add-new-slot')) {
+        newImageIndex++;
+        const newAddSlot = document.createElement('div');
+        newAddSlot.className = 'image-slot add-new-slot';
+        newAddSlot.id = 'add-slot';
+        newAddSlot.style.cssText = 'width:100px; height:100px;';
+        newAddSlot.innerHTML = `
+            <label class="d-flex justify-content-center align-items-center rounded-3 h-100 w-100"
+                style="cursor:pointer; background-color:#f0f0f0; border:1px solid #ccc; color:#555;"
+                for="new_image_file_${newImageIndex}">
+                <span class="small font-weight-bold">+ Add</span>
+            </label>
+            <input type="file" class="d-none new-image-input" name="new_image[]" id="new_image_file_${newImageIndex}" onchange="previewNewImage(this)" accept="image/*">
+        `;
+        document.getElementById('image-upload-area').appendChild(newAddSlot);
     }
-    if (count < MAX_IMAGES) addInput();
+    updateAddSlotVisibility();
+}
 
-    // --- コストスライダー ---
-    const costSlider = document.getElementById('cost-slider');
-    const costDisplay = document.getElementById('cost-current');
-    costSlider?.addEventListener('input', () => {
-        costDisplay.textContent = '¥' + costSlider.value;
-    });
+const costSlider = document.getElementById('cost-slider');
+const costDisplay = document.getElementById('cost-current');
+costSlider?.addEventListener('input', () => {
+    costDisplay.textContent = '¥' + costSlider.value;
+});
 
-    // --- カテゴリ最大3制限 ---
-    document.querySelectorAll('.category-checkbox').forEach(cb => {
-        cb.addEventListener('change', function() {
-            const checked = document.querySelectorAll('.category-checkbox:checked');
-            if (checked.length > 3) {
-                this.checked = false;
-                alert('You can select up to 3 categories.');
-            }
-        });
+document.querySelectorAll('.category-checkbox').forEach(cb => {
+    cb.addEventListener('change', function() {
+        if (document.querySelectorAll('.category-checkbox:checked').length > 3) {
+            this.checked = false;
+            alert('You can select up to 3 categories.');
+        }
     });
 });
 </script>

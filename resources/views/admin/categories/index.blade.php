@@ -8,13 +8,19 @@
     {{-- Navigation --}}
     <div class="row nav nav-underline text-center">
         <div class="col-auto">
-            <a class="nav-link px-3" href="{{ route('admin.users') }}">User</a>
+            <a class="nav-link px-3" href="{{ route('admin.users') }}">
+                {{ __('messages.user.user') }}
+            </a>
         </div>
         <div class="col-auto">
-            <a class="nav-link px-3" href="{{ route('admin.posts') }}">Post</a>
+            <a class="nav-link px-3" href="{{ route('admin.posts') }}">
+                {{ __('messages.user.post') }}
+            </a>
         </div>
         <div class="col-auto">
-            <a class="nav-link active" href="{{ route('admin.categories') }}">Category</a>
+            <a class="nav-link active" href="{{ route('admin.categories') }}">
+                {{ __('messages.user.category') }}
+            </a>
         </div>
     </div>
 
@@ -25,11 +31,12 @@
         <form action="{{ route('admin.categories.store') }}" method="post" class="row justify-content-center gap-2">
             @csrf
               <div class="col-5">
-                  <input type="text" name="name" class="form-control flex-grow-1" placeholder="Add a category..." value="{{ old('name') }}">
+                  <input type="text" name="name" class="form-control flex-grow-1" placeholder="{{ __('messages.category.placeholder') }}" value="{{ old('name') }}">
               </div>
               <div class="col-auto">
                 <button type="submit" class="btn btn-outline">
-                    <i class="fa-solid fa-plus"></i> Add
+                    <i class="fa-solid fa-plus"></i> 
+                    {{ __('messages.category.add') }}
                 </button>
               </div>
             </div>
@@ -47,10 +54,10 @@
             <thead>
                 <tr class="fs-5">
                     <th>#</th>
-                    <th>Name</th>
-                    <th>Count</th>
-                    <th>Last Update</th>
-                    <th>Action</th>
+                    <th>{{ __('messages.category.name') }}</th>
+                    <th>{{ __('messages.category.count') }}</th>
+                    <th>{{ __('messages.category.update') }}</th>
+                    <th>{{ __('messages.category.action') }}</th>
                 </tr>
             </thead>
             <tbody>

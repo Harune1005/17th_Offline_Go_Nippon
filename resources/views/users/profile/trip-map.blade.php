@@ -308,15 +308,15 @@ div{
     {{-- Map  --}}
   <div class="row">
     <div class="col" style="width: 50vh; height: 50vh;">
-        <p class="fw-bold h2 mt-5 text-center  d-flex justify-content-center flex-wrap-nowrap" style="white-space: nowrap;">Click prefecture<span>to view your posts</span></p>
+        <p class="fw-bold h2 mt-5 text-center  d-flex justify-content-center flex-wrap-nowrap" style="white-space: nowrap;">{{ __('messages.map.map_title1') }}<span>{{ __('messages.map.map_title2') }}</span></p>
             <div class="map-container">
                  <div id="map" class="map"></div>
                     <div class="spinner-wrapper">
                         <div class="spinner-outer">
                             <div class="spinner-text">
-                                <p class="label  p-0 m-0">Completed</p>
+                                <p class="label  p-0 m-0">{{ __('messages.map.completed') }}</p>
                                 <p class="count p-0 m-0">0<span style="font-size: 27px">/47</span></p>
-                                <p class="small-text">Prefectures</p>
+                                <p class="small-text">{{ __('messages.map.prefecture') }}</p>
                             </div>
                         </div>
                     </div>

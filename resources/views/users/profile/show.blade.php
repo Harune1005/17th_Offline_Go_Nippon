@@ -221,23 +221,34 @@
                     <div class="d-flex justify-content-between text-center fw-semibold flex-wrap number">
                         <a href="{{ route('profile.show', $user->id) }}" class="text-decoration-none flex-fill">
                             <div class="fs-5 fw-bold">{{ $user->posts->count() }}</div>
-                            <div class="small">Posts</div>
+                            <div class="small">
+                              {{ __('messages.profile.posts') }}
+                            </div>
                         </a>
                         <a href="{{ route('profile.followers', ['id' => $user->id, 'tab' => 'followers']) }}" class="text-decoration-none flex-fill">
                             <div class="fs-5 fw-bold">{{ $user->followers->count() }}</div>
-                            <div class="small">{{ $user->followers->count() == 1 ? 'Follower' : 'Followers' }}</div>
+                            <div class="small">
+                              {{ __('messages.profile.followers') }}
+                            </div>
                         </a>
 
                         <a href="{{ route('profile.following', ['id' => $user->id, 'tab' => 'following']) }}" class="text-decoration-none flex-fill">
                             <div class="fs-5 fw-bold">{{ $user->following->count() }}</div>
-                            <div class="small">Following</div>
+                            <div class="small">
+                              {{ __('messages.profile.following') }}
+                            </div>
                         </a>
                     </div>
                 </div>          
             </div>
             
             <div class="mb-2">
-                <h4><span> country:</span> {{ $user->country }}</h4>
+                <h4>
+                  <span>
+                    {{ __('messages.profile.country') }}
+                  </span> 
+                  {{ $user->country }}
+                </h4>
                 @if ($user->introduction)
                     <p class="fw-semibold mb-3" style="color:#9F6B46;">
                         {{ $user->introduction }}
@@ -250,13 +261,13 @@
                     <div class="col-auto px-2">
                         <a href="{{ route('profile.edit') }}" 
                             class="btn btn-outline shadow-sm" style="font-weight:bold; width:190px; transition:0.3s;">
-                            Edit profile
+                            {{ __('messages.profile.left_btn') }}
                         </a>
                     </div>
                     <div class="col-auto">
                         <a href="{{ route('favorite') }}" 
                             class="btn btn-pink shadow-sm" style="font-weight:bold; width:190px;">
-                            Favorite
+                            {{ __('messages.profile.right_btn') }}
                         </a>
                     </div>
                 @else
@@ -268,7 +279,7 @@
                                 <input type="hidden" name="return_url" value="{{ url()->current() }}">
                                 <button type="submit" 
                                     class="btn btn-cancel shadow-sm" style="font-weight:bold; width:180px;">
-                                    Following
+                                    {{ __('messages.profile.following2') }}
                                 </button>
                             </form>
                         @else
@@ -276,7 +287,7 @@
                                 @csrf
                                 <input type="hidden" name="return_url" value="{{ url()->current() }}">
                                 <button type="submit" class="btn btn-outline shadow-sm" style="font-weight:bold; width:180px; transition:0.3s;">
-                                    Follow
+                                    {{ __('messages.profile.follow') }}
                                 </button>
                             </form>
                         @endif
@@ -286,7 +297,7 @@
                             @csrf
                             <input type="hidden" name="receiver_id" value="{{ $user->id }}">
                             <button type="submit" class="btn btn-pink shadow-sm" style="font-weight:bold; width:180px;">
-                                DM
+                                {{ __('messages.profile.dm') }}
                             </button>
                         </form>
                     </div>
@@ -296,7 +307,7 @@
         {{-- Map --}}
             <div class="row">
                 <div class="map-container rounded-2 ms-2">
-                  <p class="fw-bold h5 click-map text-center mt-3">Click map <span>to view full map</span></p>
+                  <p class="fw-bold h5 click-map text-center mt-3">{{ __('messages.profile.map_title1') }}<span>{{ __('messages.profile.map_title2') }}</span></p>
 
                   <a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
                     <div id="map" style="width: 100%; height: 350px;"></div>
@@ -309,11 +320,11 @@
                             @endif
                           @endforeach
                             <div class="spinner-text">
-                                <p class="label">Completed</p>
+                                <p class="label">{{ __('messages.profile.completed') }}</p>
                                 <p class="count">5 
                                   <span style="font-size: 20px;">/47</span>
                                 </p>
-                                <p class="small-text">Prefectures</p>
+                                <p class="small-text">{{ __('messages.profile.prefecture') }}</p>
                             </div>
                         </div>
                     </div>
@@ -376,7 +387,9 @@
                         <div class="d-flex flex-column justify-content-center align-items-center text-center"
                             style="min-height: 60vh;">
                             <i class="fa-regular fa-image mb-3" style="font-size: 9rem; color:#B0A695;"></i>
-                            <h3 class="fw-semibold" style="color:#776B5D;">No Posts Yet</h3>
+                            <h3 class="fw-semibold" style="color:#776B5D;">
+                              {{ __('messages.profile.no_post') }}
+                            </h3>
                         </div>
                     @endif
                 </div>

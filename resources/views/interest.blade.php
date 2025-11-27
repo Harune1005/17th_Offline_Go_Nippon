@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container py-5">
-    <h2 class="fw-bold text-center mb-4 text-decoration-underline">Select up to 3 Categories</h2>
+    <h2 class="fw-bold text-center mb-4 text-decoration-underline">{{ __('messages.interest.title') }}</h2>
 
     <form action="{{ route('interests.store') }}" method="POST" id="interestForm">
         @csrf
@@ -30,7 +30,7 @@
         @enderror
 
         <div class="text-center mt-5">
-            <button type="submit" class="btn btn-outline px-4 py-2 w-25">Save</button>
+            <button type="submit" class="btn btn-outline px-4 py-2 w-25">{{ __('messages.interest.save') }}</button>
         </div>
     </form>
 </div>

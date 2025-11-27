@@ -74,12 +74,14 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end shadow-sm">
                                         <a href="{{ route('post.edit', ['id' => $post->id]) }}" class="dropdown-item text-brown">
-                                            <i class="fa-regular fa-pen-to-square me-2"></i>Edit
+                                            <i class="fa-regular fa-pen-to-square me-2"></i>
+                                            {{ __('messages.show_post.edit') }}
                                         </a>
                                         
                                         <button class="dropdown-item text-danger" data-bs-toggle="modal"
                                             data-bs-target="#delete-post-{{ $post->id }}">
-                                            <i class="fa-regular fa-trash-can me-2"></i>Delete
+                                            <i class="fa-regular fa-trash-can me-2"></i>
+                                            {{ __('messages.show_post.delete') }}
                                         </button>
                                     </div>
                                      @include('users.posts.modals.delete')
@@ -176,11 +178,13 @@
                                 
                                 <div class="d-flex align-items-center justify-content-end text-brown small mb-3 gap-3">
                                   <span><i class="fa-regular fa-calendar me-1 text-info"></i>{{ $post->visited_at ? $post->visited_at->format('Y-m-d') : 'Unknown' }}</span>
-                                   <span><i class="fa-solid fa-coins me-1 text-warning"></i>{{ $post->cost ?? 'Cost' }} Yen</span>
+                                   <span><i class="fa-solid fa-coins me-1 text-warning"></i>
+                                    {{ $post->cost ?? 'Cost' }}
+                                {{ __('messages.show_post.currentry') }}</span>
                                    <span>
                                     <i class="fa-regular fa-clock me-1 text-secondary"></i>
-                                    {{ $post->time_hour ? $post->time_hour . 'h ' : '' }}
-                                    {{ $post->time_min ? $post->time_min . 'min' : '' }}
+                                    {{ $post->time_hour }} {{ __('messages.show_post.hour') }}
+                                    {{ $post->time_min }} {{ __('messages.show_post.min') }}
                                     @if (!$post->time_hour && !$post->time_min)
                                         Time
                                     @endif
@@ -201,33 +205,32 @@
                                 </div>
 
                             {{-- 親コメントフォーム --}}
-<form action="{{ route('comment.store', $post->id) }}" method="POST" class="mb-4">
-    @csrf
-    <div class="input-group">
-        <input type="text" 
-            name="comment_body{{ $post->id }}" 
-            class="form-control post-input rounded-start @error('comment_body'.$post->id) is-invalid @enderror" 
-            placeholder="Add a comment..." 
-            value="{{ old('comment_body'.$post->id) }}">
+                                <form action="{{ route('comment.store', $post->id) }}" method="POST" class="mb-4">
+                                    @csrf
+                                    <div class="input-group">
+                                        <input type="text" 
+                                            name="comment_body{{ $post->id }}" 
+                                            class="form-control post-input rounded-start @error('comment_body'.$post->id) is-invalid @enderror" 
+                                            placeholder="Add a comment..." 
+                                            value="{{ old('comment_body'.$post->id) }}">
 
-        <button class="btn btn-brown rounded-end">
-            <i class="fa-solid fa-paper-plane"></i>
-        </button>
-    </div>
+                                        <button class="btn btn-brown rounded-end">
+                                            <i class="fa-solid fa-paper-plane"></i>
+                                        </button>
+                                    </div>
 
-    @error('comment_body'.$post->id)
-        <div class="text-danger small mt-1">{{ $message }}</div>
-    @enderror
-</form>
+                                    @error('comment_body'.$post->id)
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
+                                </form>
 
 
-{{-- コメント一覧 --}}
-<div class="comment-list">
-    @foreach ($post->comments->where('parent_id', null) as $comment)
-        @include('components.comment', ['comment' => $comment])
-    @endforeach
-</div>
-
+                                {{-- コメント一覧 --}}
+                                <div class="comment-list">
+                                    @foreach ($post->comments->where('parent_id', null) as $comment)
+                                        @include('components.comment', ['comment' => $comment])
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -51,7 +51,7 @@ class PostController extends Controller
             'prefecture_id' => 'required|integer|exists:prefectures,id',
             'cost' => 'nullable|integer|min:0|max:10000',
             'image' => 'required|array|max:3',
-            'image.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:5048',
 
         ]);
 
@@ -138,7 +138,6 @@ class PostController extends Controller
         );
     }
 
-    // --- 更新処理（upload） ---
     public function update(Request $request, $id)
     {
         $post = Post::findOrFail($id);
@@ -156,20 +155,21 @@ class PostController extends Controller
             'deleted_images' => 'nullable|array',
             'deleted_images.*' => 'exists:images,id',
             'new_image' => 'nullable|array|max:3',
-            'new_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'new_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:5048',
         ]);
 
-        // 現在の画像の数をカウント
+        // 既存画像の数と削除予定の数を計算
         $currentImageCount = $post->images->count();
-
-        // 削除予定の画像を考慮に入れた後の残りの画像数
         $deletedCount = count($request->deleted_images ?? []);
         $remainingCount = $currentImageCount - $deletedCount;
 
-        // 新規追加される画像数
         $newImageCount = count($request->file('new_image') ?? []);
 
-        // 画像の総数が3枚を超えないかチェック
+        // 画像必須チェック
+        if ($remainingCount + $newImageCount === 0) {
+            return redirect()->back()->withInput()->withErrors(['new_image' => 'At least one image is required.']);
+        }
+
         if ($remainingCount + $newImageCount > 3) {
             return redirect()->back()->withInput()->withErrors(['new_image' => 'You can have a maximum of 3 images total (current remaining + new uploads).']);
         }
@@ -189,6 +189,7 @@ class PostController extends Controller
                 $validated['time_hour'],
                 $validated['time_min']
             );
+            $post->save();
         }
 
         if (isset($validated['category'])) {
@@ -197,25 +198,20 @@ class PostController extends Controller
             $post->categories()->detach();
         }
 
-        // 4. 既存画像の削除
+        // 既存画像の削除
         if ($request->has('deleted_images')) {
             $deletedImageIds = $request->deleted_images;
             $imagesToDelete = Image::whereIn('id', $deletedImageIds)->where('post_id', $post->id)->get();
-
             foreach ($imagesToDelete as $image) {
-                // S3やローカルストレージからファイルを削除
                 Storage::disk('public')->delete($image->image);
                 $image->delete();
             }
         }
 
-        // 5. 新規画像のアップロード
+        // 新規画像アップロード
         if ($request->hasFile('new_image')) {
             foreach ($request->file('new_image') as $newImageFile) {
-                // ファイルを保存し、そのパスを取得
                 $path = $newImageFile->store('images/posts', 'public');
-
-                // Imageモデルを作成し、関連付け
                 $post->images()->create([
                     'image' => $path,
                 ]);
@@ -240,10 +236,10 @@ class PostController extends Controller
 
         foreach ($post->images as $image) {
             Storage::disk('public')->delete($image->image);
+            $image->delete();
         }
-        $post->images()->delete();
 
-        $post->delete();
+        $post->forceDelete();
 
         return redirect()->route('home')->with('success', 'Post deleted successfully!');
     }
