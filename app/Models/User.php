@@ -126,7 +126,7 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withPivot('awarded_at')
             ->withTimestamps();
     }
-    
+
     public function receivedMessages()
     {
         return $this->hasMany(\App\Models\Message::class, 'receiver_id');
