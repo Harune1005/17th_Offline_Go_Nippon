@@ -1,6 +1,8 @@
 <div class="container w-100">
     <div class="d-flex">
-        <h2 class="mb-0" style="font-size: 32px;">Talking Users</h2>
+        <h2 class="mb-0" style="font-size: 32px;">
+            {{ __('messages.dm.title') }}
+        </h2>
         <div class="d-flex align-items-center ms-auto">
             <button class="btn border-0" data-bs-toggle="modal" data-bs-target="#followListModal">
             <i class="fa-solid fa-square-plus" style="font-size:24px; color:#F1BDB2"></i>
@@ -15,7 +17,7 @@
                 <input type="text" name="" id="" class="form-control me-4" placeholder="Search User...">
             </div>
             <div class="d-flex ms-auto">
-                <button class="btn custom-btn"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+                <button class="btn custom-btn"><i class="fa-solid fa-magnifying-glass"></i>{{ __('messages.dm.search') }}</button>
             </div>
         </div>
     </form>
