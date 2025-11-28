@@ -165,144 +165,12 @@
 
 <div class="container">
     <div class="row mt-2  profile-row p-0">
-        <div class="col-md-4">
-            {{-- profile --}}
-            <div class="d-flex align-items-start  profile-row flex-wrap ">
-                <div class=" avatar-wrapper position-relative d-inline-block me-3 mb-3">
-                    @if ($user->avatar)
-                        <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="rounded-circle shadow-sm mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #9F6B46;">
-                    @else
-                        <i class="fa-solid fa-circle-user text-secondary mb-3" style="font-size: 110px; border: 5px solid #9F6B46; border-radius: 50%; 
-                        padding:0;" ></i>
-                    @endif
-                    {{-- <img  src="{{ asset($latestBadge->image_path) }}" 
-                          alt="{{ $latestBadge->name }}"
-                          class="latest-badge position-absolute"
-                          style="width: 55px; height: 55px; object-fit: cover;bottom: 10%; right: -20%;"
-                          > --}}
-                </div>
-                <div class="flex-grow-1 text-start">
-                    <h3 style="margin-left: 15px;">{{ $user->name }}</h3>
-
-                    <div class="d-flex justify-content-between text-center fw-semibold flex-wrap number">
-                        <a href="{{ route('profile.show', $user->id) }}" class="text-decoration-none flex-fill">
-                            <div class="fs-5 fw-bold">{{ $user->posts->count() }}</div>
-                            <div class="small">
-                                {{ __('messages.profile.posts') }}
-                            </div>
-                        </a>
-                        <a href="{{ route('profile.followers', $user->id) }}" class="text-decoration-none flex-fill">
-                            <div class="fs-5 fw-bold">{{ $user->followers->count() }}</div>
-                            <div class="small">
-                                {{ __('messages.profile.followers') }}
-                            </div>
-                        </a>
-                        <a href="{{ route('profile.following', $user->id) }}" class="text-decoration-none flex-fill">
-                            <div class="fs-5 fw-bold">{{ $user->following->count() }}</div>
-                            <div class="small">
-                                {{ __('messages.profile.following') }}
-                            </div>
-                        </a>
-                    </div>
-                </div>          
-            </div>
-
-            <div class="mb-2">
-                <h4><span> {{ __('messages.profile.country') }}</span> {{ $user->country }}</h4>
-                @if ($user->introduction)
-                    <p class="fw-semibold mb-3" style="color:#9F6B46;">
-                        {{ $user->introduction }}
-                    </p>
-                @endif
-            </div>
-
-            <div class="row mb-4 justify-content-center">
-                @if (Auth::user()->id === $user->id)
-                    <div class="col-auto px-2">
-                        <a href="{{ route('profile.edit') }}" 
-                            class="btn btn-outline shadow-sm" style="font-weight:bold; width:190px; transition:0.3s;">
-                            {{ __('messages.profile.left_btn') }}
-                        </a>
-                    </div>
-                    <div class="col-auto">
-                        <a href="{{ route('favorite') }}" 
-                            class="btn btn-pink shadow-sm" style="font-weight:bold; width:190px;">
-                            {{ __('messages.profile.right_btn') }}
-                        </a>
-                    </div>
-                @else
-                    <div class="col-auto px-2">
-                        @if ($user->isFollowed())
-                            <form action="{{ route('follow.destroy', $user->id) }}" method="post" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                               <button type="submit" 
-                                    class="btn btn-cancel shadow-sm" style=" font-weight:bold; width:180px;">
-                                    {{ __('messages.profile.following2') }}
-                                </button>
-                            </form>
-                        @else
-                            <form action="{{ route('follow.store', $user->id) }}" method="post" class="d-inline">
-                                @csrf
-                                <button type="submit" 
-                                        class="btn btn-outline shadow-sm" style="font-weight:bold; width:180px; transition:0.3s;">
-                                    {{ __('messages.profile.follow') }}
-                                </button>
-                            </form>
-                        @endif
-                    </div>
-
-                    <div class="col-auto">
-                        <a href="¥" 
-                            class="btn btn-pink shadow-sm" style="font-weight:bold; width:180px;">
-                            {{ __('messages.profile.dm') }}
-                        </a>
-                    </div>
-                @endif
-            </div>
-            {{-- Badge
-            <div class="d-flex flex-wrap gap-3 mb-3">
-                <p class="fw-bold text-center">Your <br> &nbsp; Badges</p>
-                @foreach ($allBadges as $badge)
-                    <div class="d-flex flex-column align-items-center">
-                        <img 
-                            src="{{ asset($badge->image_path) }}" 
-                            alt="{{ $badge->name }}" 
-                            class="brand"
-                            style="width: 50px; height:50px;
-                                @if(!in_array($badge->id, $earnedBadgeIds)) 
-                                    filter: grayscale(100%); opacity: 0.3;
-                                @endif
-                            "
-                        >
-                        <p class="mb-0 text-center" style="color: #CAAE99; font-size:10px;">{{ $badge->name }}</p>
-                    </div>
-                @endforeach
-            </div>
- --}}
-            {{-- map --}}
-           <div class="row">
-                <div class="map-container rounded-2 ms-2">
-                    <p class="fw-bold h5 click-map text-center mt-3">Click map <span>to view full map</span></p>
-
-                    <a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
-                        <div id="map" style="width: 100%; height: 350px;"></div>
-                    </a>
-                    <div class="spinner-wrapper">
-                        <div class="spinner-outer">
-                            <div class="spinner-fill"></div>
-                            <div class="spinner-text">
-                                <p class="label">Completed</p>
-                                <p class="count">5
-                                     <span style="font-size: 20px">/47</span>
-                                </p>
-                                <p class="small-text">Prefectures</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <x-profile 
+            :user="$user"
+            :prefectures="$prefectures"
+            {{-- :allBadges="$allBadges" --}}
+            {{-- :earnedBadgeIds="$earnedBadgeIds" --}}
+        />
 
         <div class="col-12 col-md-4">
             <div class="mx-auto" style="max-width: 500px;">
@@ -505,7 +373,19 @@
 </div>
 @endsection
 
+<script src="{{ asset('js/follower-map.js') }}"></script>
+@push('scripts')
 <script>
+document.addEventListener("DOMContentLoaded", function(){
+    followerMap({
+        userId: {{ $user->id }},
+        prefectures: @json($prefectures)
+    });
+});
+</script>
+@endpush
+
+{{-- <script>
     const prefectures = @json($prefectures ?? []); 
 </script>
 
@@ -794,4 +674,4 @@ const prefectureNameMap = {
 
    };
 </script>
-    
+     --}}
