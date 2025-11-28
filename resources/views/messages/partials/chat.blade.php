@@ -5,7 +5,9 @@
         @if (isset($partner) && $partner )
             <h2 class="mb-0 text-truncate" style="font-size:24px; line-height: 50px;">Talking with {{ $partner->name }}</h2>
         @else
-            <h2 class="mb-0 text-muted" style="font-size:24px; line-height: 50px;">No active conversation</h2>
+            <h2 class="mb-0 text-muted" style="font-size:24px; line-height: 50px;">
+                {{ __('messages.dm.no_active') }}
+            </h2>
         @endif
     </div>
 
@@ -15,7 +17,7 @@
             <form action="{{ route('conversations.destroy', $conversation->id )}}" method="post" onsubmit="return confirm('Delete this conversation?')">
                 @csrf
                 @method('DELETE')
-                <button type="submit" style="color:#f1bdb2;">Delete &nbsp;<i class="fa-solid fa-trash" style="font-size:35px;"></i></button>
+                <button type="submit" style="color:#f1bdb2;">{{ __('messages.dm.delete') }} &nbsp;<i class="fa-solid fa-trash" style="font-size:35px;"></i></button>
             </form>
         </div>
     @endif
@@ -24,7 +26,7 @@
 <div class="message-board mb-3 rounded d-flex flex-column" style="height: calc(100vh - 320px);">
     @if (!isset($conversation))
         <div class="p-4 text-center text-muted">
-            Select a conversation to start chatting.
+            {{ __('messages.dm.text_1') }}
         </div>
     @else
         <div class="messages-list mb-4 p-4 flex-grow-1" style="overflow-y:auto;">
@@ -61,7 +63,9 @@
 
                         @if ($message->sender_id == $user_id)
                             @if ($message->read_at)
-                                <small class="ms-1" style="font-size: 11px;">Read</small>
+                                <small class="ms-1" style="font-size: 11px;">
+                                    {{ __('messages.dm.read') }}
+                                </small>
                             @endif
                         @endif
 
@@ -85,12 +89,14 @@
         <form action="{{ route('messages.store') }}" method="post" id="chatForm" class="d-flex align-items-center w-100 gap-3" enctype="multipart/form-data">
             @csrf
                 <input type="hidden" name="conversation_id" value="{{ $conversation->id }}">
-                <input type="text" name="content" id="content" class="form-control" placeholder="Enter a message">
+                <input type="text" name="content" id="content" class="form-control" placeholder="{{ __('messages.dm.message_placeholder') }}">
 
                 <input type="file" name="image" id="imageInput" accept="image/*" style="display:none">
                 <i class="fa-solid fa-image" id="imageIcon" style="font-size: 38px;cursor:pointer; color: #f1bdb2;"></i>
             
-                <button type="submit" class="btn custom-btn">Send</button>
+                <button type="submit" class="btn custom-btn">
+                    {{ __('messages.dm.send') }}
+                </button>
         </form>
     @endif
 </div>

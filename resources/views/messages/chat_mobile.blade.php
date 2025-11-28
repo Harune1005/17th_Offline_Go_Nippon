@@ -17,7 +17,9 @@
         @if (isset($partner) && $partner)
             <h6 class="mb-0" style="line-height: 1">{{ $partner->name }}</h6>
         @else
-            <h2 class="mb-0 text-muted" style="font-size:24px; line-height: 50px;">No active conversation</h2>
+            <h2 class="mb-0 text-muted" style="font-size:24px; line-height: 50px;">
+                {{ __('messages.dm.no_active') }}
+            </h2>
         @endif
 
         <div class="dropdown ms-auto me-3">

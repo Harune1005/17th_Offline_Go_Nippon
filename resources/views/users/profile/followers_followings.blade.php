@@ -317,6 +317,12 @@
                 </div>
             </div>
         </div>
+        <x-profile 
+            :user="$user"
+            :prefectures="$prefectures"
+            {{-- :allBadges="$allBadges" --}}
+            {{-- :earnedBadgeIds="$earnedBadgeIds" --}}
+        />
 
         <div class="col-12 col-md-4 search-area">
             <div class="mx-auto" style="max-width: 500px;">
@@ -516,7 +522,19 @@
 </div>
 @endsection
 
+<script src="{{ asset('js/follower-map.js') }}"></script>
+@push('scripts')
 <script>
+document.addEventListener("DOMContentLoaded", function(){
+    followerMap({
+        userId: {{ $user->id }},
+        prefectures: @json($prefectures)
+    });
+});
+</script>
+@endpush
+
+{{-- <script>
     const prefectures = @json($prefectures ?? []); 
 </script>
 
@@ -804,4 +822,4 @@ const prefectureNameMap = {
 
    };
 </script>
-    
+     --}}

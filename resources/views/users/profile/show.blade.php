@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('title', 'Profile ')
@@ -371,9 +370,14 @@
                 </div>
             </div>
         </div>
+        <x-profile 
+          :user="$user"
+          :prefectures="$prefectures"
+          :allBadges="$allBadges"
+          :earnedBadgeIds="$earnedBadgeIds"
+        />
 
         {{-- Post area --}}
-      
         <div class="col-md-8">
             <div class="row mt-3 mb-2">
                 <div class="col-12">
@@ -438,7 +442,18 @@
 </div>
 @endsection
 
+<script src="{{ asset('js/profile-map.js') }}"></script>
+@stack('scripts')
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        profileMap({
+            userId: {{ $user->id }},
+            prefectures: @json($prefectures)
+        });
+    });
+</script>
+
+{{-- <script>
     const prefectures = @json($prefectures ?? []); 
 </script>
 
@@ -822,4 +837,4 @@ spinnerFill.addEventListener('mouseleave', () => {
 
    };
 </script>
-    
+     --}}

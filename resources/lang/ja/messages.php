@@ -273,4 +273,20 @@ return [
         'title' => '通知一覧',
         'like_text' => 'があなたの投稿をいいねしました',
     ],
+
+    // dm
+    'dm' => [
+        'title' => 'チャット',
+        'search_placeholder' => 'ユーザーを検索する',
+        'search' => '検索',
+        'add_modal_title' => 'メッセージを送る相手を選択',
+        'message' => 'メッセージ',
+        'no_active' => 'アクティブな会話はありません',
+        'text_1' => '会話を選択してチャットを開始してください。',
+        'message_placeholder' => 'メッセージを入力',
+        'send' => '送信',
+        'delete' => '削除',
+        'read' => '既読',
+        'no_user' => 'ユーザーがいません',
+    ],
 ];
