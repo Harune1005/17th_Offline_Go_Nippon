@@ -19,75 +19,6 @@
         oblect-fit:cover;
     }
 
-    @media (max-width: 600px) {
-        html, body {
-        overflow-x: hidden; /* 横スクロール禁止 */
-    }
-
-    .col-12.col-md-4 {
-        margin-left: 0 !important;
-        margin-right: auto !important;
-        margin-left: auto !important;
-    }
-
-    .trip-map-a{
-        padding-right:0%;
-        padding-left: 0.5rem;
-    }
-    .trip-map-a,
-    .profile-row,
-    .click-map {
-        padding-left: 0 !important;
-        padding-right: 10 !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-    }
-
-    /* ボタンのマージン調整 */
-    .btn {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-
-    /* スピナーの位置調整も微修正（右にはみ出ることがあるため） */
-    /* .spinner-wrapper {
-        right: 10%;
-        transform: translateX(0) scale(0.9);
-    } */
-    .col-auto{
-        padding: 0;
-    }
-    .phone {
-        font-size: 12px;
-        padding: 0;
-    }
-
-    .name{
-        padding-left: 2rem;
-    }
-    .number{
-        padding-left: 2rem;
-    }
-    .profile-row{
-    padding-left: 0.5rem;
-    }
-    .spinner-wrapper {
-        bottom: 5px;
-        right: 30px;
-        transform: translateX(10%) scale(0.9);
-    }
-    
-    .btn{
-        margin-left:0.5rem;
-        margin-right:0.5rem;
-    }
-    .click-map{
-        margin-left: 1rem;
-        padding-right: 0;
-        padding-left: 1rem;
-    }
-
-    }
         .map-container {
     position: relative;
     width: 420px;
@@ -161,6 +92,86 @@
     line-height: 1;
     }
 
+@media (max-width: 600px) {
+        html, body {
+        overflow-x: hidden; 
+    }
+
+    .col-12.col-md-4 {
+        margin-right: auto !important;
+        margin-left: auto !important;
+    }
+
+    .trip-map-a{
+        padding-right:0%;
+        padding-left: 0.5rem;
+    }
+    .trip-map-a,
+    .profile-row,
+    .click-map {
+        padding-left: 0 !important;
+        padding-right: 10 !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .btn {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .col-auto{
+        padding: 0;
+    }
+    .phone {
+        font-size: 12px;
+        padding: 0;
+    }
+
+    .name{
+        padding-left: 2rem;
+    }
+    .number{
+        padding-left: 2rem;
+    }
+    .profile-row{
+    padding-left: 0.5rem;
+    }
+    .spinner-wrapper {
+        bottom: 5px;
+        right: 30px;
+        transform: translateX(10%) scale(0.9);
+    }
+    
+    .btn{
+        margin-left:0.5rem;
+        margin-right:0.5rem;
+    }
+    .click-map{
+        margin-left: 1rem;
+        padding-right: 0;
+        padding-left: 1rem;
+    }
+    .search-area{
+        margin-top: 1.5rem;
+    }
+    .map-container{
+        margin-left: 0;
+    }
+    .all-badges{
+        width: 50px;
+        height: 50px;
+    }
+    .badge-name{
+        color: #CAAE99; 
+        font-size:10px;
+    }
+
+    .tooltip-wrapper {
+        margin: 0 auto; 
+    }
+ }
+
 </style>
 
 <div class="container">
@@ -175,11 +186,10 @@
                         <i class="fa-solid fa-circle-user text-secondary mb-3" style="font-size: 110px; border: 5px solid #9F6B46; border-radius: 50%; 
                         padding:0;" ></i>
                     @endif
-                    {{-- <img  src="{{ asset($latestBadge->image_path) }}" 
+                    <img  src="{{ asset($latestBadge->image_path) }}" 
                           alt="{{ $latestBadge->name }}"
-                          class="latest-badge position-absolute"
-                          style="width: 55px; height: 55px; object-fit: cover;bottom: 10%; right: -20%;"
-                          > --}}
+                          title="{{ $latestBadge->key}}"
+                          class="brand latest-badge position-absolute">
                 </div>
                 <div class="flex-grow-1 text-start">
                     <h3 style="margin-left: 15px;">{{ $user->name }}</h3>
@@ -260,29 +270,33 @@
                     </div>
                 @endif
             </div>
-            {{-- Badge
+            {{-- Badge --}}
+            <h5 class="fw-bold text-center mb-3">------------ Your Badges ------------</h5>
+
             <div class="d-flex flex-wrap gap-3 mb-3">
-                <p class="fw-bold text-center">Your <br> &nbsp; Badges</p>
+
                 @foreach ($allBadges as $badge)
-                    <div class="d-flex flex-column align-items-center">
+                    <div class="tooltip-wrapper d-flex flex-column display-content-center align-items-center"
+                        data-tooltip="{{ $badge->key }}">
                         <img 
                             src="{{ asset($badge->image_path) }}" 
                             alt="{{ $badge->name }}" 
-                            class="brand"
-                            style="width: 50px; height:50px;
+                            class="brand all-badges"
+                            style="
                                 @if(!in_array($badge->id, $earnedBadgeIds)) 
                                     filter: grayscale(100%); opacity: 0.3;
                                 @endif
-                            "
-                        >
-                        <p class="mb-0 text-center" style="color: #CAAE99; font-size:10px;">{{ $badge->name }}</p>
+                            ">
+                        <p class="mb-0 text-center badge-name">
+                            {{ $badge->name }}
+                        </p>
                     </div>
                 @endforeach
             </div>
- --}}
+
             {{-- map --}}
            <div class="row">
-                <div class="map-container rounded-2 ms-2">
+                <div class="map-container rounded-2 ">
                     <p class="fw-bold h5 click-map text-center mt-3">Click map <span>to view full map</span></p>
 
                     <a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
@@ -304,7 +318,7 @@
             </div>
         </div>
 
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-4 search-area">
             <div class="mx-auto" style="max-width: 500px;">
                 <form action="{{ route('follow.search', $user->id) }}" method="GET" class="d-flex mb-3">
                     <input type="text" name="search" value="{{ $keyword ?? '' }}" placeholder="{{ __('messages.follow.search') }}" class="d-flex form-control me-2" style="width: 75%;">
@@ -358,9 +372,6 @@
                                             @else
                                                 <i class="fa-solid fa-circle-user text-secondary d-block text-center icon-md me-4" style="font-size:60px;"></i>
                                             @endif
-                                                 {{-- badge --}}
-                                            <img src="{{ asset('images/badges/fujisan02.png') }}" alt="Badge" class="position-absolute border-0"
-                                            style="width: 40px; height: 40px; bottom: 10px; right: 0;">                      
                                         </a>
                                         
                                     <div class="d-flex flex-column align-items-start">
@@ -564,8 +575,7 @@ const prefectureNameMap = {
 
      const userId = {{ $user->id ?? 'null' }};
     window.onload = function() {
-        const form = document.querySelector('form');
-
+      const form = document.querySelector('form');
       const baseWidth = 675;
       const baseHeight = 670;
       let svg;

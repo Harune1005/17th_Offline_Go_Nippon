@@ -337,3 +337,77 @@ th, td {
 .admin a:hover {
     color: #9F6B46;
 }
+
+
+/* Badge */
+.tooltip-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltip-wrapper::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    
+    background: #FFFFFF; 
+    color: #9F6B46;       
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    opacity: 0;
+    pointer-events: none;
+  
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  
+  .tooltip-wrapper:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  .tooltip-wrapper::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent #F9E6DF transparent;
+    
+    opacity: 0;
+    transition: opacity .25s ease;
+  }
+  
+  .tooltip-wrapper:hover::before {
+    opacity: 1;
+  }
+
+  .latest-badge{
+    width: 60px; 
+    height: 60px; 
+    object-fit: contain; 
+    bottom: 10%; 
+    right: -20%;
+  }
+  
+  .all-badges{
+    width: 50px; 
+    height:50px;
+  }
+ 
+ .badge-name{
+    color: #CAAE99; 
+    font-size:12px;
+ }
+ .all-badges-container {
+    justify-content: center;
+}
+
+  

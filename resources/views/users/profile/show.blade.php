@@ -153,13 +153,11 @@
     
   }
 
-  /* ボタンのマージン調整 */
   .btn {
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
 
-  /* スピナーの位置調整も微修正（右にはみ出ることがあるため） */
   .spinner-wrapper {
     right: 10%;
     transform: translateX(0) scale(0.8);
@@ -191,6 +189,25 @@
     padding-right: 0;
     padding-left: 1rem;
  }
+.all-badge{
+  width: 40px;
+  height: 40px;
+}
+.all-badges{
+        width: 50px;
+        height: 50px;
+    }
+    .badge-name{
+        color: #CAAE99; 
+        font-size:10px;
+    }
+    .all-badges-container {
+        justify-content: center !important;
+    }
+
+    .tooltip-wrapper {
+        margin: 0 auto; 
+    }
 
  }
 
@@ -210,8 +227,7 @@
                     @endif
                     <img  src="{{ asset($latestBadge->image_path) }}" 
                           alt="{{ $latestBadge->name }}"
-                          class="latest-badge position-absolute"
-                          style="width: 55px; height: 55px; object-fit: cover;bottom: 10%; right: -20%;"
+                          class="brand latest-badge position-absolute"
                           >
                 </div>
                 <div class="flex-grow-1 text-start">
@@ -302,29 +318,34 @@
                 @endif
             </div>
 
-        {{-- Badge --}}
+            {{-- Badge --}}
+            <h5 class="fw-bold text-center mb-3">------------ Your Badges ------------</h5>
+
             <div class="d-flex flex-wrap gap-3 mb-3">
-              <p class="fw-bold text-center">Your <br> &nbsp; Badges</p>
-              @foreach ($allBadges as $badge)
-                  <div class="d-flex flex-column align-items-center">
-                      <img 
-                          src="{{ asset($badge->image_path) }}" 
-                          alt="{{ $badge->name }}" 
-                          class="brand"
-                          style="width: 50px; height:50px;
-                              @if(!in_array($badge->id, $earnedBadgeIds)) 
-                                  filter: grayscale(100%); opacity: 0.3;
-                              @endif
-                          "
-                      >
-                      <p class="mb-0 text-center" style="color: #CAAE99; font-size:10px;">{{ $badge->name }}</p>
-                  </div>
-              @endforeach
+
+                @foreach ($allBadges as $badge)
+                    <div class="tooltip-wrapper d-flex flex-column display-content-center align-items-center"
+                        data-tooltip="{{ $badge->key }}">
+                        <img 
+                            src="{{ asset($badge->image_path) }}" 
+                            alt="{{ $badge->name }}" 
+                            class="brand all-badges"
+                            style="
+                                @if(!in_array($badge->id, $earnedBadgeIds)) 
+                                    filter: grayscale(100%); opacity: 0.3;
+                                @endif
+                            ">
+                        <p class="mb-0 text-center badge-name">
+                            {{ $badge->name }}
+                        </p>
+                    </div>
+                @endforeach
             </div>
+
                       
       {{-- Map --}}
             <div class="row">
-                <div class="map-container rounded-2 ms-2">
+                <div class="map-container rounded-2 ">
                   <p class="fw-bold h5 click-map text-center mt-3">{{ __('messages.profile.map_title1') }}<span>{{ __('messages.profile.map_title2') }}</span></p>
 
                   <a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
