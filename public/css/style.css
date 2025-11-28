@@ -323,11 +323,11 @@ th, td {
 }
 
 .nav-item:hover{
-    transform: translateY(-4px);
+    transform: translateY(-1.5px);
     box-shadow: 0 8px 20px var(--shadow);
 }
 .brand:hover{
-    transform: scale(1.30); 
+    transform: scale(1.02); 
 }
 
 .admin a {
@@ -336,4 +336,14 @@ th, td {
 
 .admin a:hover {
     color: #9F6B46;
+}
+
+/* smartphone size */
+@media screen and (max-width: 768px) {
+    /* post size adjustment */
+    .col-md-7 > .uniform-img {
+    max-width: 100%;
+    height: 300px;
+    object-fit: cover;
+    }
 }
