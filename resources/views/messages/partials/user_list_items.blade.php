@@ -1,6 +1,8 @@
 @if($conversations->isEmpty())
     <div class="d-flex align-items-center justify-content-center p-4">
-        <p class="mb-0" style="color: #888; font-size: 14px;">No user found</p>
+        <p class="mb-0" style="color: #888; font-size: 14px;">
+            {{ __('messages.dm.no_user') }}
+        </p>
     </div>
 @else
     @foreach ($conversations as $conversation)
@@ -48,7 +50,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit">
-                                            <i class="fa-solid fa-trash" style="color:#9F6B46"></i> &nbsp;Delete
+                                            <i class="fa-solid fa-trash" style="color:#9F6B46"></i> &nbsp;{{ __('messages.dm.delete') }}
                                         </button>
                                     </form>
                                 </a>

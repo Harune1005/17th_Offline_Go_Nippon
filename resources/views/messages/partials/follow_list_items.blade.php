@@ -16,11 +16,13 @@
                 @csrf
                 <input type="hidden" name="receiver_id" value="{{ $following->following->id }}">
                 <button type="submit" class="btn btn-outline">
-                    <i class="fa-regular fa-envelope"></i>&nbsp;Message
+                    <i class="fa-regular fa-envelope"></i>&nbsp;{{ __('messages.dm.message') }}
                 </button>
             </form>
         </div>
     </div>
 @empty
-    <div class="p-3 text-center text-muted">No user found</div>
+    <div class="p-3 text-center text-muted">
+        {{ __('messages.dm.no_user') }}
+    </div>
 @endforelse

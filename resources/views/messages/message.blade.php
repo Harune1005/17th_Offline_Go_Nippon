@@ -9,7 +9,9 @@
             <div class="container w-100 mt-1">
                 {{-- title --}}
                 <div class="d-flex">
-                    <h2 class="mb-0" style="font-size: 32px;">Talking Users</h2>
+                    <h2 class="mb-0" style="font-size: 32px;">
+                        {{ __('messages.dm.title') }}
+                    </h2>
                     <div class="d-flex align-items-center ms-auto">
                         <button class="btn border-0" data-bs-toggle="modal" data-bs-target="#followListModal">
                         <i class="fa-solid fa-square-plus" style="font-size:24px; color:#F1BDB2"></i>
@@ -18,7 +20,7 @@
                 </div>
                 {{-- search user list --}}
                 <div class="d-flex mb-3 mt-2 align-items-center" style="width: 100%">
-                    <input type="text" id="conversation-search-pc" class="form-control conversation-search me-4" placeholder="Search User...">
+                    <input type="text" id="conversation-search-pc" class="form-control conversation-search me-4" placeholder="{{ __('messages.dm.search_placeholder') }}">
                 </div>
 
                 {{-- conversation lists --}}
@@ -40,7 +42,9 @@
             <div class="container w-100">
                  {{-- title --}}
                 <div class="d-flex">
-                    <h2 class="mb-0" style="font-size: 32px;">Talking Users</h2>
+                    <h2 class="mb-0" style="font-size: 32px;">
+                        {{ __('messages.dm.title') }}
+                    </h2>
                     <div class="d-flex align-items-center ms-auto">
                         <button class="btn border-0" data-bs-toggle="modal" data-bs-target="#followListModal">
                         <i class="fa-solid fa-square-plus" style="font-size:24px; color:#F1BDB2"></i>
@@ -82,14 +86,16 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title" id="followListModalLabel">Select User to Message</h5>
+                <h5 class="modal-title" id="followListModalLabel">
+                    {{ __('messages.dm.add_modal_title') }}
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
                     <div class="d-flex mb-3 mt-2 align-items-center" style="width: 100%">
                         <div class="d-flex flex-grow-1">
-                            <input type="text" id="modal-user-search-input" class="form-control me-4" placeholder="Search User...">
+                            <input type="text" id="modal-user-search-input" class="form-control me-4" placeholder="{{ __('messages.dm.search_placeholder') }}">
                         </div>
                     </div>
 

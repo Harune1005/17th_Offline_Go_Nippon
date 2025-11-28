@@ -274,4 +274,20 @@ return [
         'title' => 'Notifications',
         'like_text' => 'liked your post',
     ],
+
+    // dm
+    'dm' => [
+        'title' => 'Talking Users',
+        'search_placeholder' => 'Search User...',
+        'search' => 'Search',
+        'add_modal_title' => 'Select User to Message',
+        'message' => 'Message',
+        'no_active' => 'No active conversation',
+        'test_1' => 'Select a conversation to start chatting.',
+        'message_placeholder' => 'Enter a message',
+        'send' => 'Send',
+        'delete' => 'Delete',
+        'read' => 'Read',
+        'no_user' => 'No user found',
+    ],
 ];
