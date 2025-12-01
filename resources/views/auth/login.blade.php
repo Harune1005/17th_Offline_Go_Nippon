@@ -3,14 +3,6 @@
 @section('content')
 
 <style>
-    
-    body, html {
-        font-family: 'Source Serif Pro', serif; 
-        background-color: white; 
-         overflow: hidden; 
-        
-    }
-
     .full-page-container {
         display: flex;
         justify-content: center;

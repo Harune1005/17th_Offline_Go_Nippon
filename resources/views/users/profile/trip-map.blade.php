@@ -295,7 +295,7 @@ div{
 }
 
 .post-image{
-  height: auto;
+  height: 320px;
   width:100%;
   object-fit: cover;
 }
@@ -336,7 +336,19 @@ div{
  </div>
 @endsection
 
+@push('scripts')
+<script src="{{ asset('js/trip-map.js') }}"></script>
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        tripMap({
+            userId: {{ $user->id }},
+            prefectures: @json($prefectures)
+        });
+    });
+</script>
+@endpush
+
+{{-- <script>
     const prefectures = @json($prefectures ?? []); 
 </script>
 
@@ -684,4 +696,4 @@ div{
 
   };
 </script>
-    
+     --}}

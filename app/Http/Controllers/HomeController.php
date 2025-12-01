@@ -36,7 +36,11 @@ class HomeController extends Controller
             }])
                 ->orderByDesc('relevance')
                 ->orderByDesc('created_at');
-        } else { // newest
+        } elseif ($order === 'followers') {
+            $followingIds = Auth::user()->following()->pluck('users.id')->toArray();
+            $postsQuery->whereIn('user_id', $followingIds)
+                ->orderByDesc('created_at');
+        } else {
             $postsQuery->orderByDesc('created_at');
         }
         $posts = $postsQuery->paginate(30)->appends(['order' => $order]);

@@ -67,6 +67,7 @@ return [
         'sort_1' => 'Newest',
         'sort_2' => 'Most liked',
         'sort_3' => 'Recommend',
+        'sort_4' => 'following',
     ],
 
     // header

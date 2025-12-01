@@ -134,6 +134,11 @@
                                         {{ __('messages.home.sort_3') }}
                                     </a>
                                 </li>
+                                <li class="nav-item tab-item">
+                                    <a href="{{ route('home', ['order' => 'followers']) }}" class="tab-btn {{ request('order') === 'followers' ? 'active' : '' }}">
+                                        {{ __('messages.home.sort_4') }}
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>

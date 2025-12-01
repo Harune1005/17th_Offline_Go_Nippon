@@ -93,11 +93,13 @@
                                     <form action="{{ route('follow.destroy', $post->user_id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
+                                        <input type="hidden" name="return_url" value="{{ url()->full() }}">
                                         <button type="submit" class="btn btn-cancel btn-md fw-bold">Following</button>
                                     </form>
                                 @else 
                                     <form action="{{ route('follow.store', $post->user_id) }}" method="POST">
                                         @csrf
+                                        <input type="hidden" name="return_url" value="{{ url()->full() }}">
                                         <button type="submit" class="btn btn-outline btn-md fw-bold">Follow</button>
                                     </form>
                                 @endif
