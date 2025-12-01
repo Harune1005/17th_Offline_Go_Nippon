@@ -39,7 +39,7 @@ class HomeController extends Controller
         } elseif ($order === 'followers') {
             $followingIds = Auth::user()->following()->pluck('users.id')->toArray();
             $postsQuery->whereIn('user_id', $followingIds)
-                    ->orderByDesc('created_at');
+                ->orderByDesc('created_at');
         } else {
             $postsQuery->orderByDesc('created_at');
         }
