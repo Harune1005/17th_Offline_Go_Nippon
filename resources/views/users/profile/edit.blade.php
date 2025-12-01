@@ -27,7 +27,7 @@
                                 @endif
                             </div>
                             <div class="col">
-                                <input type="file" name="avatar" id="avatar" class="form-control shadow-sm border-0 w-75" accept="image/*">
+                                <input type="file" name="avatar" id="avatar" class="form-control post-input w-75" accept="image/*">
                                 <div class="form-text small mt-1" style="color:#9F6B46;">
                                     {{ __('messages.edit_profile.formats') }} <br>
                                     {{ __('messages.edit_profile.size') }}
@@ -44,7 +44,7 @@
                             <label for="name" class="form-label fw-bold">
                                 {{ __('messages.edit_profile.name') }}
                             </label>
-                            <input type="text" name="name" id="name" class="form-control shadow-sm border-0" value="{{ old('name', $user->name) }}" autofocus>
+                            <input type="text" name="name" id="name" class="form-control post-input" value="{{ old('name', $user->name) }}" autofocus>
                             @error('name')
                                 <div class="text-danger small">{{ $message }}</div>
                             @enderror
@@ -54,7 +54,7 @@
                             <label for="email" class="form-label fw-bold">
                                 {{ __('messages.edit_profile.email') }}
                             </label>
-                            <input type="email" name="email" id="email" class="form-control shadow-sm border-0" value="{{ old('email', $user->email) }}">
+                            <input type="email" name="email" id="email" class="form-control post-input" value="{{ old('email', $user->email) }}">
                             @error('email')
                                 <div class="text-danger small">{{ $message }}</div>
                             @enderror
@@ -71,7 +71,7 @@
                             <label for="country" class="form-label fw-bold">
                                 {{ __('messages.edit_profile.country') }}
                             </label>
-                            <select name="country" class="form-control shadow-sm border-0 select2">
+                            <select name="country" class="form-control post-input select2">
                                 @foreach ($groupedCountries as $letter => $group)
                                     <optgroup label="{{ $letter }}">
                                         @foreach ($group as $code => $country)
@@ -89,7 +89,7 @@
                             <label for="introduction" class="form-label fw-bold">
                                 {{ __('messages.edit_profile.introduction') }}
                             </label>
-                            <textarea name="introduction" id="introduction" rows="5" class="form-control shadow-sm border-0" 
+                            <textarea name="introduction" id="introduction" rows="5" class="form-control post-input" 
                                         placeholder="Describe yourself">{{ old('introduction', $user->introduction) }}</textarea>
                             @error('introduction')
                                 <div class="text-danger small">{{ $message }}</div>
@@ -122,7 +122,7 @@
                         </label>
                         <div class="mb-4">             
                             <input type="password" name="current_password" id="current_password" 
-                                class="form-control shadow-sm border-0" placeholder="{{ __('messages.edit_profile.password_placeholder') }}">
+                                class="form-control post-input" placeholder="{{ __('messages.edit_profile.password_placeholder') }}">
                             @error('current_password')
                                 <div class="text-danger small">{{ $message }}</div>
                             @enderror
@@ -130,7 +130,7 @@
 
                         <div class="mb-4">
                             <input type="password" name="password" id="password" 
-                                class="form-control shadow-sm border-0" placeholder="{{ __('messages.edit_profile.new_password_placeholder') }}">
+                                class="form-control post-input" placeholder="{{ __('messages.edit_profile.new_password_placeholder') }}">
                             @error('password')
                                 <div class="text-danger small">{{ $message }}</div>
                             @enderror
@@ -138,7 +138,7 @@
 
                         <div class="mb-4">
                             <input type="password" name="password_confirmation" id="password_confirmation" 
-                                class="form-control shadow-sm border-0" placeholder="{{ __('messages.edit_profile.confirm_password_placeholder') }}">
+                                class="form-control post-input" placeholder="{{ __('messages.edit_profile.confirm_password_placeholder') }}">
                         </div>
 
                         <div class="text-end">
