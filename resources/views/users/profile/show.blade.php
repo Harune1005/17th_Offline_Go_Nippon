@@ -330,46 +330,77 @@
                     @if ($posts->isNotEmpty())
                         <div class="row g-3">
                             @foreach ($posts as $post)
-                                @if ($post->images->isNotEmpty())
-                                    <div class="col-4 col-sm-4 col-md-4 col-lg-4">
-                                        <div class="card border-0 p-0 shadow-sm rounded-2 overflow-hidden">
-                                            <div class="card-header border-0 p-0">
-                                                <a href="{{ route('post.show', $post->id) }}" class="d-block position-relative">
-                                                    @if ($post->images->count() > 1)
-                                                        <div id="carouselPost{{ $post->id }}" 
-                                                            class="carousel slide" 
-                                                            data-bs-ride="carousel">
-                                                            <div class="carousel-inner">
-                                                                @foreach ($post->images as $key => $image)
-                                                                    <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
-                                                                     <img  src="{{ asset('storage/' . $image->image) }}"
-                                                                                   alt="Post image {{ $post->id }}" 
-                                                                            class="d-block w-100 post-image"
-                                                                            style="width: 100%; height: auto; object-fit: cover;">
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
+                              @php
+                                  $mediaItems = $post->media->take(3);
+                              @endphp
+                                <div class="col-4 col-sm-4 col-md-4 col-lg-4">
+                                    <div class="card border-0 p-0 shadow-sm rounded-2 overflow-hidden">
+                                        <div class="card-header border-0 p-0">
 
-                                                            <button class="carousel-control-prev" type="button"
-                                                                data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="prev">
-                                                                <span class="carousel-control-prev-icon"></span>
-                                                            </button>
-                                                            <button class="carousel-control-next" type="button"
-                                                                data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="next">
-                                                                <span class="carousel-control-next-icon"></span>
-                                                            </button>
+                                            <a href="{{ route('post.show', $post->id) }}" class="d-block position-relative">
+                                                @if ($mediaItems->count() > 1)
+                                                    <div id="carouselPost{{ $post->id }}" 
+                                                        class="carousel slide" 
+                                                        data-bs-ride="carousel">
+                                                        <div class="carousel-inner">
+                                                            @foreach ($mediaItems as $index => $media)
+                                                                <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                                                  {{-- image --}}
+                                                                  @if ($media->type === 'image')
+                                                                      <img  src="{{ asset('storage/' . $media->path) }}"
+                                                                                alt="Post image" 
+                                                                        class="d-block w-100 post-image"
+                                                                        style="width: 100%; height: auto; object-fit: cover;">
+                                                                  @endif
+                                                                  {{-- video --}}
+                                                                  @if ($media->type === 'video')
+                                                                    <video
+                                                                      src="{{ asset('storage/' . $media->path) }}"
+                                                                      muted
+                                                                      playsinline
+                                                                      class="d-block w-100"
+                                                                      style="object-fit: cover; aspect-ratio: 1/1;">
+                                                                    </video>
+                                                                  @endif
+                                                                </div>
+                                                            @endforeach
                                                         </div>
-                                                    @else
-                                                       <img src="{{ asset('storage/' . $post->images->first()->image) }}" 
-                                                            alt="Post image {{ $post->id }}" 
-                                                            class="post-image"
-                                                            style="width: 100%; height: auto; object-fit: cover;">
+
+                                                        <button class="carousel-control-prev" type="button"
+                                                            data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="prev">
+                                                            <span class="carousel-control-prev-icon"></span>
+                                                        </button>
+                                                        <button class="carousel-control-next" type="button"
+                                                            data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="next">
+                                                            <span class="carousel-control-next-icon"></span>
+                                                        </button>
+                                                    </div>
+                                                @elseif($mediaItems->count() === 1)
+                                                    @php
+                                                        $media = $mediaItems->first();
+                                                    @endphp
+                                                    {{-- image --}}
+                                                    @if ($media->type === 'image')
+                                                        <img src="{{ asset('storage/' . $media->path) }}" 
+                                                        alt="Post image {{ $post->id }}" 
+                                                        class="post-image"
+                                                        style="width: 100%; height: auto; object-fit: cover;">
                                                     @endif
-                                                </a>
-                                            </div>
+                                                    {{-- video --}}
+                                                    @if ($media->type === 'video')
+                                                        <video
+                                                            src="{{ asset('storage/' . $media->path) }}"
+                                                            muted
+                                                            playsinline
+                                                            class="d-block w-100"
+                                                            style="object-fit: cover; aspect-ratio: 1/1;">
+                                                        </video>
+                                                    @endif
+                                                @endif
+                                            </a>
                                         </div>
                                     </div>
-                                @endif
+                                </div>
                             @endforeach
                         </div>
                     @else

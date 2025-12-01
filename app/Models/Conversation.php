@@ -73,6 +73,10 @@ class Conversation extends Model
             return '[sent image]';
         }
 
+        if ($this->lastMessage->video_path) {
+            return '[sent video]';
+        }
+
         return null;
     }
 }

@@ -73,14 +73,14 @@ class DmController extends Controller
         $validated = $request->validate([
             'conversation_id' => 'required|exists:conversations,id',
             'content' => 'nullable|string|max:1000',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'media' => 'nullable|file|max:51200',
         ]);
 
         // if there is no content and image, return error
-        if (empty($validated['content']) && ! $request->hasFile('image')) {
+        if (empty($validated['content']) && ! $request->hasFile('media')) {
             return response()->json([
                 'success' => false,
-                'error' => 'Please enter a message or attach an image.',
+                'error' => 'Please enter a message or attach media.',
             ], 422);
         }
 
@@ -107,9 +107,31 @@ class DmController extends Controller
             'content' => $validated['content'] ?? null,
         ];
 
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('messages', 'public');
-            $messageData['image_path'] = $path;
+        if ($request->hasFile('media')) {
+
+            $file = $request->file('media');
+            $mime = $file->getMimeType();
+
+            // image
+            if (str_starts_with($mime, 'image/')) {
+                $path = $file->store('chat_images', 'public');
+                $messageData['image_path'] = $path;
+            }
+            // video
+            elseif(str_starts_with($mime, 'video/')){
+                // get the duration of video
+                $duration = $this->getVideoDuration($file->getPathname());
+
+                if ($duration > 30) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'Video must be 30 seconds or shorter.',
+                    ], 422);
+                }
+
+                $path = $file->store('chat_videos', 'public');
+                $messageData['video_path'] = $path;
+            }
         }
 
         // create message
@@ -125,11 +147,21 @@ class DmController extends Controller
                 'id' => $message->id,
                 'content' => $message->content,
                 'image_url' => $message->image_path ? asset('storage/'.$message->image_path) : null,
+                'video_url' => $message->video_path ? asset('storage/'.$message->video_path) : null,
                 'sender_id' => $message->sender_id,
                 'created_at' => $message->created_at->format('m/d H:i'),
             ],
         ]);
+    }
 
+    private function getVideoDuration($filePath)
+    {
+        // get the duration of video by ffprobe
+        $cmd = "ffprobe -v error -show_entries format=duration -of csv=p=0 \"$filePath\"";
+
+        $duration = shell_exec($cmd);
+
+        return floatval($duration);
     }
 
     public function destroy($id)
@@ -148,11 +180,20 @@ class DmController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        // remove image
         if ($message->image_path) {
-            $filePath = storage_path('app/public/'.$message->image_path);
+            $imagePath = storage_path('app/public/'.$message->image_path);
 
-            if (file_exists($filePath)) {
-                unlink($filePath);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        // remove video
+        if (!empty($message->video_path)) {
+            $videoPath = storage_path('app/public/' . $message->video_path);
+            if (file_exists($videoPath)) {
+                unlink($videoPath);
             }
         }
 

@@ -97,10 +97,21 @@
                 {{-- Existing Images --}}
                 <div class="mb-4">
                     <label class="form-label fw-bold">Current Images</label>
-                    <div id="existing-images" class="image-preview-area">
-                        @foreach($post->images as $image)
-                            <div class="image-item" data-id="{{ $image->id }}">
-                                <img src="{{ asset('storage/' . $image->image) }}" alt="">
+                    <div id="existing-media" class="media-preview-area">
+                        @foreach($post->media as $media)
+                            <div class="media-item" data-id="{{ $media->id }}">
+                                @if ($media->type === 'image')
+                                    <img src="{{ asset('storage/' . $media->path) }}" alt="">
+                                @else
+                                    <video 
+                                        src="{{ asset('storage/' . $media->path) }}" 
+                                        controls 
+                                        muted 
+                                        playsinline
+                                        style="max-height:160px;">
+                                    </video>
+                                @endif
+
                                 <span class="remove-btn">×</span>
                             </div>
                         @endforeach
@@ -109,9 +120,9 @@
 
                 {{-- Add new images --}}
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Add New Images (max 3 total)</label>
-                    <div id="image-inputs"></div>
-                    <div id="image-previews" class="image-preview-area"></div>
+                    <label class="form-label fw-bold">Add New Media (max 3 total)</label>
+                    <div id="media-inputs"></div>
+                    <div id="media-previews" class="media-preview-area"></div>
                 </div>
 
                 {{-- Buttons --}}
@@ -135,84 +146,122 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const MAX_IMAGES = 3;
-    const form = document.getElementById('edit-form');
-    const existingImages = document.querySelector('#existing-images');
-    const container = document.getElementById('image-inputs');
-    const previewArea = document.getElementById('image-previews');
-    let count = existingImages.querySelectorAll('.image-item').length;
+    const MAX_MEDIA = 3;
 
-    // --- 既存画像削除 ---
-    existingImages.addEventListener('click', function(e) {
+    const form = document.getElementById('edit-form');
+    const existing = document.getElementById('existing-media');
+    const inputs = document.getElementById('media-inputs');
+    const previews = document.getElementById('media-previews');
+
+    let count = existing.querySelectorAll('.media-item').length;
+
+    // --- 既存メディア削除 ---
+    existing.addEventListener('click', function(e) {
         if (!e.target.classList.contains('remove-btn')) return;
 
-        const imageDiv = e.target.closest('.image-item');
-        const imageId = imageDiv.dataset.id;
+        const item = e.target.closest('.media-item');
+        const id = item.dataset.id;
 
-        if (imageId) {
+        if (id) {
             const input = document.createElement('input');
             input.type = 'hidden';
-            input.name = 'deleted_images[]';
-            input.value = imageId;
+            input.name = 'deleted_media[]';
+            input.value = id;
             form.appendChild(input);
         }
 
-        imageDiv.remove();
+        item.remove();
         count--;
-        if (count < MAX_IMAGES && !container.querySelector('input[type=file]')) addInput();
+        if (!document.querySelector('.media-add-btn') && count < MAX_MEDIA) {
+            addMediaInput();
+        }
     });
 
-    // --- 新規画像追加 ---
-    function addInput() {
-        if (count >= MAX_IMAGES) return;
+    // --- 新規メディア入力を追加 ---
+    function addMediaInput() {
+
+        if (count >= MAX_MEDIA) return;
+        if (document.querySelector('.media-add-btn')) return;
 
         const wrapper = document.createElement('div');
-        const label = document.createElement('label');
-        const input = document.createElement('input');
+        wrapper.classList.add('media-controls');
 
-        wrapper.classList.add('image-controls');
+        const label = document.createElement('label');
         label.textContent = '+ Add';
-        label.classList.add('image-btn');
+        label.classList.add('media-btn', 'media-add-btn');
+
+        const input = document.createElement('input');
         input.type = 'file';
-        input.name = 'new_image[]';
-        input.accept = 'image/*';
+        input.name = 'new_media[]';
+        input.accept = 'image/*,video/*';
         input.style.display = 'none';
 
-        label.addEventListener('click', () => input.click());
         wrapper.append(label, input);
-        container.appendChild(wrapper);
+        inputs.appendChild(wrapper);
 
-        input.addEventListener('change', function() {
+        label.addEventListener('click', () => input.click());
+
+        // --- プレビュー & カウント管理 ---
+        input.addEventListener('change', function () {
+
             if (!this.files[0]) return;
             count++;
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const div = document.createElement('div');
-                div.classList.add('image-item');
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                const removeBtn = document.createElement('span');
-                removeBtn.classList.add('remove-btn');
-                removeBtn.textContent = '×';
+            const file = this.files[0];
+            const mime = file.type;
+            const preview = document.createElement('div');
+            preview.classList.add('media-item');
 
-                removeBtn.addEventListener('click', () => {
-                    div.remove();
-                    input.remove();
-                    count--;
-                    if (count < MAX_IMAGES && !container.querySelector('input[type=file]')) addInput();
-                });
+            // 削除ボタン
+            const removeBtn = document.createElement('span');
+            removeBtn.classList.add('remove-btn');
+            removeBtn.textContent = '×';
 
-                div.append(img, removeBtn);
-                previewArea.appendChild(div);
+            removeBtn.onclick = () => {
+                preview.remove();
+                wrapper.remove();
+                count--;
+                if (!document.querySelector('.media-add-btn') && count < MAX_MEDIA) {
+                    addMediaInput();
+                }
             };
-            reader.readAsDataURL(this.files[0]);
-            label.style.display = 'none';
 
-            if (count < MAX_IMAGES) addInput();
+            // 画像の場合
+            if (mime.startsWith('image')) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // 動画の場合
+            else if (mime.startsWith('video')) {
+                const video = document.createElement('video');
+                video.src = URL.createObjectURL(file);
+                video.controls = true;
+                video.muted = true;
+                video.playsinline = true;
+                video.style.maxHeight = '160px';
+                preview.appendChild(video);
+            }
+
+            preview.appendChild(removeBtn);
+            previews.appendChild(preview);
+
+            label.remove();
+
+            if (!document.querySelector('.media-add-btn') && count < MAX_MEDIA) {
+                addMediaInput();
+            }
         });
     }
-    if (count < MAX_IMAGES) addInput();
+
+    if (count < MAX_MEDIA) {
+        addMediaInput();
+    }
 
     // --- コストスライダー ---
     const costSlider = document.getElementById('cost-slider');
@@ -230,6 +279,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('You can select up to 3 categories.');
             }
         });
+    });
+
+    // at least 1 media
+    form.addEventListener('submit', function(e) {
+        const existingCount = existing.querySelectorAll('.media-item').length;
+        const newCount = previews.querySelectorAll('.media-item').length;
+
+        if (existingCount + newCount === 0) {
+            e.preventDefault();
+            alert('You must have at least 1 image or video.');
+        }
     });
 });
 </script>

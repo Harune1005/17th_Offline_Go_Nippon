@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Models\Message;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,11 +31,29 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('*', function ($view) {
-            $notifications = auth()->check()
-                ? auth()->user()->notifications()->orderBy('created_at', 'desc')->get()
-                : collect();
+            if (Auth::check()) {
+                $notifications = Auth::user()
+                    ->notifications()
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+            } else {
+                $notifications = collect();
+            }
 
             $view->with('notifications', $notifications);
         });
+
+        // to provide the number of unread
+        view()->composer('*', function ($view) {
+        if (Auth::check()) {
+            $unreadDMs = Message::where('receiver_id', Auth::id())
+                ->whereNull('read_at')
+                ->count();
+        } else {
+            $unreadDMs = 0;
+        }
+
+        $view->with('unreadDMs', $unreadDMs);
+    });
     }
 }

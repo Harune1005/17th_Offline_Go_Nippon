@@ -59,9 +59,10 @@ class AdminpostController extends Controller
     public function deactivate($id)
     {
         $post = $this->post->findOrFail($id);
+
         $post->delete();
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Post hidden (soft deleted)');
     }
 
     public function activate($id)

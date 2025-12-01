@@ -84,6 +84,16 @@
                             <li class="nav-item">
                                 <a href="{{ route('conversation.show') }}" class="nav-link fs-2" style="color:#9F6B46;">
                                     <i class="fa-regular fa-comment nav-item p-0"></i>
+
+                                    @if(isset($unreadDMs) && $unreadDMs > 0)
+                                        <span class="position-absolute badge rounded-pill bg-danger"
+                                            style="
+                                                font-size: 0.8rem;
+                                                padding: 3px 6px;
+                                            ">
+                                            {{ $unreadDMs }}
+                                        </span>
+                                    @endif
                                 </a>
                             </li>
 
@@ -215,6 +225,13 @@
                     <li class="mb-3">
                         <a href="{{ route('conversation.show') }}" class="menu-link nav-text-brown">
                             <i class="fa-regular fa-comment me-3"></i> Messages
+
+                            @if(isset($unreadDMs) && $unreadDMs > 0)
+                                <span class="position-absolute badge bg-danger rounded-pill"
+                                    style="right: 120px; font-size: 0.8rem; padding: 3px 6px;">
+                                    {{ $unreadDMs }}
+                                </span>
+                            @endif
                         </a>
                     </li>
                     <li class="mb-3">
@@ -223,8 +240,17 @@
                         </a>
                     </li>
                     <li class="mb-3">
-                        <a href="#" class="notificationBtn menu-link nav-text-brown">
+                        <a href="#" class="notificationBtn menu-link nav-text-brown"
+                            id="notificationBtnMobile"
+                            data-bs-toggle="modal"
+                            data-bs-target="#notificationModal">
                             <i class="fa-regular fa-bell me-3"></i> Notification
+                            @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
+                                <span id="notificationBadgeMobile" class="badge bg-danger rounded-pill ms-2"
+                                    style="font-size: 0.8rem;padding: 3px 6px;">
+                                    {{ Auth::user()->unreadNotifications->count() }}
+                                </span>
+                            @endif
                         </a>
                     </li>
                     <li class="mb-3">
@@ -273,33 +299,70 @@
                             <div class="modal-body">
                                 @forelse ($notifications as $n)
                                     <div class="d-flex align-items-center mb-3">
-
                                         @php
                                             // いいねしたユーザーのアバター
-                                            $avatar = $n->data['liker_avatar'] ?? null;
-                                            if ($avatar) {
-                                                $avatar = str_replace('/storage/avatars//storage/avatars/', '/storage/avatars/', $avatar);
-                                            }
+                                            $avatar = $n->data['liker_avatar'] ?? 'https://via.placeholder.com/50';
 
                                             // 投稿画像URLの初期値（プレースホルダー）
-                                            $postImageUrl = 'https://via.placeholder.com/60';
+                                            $thumbHtml = '<img src="https://via.placeholder.com/60" class="post-image-square rounded-0">';
+                                            // $postImageUrl = 'https://via.placeholder.com/60';
 
                                             // 投稿に紐づく最初の画像を取得
-                                            if (isset($n->data['post_id']) && $post = \App\Models\Post::find($n->data['post_id'])) {
-                                                $firstImage = $post->images->first()?->image; // imagesテーブルのカラム名に合わせる
-                                                if ($firstImage) {
-                                                    $postImageUrl = asset('storage/' . $firstImage);
+                                            if (isset($n->data['post_id'])) {
+
+                                                $post = \App\Models\Post::find($n->data['post_id']);
+
+                                                if($post && $post->media->isNotEmpty()){
+                                                    $m = $post->media->first();
+                                                    // image
+                                                    if($m->type === 'image'){
+                                                        $thumbHtml = '
+                                                            <img src="' . asset("storage/{$m->path}") . '" 
+                                                                class="post-image-square rounded-0"
+                                                                style="object-fit: cover; width:60px; height:60px;">
+                                                        ';
+                                                    }
+                                                    // video + thumbnail
+                                                    if($m->type === 'video' && $m->thumbnail_path){
+                                                        $thumbHtml = '
+                                                            <img src="' . asset("storage/{$m->thumbnail_path}") . '"
+                                                                class="post-image-square rounded-0"
+                                                                style="object-fit: cover; width:60px; height:60px;">
+                                                        ';
+                                                    }
+
+                                                    // video only
+                                                    if($m->type === 'video'){
+                                                        $thumbHtml = '
+                                                            <video
+                                                                src="' . asset("storage/{$m->path}") . '"
+                                                                muted
+                                                                playsinline
+                                                                class="rounded-0"
+                                                                style="object-fit: cover; width:60px; height:60px;">
+                                                            </video>
+                                                        ';
+                                                    }
                                                 }
                                             }
                                         @endphp
-
                                         <!-- いいねしたユーザー画像 -->
                                         <a href="{{ isset($n->data['liker_id']) ? route('profile.show', ['id' => $n->data['liker_id']]) : '#' }}">
-                                            <img src="{{ $avatar ?? 'https://via.placeholder.com/50' }}"
+                                            @php
+                                                $avatar = $n->data['liker_avatar'] ?? null;
+                                                if(!$avatar || $avatar === 'null'){
+                                                    $avatar = null;
+                                                }
+                                            @endphp
+                                            @if ($avatar)
+                                                <img src="{{ $avatar }}"
                                                 class="rounded-circle me-3"
                                                 width="50"
                                                 height="50"
                                                 style="object-fit: cover;">
+                                            @else
+                                                <i class="fa-solid fa-circle-user text-secondary me-3" style="font-size:50px; color:#ccc;"></i>
+                                            @endif
                                         </a>
 
                                         <!-- 名前と通知文 -->
@@ -311,7 +374,8 @@
 
                                         <!-- 投稿画像（右側） -->
                                         <a href="{{ route('post.show', $n->data['post_id']) }}">
-                                            <img src="{{ $postImageUrl }}" class="post-image-square rounded-0">
+                                            {{-- <img src="{{ $postImageUrl }}" class="post-image-square rounded-0"> --}}
+                                            {!! $thumbHtml !!}
                                         </a>
 
                                     </div>
@@ -327,31 +391,81 @@
         </div>
     </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // 通知ボタン
-        const notificationBtn = document.getElementById('notificationBtn');
-        const profileBadge = document.getElementById('notificationBadge');
+    
+<script>
+document.addEventListener('DOMContentLoaded', function () {
 
-        if(notificationBtn) {
-            notificationBtn.addEventListener('click', function() {
-                fetch("{{ route('notifications.readAll') }}", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                        "Content-Type": "application/json"
-                    },
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if(data.status === 'ok' && profileBadge) {
-                        profileBadge.style.display = 'none'; // バッジを消す
-                    }
-                })
-                .catch(err => console.error(err));
-            });
-        }
-    });
-    </script>
+    const notificationBtn = document.getElementById('notificationBtn'); // PC
+    const profileBadge = document.getElementById('notificationBadge');
+
+    const notificationBtnMobile = document.getElementById('notificationBtnMobile'); // Mobile
+    const mobileBadge = document.getElementById('notificationBadgeMobile');
+
+    function readNotifications() {
+        fetch("{{ route('notifications.readAll') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                "Content-Type": "application/json"
+            },
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                // PCバッジを消す
+                if (profileBadge) {
+                    profileBadge.style.display = 'none';
+                }
+                // モバイルバッジを消す
+                if (mobileBadge) {
+                    mobileBadge.style.display = 'none';
+                }
+            }
+        })
+        .catch(err => console.error(err));
+    }
+
+    // PC版クリックイベント
+    if (notificationBtn) {
+        notificationBtn.addEventListener('click', readNotifications);
+    }
+
+    // モバイル版クリックイベント
+    if (notificationBtnMobile) {
+        notificationBtnMobile.addEventListener('click', readNotifications);
+    }
+
+    // if (modal) {
+    //     modal.addEventListener('shown.bs.modal', function () {
+
+    //         fetch("{{ route('notifications.readAll') }}", {
+    //             method: "POST",
+    //             headers: {
+    //                 "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+    //                 "Content-Type": "application/json"
+    //             },
+    //         })
+    //         .then(res => res.json())
+    //         .then(data => {
+    //             if (data.status === 'ok') {
+
+    //                 // 🔵 ナビバーのバッジを消す
+    //                 if (profileBadge) {
+    //                     profileBadge.style.display = 'none';
+    //                 }
+
+    //                 // 🔵 ドロップダウン内のバッジも消す
+    //                 const dropdownBadge = document.querySelector('#notificationBtn .badge');
+    //                 if (dropdownBadge) {
+    //                     dropdownBadge.remove();
+    //                 }
+    //             }
+    //         })
+    //         .catch(err => console.error(err));
+    //     });
+    // }
+
+});
+</script>
 </body>
 </html>

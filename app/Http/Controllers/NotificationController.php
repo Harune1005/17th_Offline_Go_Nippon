@@ -13,7 +13,7 @@ class NotificationController extends Controller
                 'user' => $n->data['liker_name'] ?? 'Unknown',
                 'action' => 'liked your post',
                 'time' => $n->created_at ? $n->created_at->diffForHumans() : '',
-                'image' => $n->data['liker_avatar'] ?? 'https://via.placeholder.com/50',
+                'image' => !empty($n->data['liker_avatar']) ? $n->data['liker_avatar'] : null,
             ];
         });
 

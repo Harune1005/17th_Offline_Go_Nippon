@@ -89,10 +89,10 @@
 
                 {{-- Images --}}
                 <div class="mb-4">
-                    <label class="form-label">Images (up to 3)</label>
-                    <div id="image-inputs"></div>
-                    <div id="image-previews" class="image-preview-area"></div>
-                    @error('image') <div class="text-danger small">{{ $message }}</div> @enderror
+                    <label class="form-label">Images+Videos (up to 3)</label>
+                    <div id="media-inputs"></div>
+                    <div id="media-previews" class="image-preview-area"></div>
+                    @error('media') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="text-end mt-4">
@@ -115,66 +115,101 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const MAX_IMAGES = 3;
-    const container = document.getElementById('image-inputs');
-    const previewArea = document.getElementById('image-previews');
+    const MAX_MEDIA = 3; 
     let count = 0;
 
-    function addInput() {
-        if (count >= MAX_IMAGES) return;
-        count++;
+    const container = document.getElementById('media-inputs');
+    const previewArea = document.getElementById('media-previews');
+
+    function addMediaInput() {
+        if (count >= MAX_MEDIA) return;
+
+        if (document.querySelector('.media-add-btn')) return;
 
         const wrapper = document.createElement('div');
-        wrapper.classList.add('image-controls');
+        wrapper.classList.add('media-controls');
 
         const label = document.createElement('label');
         label.textContent = '+ Add';
-        label.classList.add('image-btn');
+        label.classList.add('media-btn', 'media-add-btn');
+        label.classList.add('media-btn');
 
         const input = document.createElement('input');
         input.type = 'file';
-        input.name = 'image[]';
-        input.accept = 'image/*';
+        input.name = 'media[]';
+        input.accept = 'image/*,video/*';
         input.style.display = 'none';
 
         wrapper.appendChild(label);
         wrapper.appendChild(input);
         container.appendChild(wrapper);
 
+        // Add click → input click
         label.addEventListener('click', () => input.click());
 
+        // after chosing file
         input.addEventListener('change', function() {
+
             if (!this.files[0]) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const div = document.createElement('div');
-                div.classList.add('image-item');
+            const file = this.files[0];
+            const mime = file.type;
 
-                const img = document.createElement('img');
-                img.src = e.target.result;
+            count++; 
 
-                const removeBtn = document.createElement('span');
-                removeBtn.classList.add('remove-btn');
-                removeBtn.textContent = '×';
-                removeBtn.onclick = () => {
-                    div.remove();
-                    wrapper.remove();
-                    count--;
-                    if (count < MAX_IMAGES) addInput();
-                };
+            const previewWrap = document.createElement('div');
+            previewWrap.classList.add('media-item');
 
-                div.appendChild(img);
-                div.appendChild(removeBtn);
-                previewArea.appendChild(div);
+            // remove button
+            const removeBtn = document.createElement('span');
+            removeBtn.classList.add('remove-btn');
+            removeBtn.textContent = '×';
+
+            removeBtn.onclick = () => {
+                previewWrap.remove();
+                wrapper.remove();
+                count--;
+                if (!document.querySelector('.media-add-btn') && count < MAX_MEDIA) {
+                    addMediaInput();
+                }
             };
-            reader.readAsDataURL(this.files[0]);
 
-            label.style.display = 'none';
-            if (count < MAX_IMAGES) addInput();
+            // when image
+            if (mime.startsWith('image')) {
+
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    previewWrap.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // when movie（show thumbnail or movie）
+            else if (mime.startsWith('video')) {
+
+                const video = document.createElement('video');
+                video.src = URL.createObjectURL(file);
+                video.controls = true;
+                video.muted = true;
+                video.playsinline = true;
+                video.style.maxHeight = "180px";
+
+                previewWrap.appendChild(video);
+            }
+
+            previewWrap.appendChild(removeBtn);
+            previewArea.appendChild(previewWrap);
+
+            label.remove();
+
+            if (!document.querySelector('.media-add-btn') && count < MAX_MEDIA) {
+                addMediaInput();
+            }
         });
     }
 
-    addInput();
+    addMediaInput();
 
     // Cost slider update
     const costSlider = document.getElementById('cost-slider');
