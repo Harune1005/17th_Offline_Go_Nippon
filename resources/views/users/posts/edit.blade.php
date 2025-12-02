@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container mt-3">
     <div class="card shadow border-0 rounded-4 p-4 mx-auto fade-in" style="max-width: 800px;">
         <div class="card-header bg-transparent">
@@ -83,43 +84,51 @@
                     </div>
                 </div>
 
+                
                 <div class="mb-5">
                     <label class="form-label fw-bold">{{ __('messages.edit_post.image') }}</label>
-                    <div class="d-flex gap-3" id="image-upload-area">
-                        @foreach ($post->images as $image)
-                        <div class="image-slot existing-image position-relative" data-image-id="{{ $image->id }}" 
-                            style="width: 100px; height: 100px; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.15);">
-                            <img src="{{ asset('storage/' . $image->image) }}" alt="existing image" 
-                                style="width:100%; height:100%; object-fit:cover;">
-                            <button type="button"
-                                class="delete-existing-image position-absolute"
-                                style="top: 4px;right: 4px; width: 20px; height: 20px; font-size: 0.8rem; border: none; border-radius: 50%;
-                                    background-color: #9F6B46; color: white; cursor: pointer; display: flex; align-items: center;justify-content: center;opacity: 1;"
-                                aria-label="Delete Image"
-                                data-image-id="{{ $image->id }}"
-                                onclick="deleteExistingImage(this)"
-                            >
-                                &times;
-                            </button>
-                            <input type="hidden" name="deleted_images[]" class="deleted-image-input" value="" disabled>
-                        </div>
+                    
+                     <div class="d-flex flex-wrap gap-3 mb-2" id="media-upload-area">
+                        {{-- show existing Media --}}
+                        @foreach ($post->media as $media)
+                            <div class="media-slot existing-media" data-id="{{ $media->id }}">
+                                @if ($media->type === 'image')
+                                    <img src="{{ asset('storage/'.$media->path) }}" alt="existing image">
+                                @else
+                                    <video src="{{ asset('storage/'.$media->path) }}" muted playsinline></video>
+                                @endif
+                                {{-- remove button --}}
+                                 <button type="button"
+                                    class="delete-existing-media"
+                                    onclick="deleteExistingMedia(this)"
+                                    data-id="{{ $media->id }}">
+                                    &times;
+                                </button>
+                            </div>
                         @endforeach
-
-                        <div class="image-slot add-new-slot" id="add-slot" style="width: 100px; height: 100px;">
-                            <label class="d-flex justify-content-center align-items-center rounded-3 h-100 w-100"
-                                style="cursor: pointer; background-color: #f0f0f0; border: 1px solid #B0B0B0; color: #555;"
-                                for="new_image_file_0">
-                                <span class="small font-weight-bold">{{ __('messages.edit_post.add') }}</span>
+                        {{-- add slot --}}
+                        <div class="media-slot add-new-slot" id="add-slot">
+                            <label class="d-flex justify-content-center align-items-center h-100 w-100"
+                                style="cursor:pointer; background:#f0f0f0; border:1px solid #B0B0B0; color:#9F6B46; font-weight:bold;"
+                                for="new_media_file_0">
+                                + Add
                             </label>
-                            <input type="file" class="d-none new-image-input" name="new_image[]" id="new_image_file_0" onchange="previewNewImage(this)" accept="image/*">
+                            <input type="file" class="d-none new-media-input" 
+                                name="new_media[]" id="new_media_file_0"
+                                accept="image/*,video/*"
+                                onchange="previewNewMedia(this)">
                         </div>
-                    </div>
-                    @error('new_image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                    @error('new_image.*') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                     </div>
+
+                    @error('new_media') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                    @error('new_media.*') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+
                 </div>
 
+                {{-- Buttons --}}
                 <div class="text-end mt-4">
-                    <a onclick="window.history.back()"
+                    <a type="button"
+                       onclick="window.history.back()"
                        class="btn btn-cancel shadow-sm me-3"
                        style="min-width:150px; font-weight:bold;">
                         {{ __('messages.edit_post.cancel') }}
@@ -137,110 +146,115 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    updateAddSlotVisibility();
+let mediaIndex = 0;
+const MAX_MEDIA = 3;
 
-    document.querySelector('form').addEventListener('submit', function(e) {
-        if (getCurrentImageCount() > 3) {
-            alert('You can upload up to 3 images.');
-            e.preventDefault();
-        }
-    });
-});
-
-function getCurrentImageCount() {
-    const existingCount = document.querySelectorAll('.existing-image:not(.d-none)').length;
-    const newCount = document.querySelectorAll('.new-image-slot').length;
-    return existingCount + newCount;
+function getTotalMediaCount() {
+    return document.querySelectorAll(".media-slot:not(.add-new-slot)").length;
 }
 
-function updateAddSlotVisibility() {
-    const addSlot = document.getElementById('add-slot');
-    if (addSlot) {
-        getCurrentImageCount() >= 3 ? addSlot.classList.add('d-none') : addSlot.classList.remove('d-none');
-    }
+function redrawAddSlot() {
+    // 既存の add-slot を削除
+    document.querySelectorAll(".add-new-slot").forEach(e => e.remove());
+
+    // MAX に達していたら作らない
+    if (getTotalMediaCount() >= MAX_MEDIA) return;
+
+    mediaIndex++;
+
+    let addSlot = document.createElement("div");
+    addSlot.className = "media-slot add-new-slot";
+    addSlot.id = "add-slot";
+
+    addSlot.innerHTML = `
+        <label class="d-flex justify-content-center align-items-center h-100 w-100"
+            style="cursor:pointer; background:#f0f0f0; border:1px solid #B0B0B0; color:#9F6B46; font-weight:bold;"
+            for="new_media_file_${mediaIndex}">
+            + Add
+        </label>
+        <input type="file" class="d-none new-media-input"
+            name="new_media[]" id="new_media_file_${mediaIndex}"
+            accept="image/*,video/*" 
+            onchange="previewNewMedia(this)">
+    `;
+
+    document.querySelector("#media-upload-area").appendChild(addSlot);
 }
 
-let newImageIndex = 0;
-
-function previewNewImage(input) {
+window.previewNewMedia = function(input) {
     const file = input.files[0];
-    const addSlot = input.closest('.add-new-slot');
-    if (!file || !addSlot) return;
+    const slot = input.closest(".add-new-slot");
+    if (!file || !slot) return;
 
     const reader = new FileReader();
     reader.onload = function(e) {
-        addSlot.classList.remove('add-new-slot');
-        addSlot.classList.add('new-image-slot');
-        addSlot.style.position = 'relative';
-        addSlot.innerHTML = `
-            <img src="${e.target.result}" alt="new image" class="rounded-3" style="width: 100%; height: 100%; object-fit: cover; border: 1px solid #ccc;">
-            <button type="button" class="delete-new-image position-absolute"
-                style="top:4px; right:4px; width:20px; height:20px; font-size:0.8rem; border:none; border-radius:50%; background-color:#9F6B46; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:1;"
-                aria-label="Delete Image"
-                onclick="deleteNewImage(this)">&times;</button>
-            <input type="file" class="d-none new-image-input" name="new_image[]" accept="image/*">
-        `;
+        slot.classList.remove("add-new-slot");
+        slot.removeAttribute("id");
+        slot.innerHTML = "";
 
-        const newFileInput = addSlot.querySelector('input[type="file"]');
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(file);
-        newFileInput.files = dataTransfer.files;
-
-        addSlot.removeAttribute('id');
-
-        if (getCurrentImageCount() < 3) {
-            newImageIndex++;
-            const newAddSlot = document.createElement('div');
-            newAddSlot.className = 'image-slot add-new-slot';
-            newAddSlot.id = 'add-slot';
-            newAddSlot.style.cssText = 'width:100px; height:100px;';
-            newAddSlot.innerHTML = `
-                <label class="d-flex justify-content-center align-items-center rounded-3 h-100 w-100"
-                    style="cursor:pointer; background-color:#f0f0f0; border:1px solid #ccc; color:#555;"
-                    for="new_image_file_${newImageIndex}">
-                    <span class="small font-weight-bold">+ Add</span>
-                </label>
-                <input type="file" class="d-none new-image-input" name="new_image[]" id="new_image_file_${newImageIndex}" onchange="previewNewImage(this)" accept="image/*">
-            `;
-            document.getElementById('image-upload-area').appendChild(newAddSlot);
+        let preview;
+        if (file.type.startsWith("image/")) {
+            preview = document.createElement("img");
+            preview.src = e.target.result;
+        } else {
+            preview = document.createElement("video");
+            preview.src = e.target.result;
+            preview.muted = true;
+            preview.playsInline = true;
         }
+        preview.style.cssText = "width:100%; height:100%; object-fit:cover;";
+        slot.appendChild(preview);
 
-        updateAddSlotVisibility();
-    };
-    reader.readAsDataURL(file);
-}
-
-function deleteExistingImage(button) {
-    const slot = button.closest('.image-slot');
-    const imageId = button.getAttribute('data-image-id');
-    const hiddenInput = slot.querySelector('.deleted-image-input');
-    hiddenInput.value = imageId;
-    hiddenInput.disabled = false;
-    slot.classList.add('d-none');
-    updateAddSlotVisibility();
-}
-
-function deleteNewImage(button) {
-    const slot = button.closest('.image-slot');
-    slot.remove();
-    if (!document.querySelector('.add-new-slot')) {
-        newImageIndex++;
-        const newAddSlot = document.createElement('div');
-        newAddSlot.className = 'image-slot add-new-slot';
-        newAddSlot.id = 'add-slot';
-        newAddSlot.style.cssText = 'width:100px; height:100px;';
-        newAddSlot.innerHTML = `
-            <label class="d-flex justify-content-center align-items-center rounded-3 h-100 w-100"
-                style="cursor:pointer; background-color:#f0f0f0; border:1px solid #ccc; color:#555;"
-                for="new_image_file_${newImageIndex}">
-                <span class="small font-weight-bold">+ Add</span>
-            </label>
-            <input type="file" class="d-none new-image-input" name="new_image[]" id="new_image_file_${newImageIndex}" onchange="previewNewImage(this)" accept="image/*">
+        const delBtn = document.createElement("button");
+        delBtn.className = "delete-new-media";
+        delBtn.innerHTML = "&times;";
+        delBtn.style.cssText = `
+            top:4px; right:4px; position:absolute;
+            width:20px;height:20px;border-radius:50%;
+            background:#9F6B46;color:#fff;border:none;cursor:pointer;
         `;
-        document.getElementById('image-upload-area').appendChild(newAddSlot);
-    }
-    updateAddSlotVisibility();
+        delBtn.onclick = () => deleteNewMedia(delBtn);
+        slot.appendChild(delBtn);
+
+        // file input を保持
+        const newInput = document.createElement("input");
+        newInput.type = "file";
+        newInput.classList.add("d-none");
+        newInput.name = "new_media[]";
+
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        newInput.files = dt.files;
+
+        slot.appendChild(newInput);
+
+        redrawAddSlot();
+    };
+
+    reader.readAsDataURL(file);
+};
+
+window.deleteNewMedia = function(btn) {
+    btn.closest(".media-slot").remove();
+    redrawAddSlot();
+};
+
+window.deleteExistingMedia = function(btn) {
+    const slot = btn.closest(".media-slot");
+    const id = slot.dataset.id;
+
+    // hidden input を form に直接追加（slot の外へ）
+    const form = document.getElementById("edit-form");
+    const hidden = document.createElement("input");
+    hidden.type = "hidden";
+    hidden.name = "deleted_media[]";
+    hidden.value = id;
+    form.appendChild(hidden);
+
+    // slot は削除
+    slot.remove();
+
+    redrawAddSlot();
 }
 
 const costSlider = document.getElementById('cost-slider');
@@ -254,6 +268,17 @@ document.querySelectorAll('.category-checkbox').forEach(cb => {
         if (document.querySelectorAll('.category-checkbox:checked').length > 3) {
             this.checked = false;
             alert('You can select up to 3 categories.');
+        }
+    });
+
+    // at least 1 media
+    form.addEventListener('submit', function(e) {
+        const existingCount = existing.querySelectorAll('.media-item').length;
+        const newCount = previews.querySelectorAll('.media-item').length;
+
+        if (existingCount + newCount === 0) {
+            e.preventDefault();
+            alert('You must have at least 1 image or video.');
         }
     });
 });

@@ -59,48 +59,80 @@
                 <div class="card border-0 shadow-sm w-100">
                     <div class="card-body p-0">
                         @php
-                            $images = $post->images->pluck('image')->take(3)->toArray();
+                            $mediaItems = $post->media->take(3);
                         @endphp
-                        @if (count($images) > 1)
-                            <div id="carouselPost{{ $post->id }}" class="carousel slide" data-bs-ride="carousel">
-                                <div class="carousel-inner">
-                                    @foreach ($images as $index => $image)
-                                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                            <a href="{{ route('post.show', $post->id) }}">
-                                                <div class="ratio ratio-1x1">
-                                                    <img 
-                                                        src="{{ asset('storage/' . $image) }}" 
-                                                        class="d-block w-100 h-100"
-                                                        style="object-fit: cover;border-top-left-radius: 5px; border-top-right-radius: 5px;"
-                                                        alt="Post Image {{ $index + 1 }}">
-                                                </div>
-                                            </a>
-                                        </div>
-                                    @endforeach
-                                </div>
+                        @if ($mediaItems->count() > 0)
+                            {{-- multiple media --}}
+                            @if ($mediaItems->count() > 1)
+                                <div id="carouselPost{{ $post->id }}" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        @foreach ($mediaItems as $index => $media)
+                                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                                <a href="{{ route('post.show', $post->id) }}">
+                                                    <div class="ratio ratio-1x1">
+                                                        {{-- image --}}
+                                                        @if ($media->type === 'image')
+                                                            <img 
+                                                            src="{{ asset('storage/' . $media->path) }}" 
+                                                            class="d-block w-100 h-100"
+                                                            style="object-fit: cover;border-top-left-radius: 5px; border-top-right-radius: 5px;"
+                                                            alt="Post Image {{ $index + 1 }}">
+                                                        @endif
+                                                        {{-- video --}}
+                                                        @if ($media->type === 'video')
+                                                            <video
+                                                                src="{{ asset('storage/' . $media->path) }}"
+                                                                class="d-block w-100 h-100"
+                                                                muted
+                                                                playsinline
+                                                                autoplay
+                                                                loop
+                                                                style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
+                                                            ></video>
+                                                        @endif
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        @endforeach
+                                    </div>
 
-                                <button class="carousel-control-prev" type="button"
-                                        data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon"></span>
-                                    <span class="visually-hidden">Previous</span>
-                                </button>
+                                    <button class="carousel-control-prev" type="button"
+                                            data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
 
-                                <button class="carousel-control-next" type="button"
-                                        data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon"></span>
-                                    <span class="visually-hidden">Next</span>
-                                </button>
-                            </div>
-                        @elseif(count($images) === 1)
-                            <a href="{{ route('post.show', $post->id) }}">
-                                <div class="ratio ratio-1x1">
-                                    <img 
-                                        src="{{ asset('storage/' . $images[0]) }}"
-                                        class="d-block w-100 h-100"
-                                        style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
-                                        alt="Post Image">
+                                    <button class="carousel-control-next" type="button"
+                                            data-bs-target="#carouselPost{{ $post->id }}" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
                                 </div>
-                            </a>
+                            @else
+                                <a href="{{ route('post.show', $post->id) }}">
+                                    <div class="ratio ratio-1x1">
+                                        @if ($mediaItems[0]->type === 'image')
+                                            <img 
+                                                src="{{ asset('storage/' . $mediaItems[0]->path) }}"
+                                                class="d-block w-100 h-100"
+                                                style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
+                                                alt="Post Image">
+                                        @else
+                                            <video
+                                                src="{{ asset('storage/' . $mediaItems[0]->path) }}"
+                                                class="d-block w-100 h-100"
+                                                muted
+                                                playsinline
+                                                autoplay
+                                                loop
+                                                style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
+                                            ></video>
+                                        @endif
+                                    </div>
+                                </a>
+                            @endif
+                        @else
+                            <div class="text-center py-5 text-muted">No media available.</div>
                         @endif
                     </div>
 
@@ -122,7 +154,7 @@
                                     @if ($post->isFavorited())
                                         <i class="fa-solid fa-star text-warning" style="font-size: 18px;"></i>
                                     @else
-                                        <i class="fa-regular fa-star" style="font-size: 18px;"></i>
+                                        <i class="fa-regular fa-star" style="font-size: 18px; color:#9F6B46;"></i>
                                     @endif
                                 </button>
                             </div>

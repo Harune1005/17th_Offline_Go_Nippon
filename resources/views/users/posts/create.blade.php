@@ -87,18 +87,22 @@
                     @error('cost') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
-                {{-- Images --}}
+                {{-- Images + Videos --}}
                 <div class="mb-5">
-                    <label class="form-label fw-bold">{{ __('messages.create_post.image') }}</label>
-                    <div class="d-flex flex-wrap gap-3" id="image-upload-area">
-                        <div class="image-slot add-new-slot" id="add-slot" style="width:100px; height:100px;">
-                            <label for="new_image_file_0">{{ __('messages.create_post.add') }}</label>
-                            <input type="file" class="d-none new-image-input" name="image[]" id="new_image_file_0"
-                                onchange="previewNewImage(this)" accept="image/*">
+                    <label class="form-label">{{ __('messages.create_post.image') }}</label>
+                    <div class="d-flex flex-wrap gap-3" id="media-upload-area">
+                        <div class="media-slot add-new-slot" id="add-slot" style="width:100px; height:100px;">
+                            <label for="new_media_file_0" class="add-label">＋</label>
+                            <input type="file"
+                                class="d-none new-media-input"
+                                name="media[]"
+                                id="new_media_file_0"
+                                accept="image/*,video/*"
+                                onchange="previewNewMedia(this)">
                         </div>
                     </div>
-                     @error('image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                     @error('image.*') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                    @error('media') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                    @error('media.*') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="text-end mt-4">
@@ -119,7 +123,7 @@
 </div>
 
 <style>
-.image-slot {
+.media-slot {
     position: relative;
     border-radius: 12px;
     overflow: hidden;
@@ -128,7 +132,7 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
 
-.add-new-slot label {
+.add-new-slot .add-label {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -142,10 +146,27 @@
     border-radius: inherit; 
 }
 
-.image-slot img {
+.image-slot img,
+.media-slot video {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 24px;
+    text-align: center;
 }
 
 .image-slot button {
@@ -156,105 +177,112 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    updateAddSlotVisibility();
+    let mediaIndex = 0;
+    const MAX_MEDIA = 3;
 
-    document.querySelector('form').addEventListener('submit', function(e) {
-        if (getCurrentImageCount() > 3) {
-            alert('You can upload up to 3 images.');
-            e.preventDefault();
-        }
-    });
-
-    let newImageIndex = 0;
-
-    function getCurrentImageCount() {
-        return document.querySelectorAll('.new-image-slot').length;
+    // 現在のメディア数（add-slot を除く）
+    function getMediaCount() {
+        return document.querySelectorAll(".media-slot:not(.add-new-slot)").length;
     }
 
-    function updateAddSlotVisibility() {
-        const addSlot = document.getElementById('add-slot');
-        if (addSlot) {
-            getCurrentImageCount() >= 3 ? addSlot.classList.add('d-none') : addSlot.classList.remove('d-none');
-        }
+    // add-slot を一度全削除 → 新しく1つだけ作り直す
+    function redrawAddSlot() {
+        // 既存の add-slot を削除
+        const oldSlots = document.querySelectorAll(".add-new-slot");
+        oldSlots.forEach(s => s.remove());
+
+        // MAX に達したら作らない
+        if (getMediaCount() >= MAX_MEDIA) return;
+
+        // 新しい add-slot を作る
+        mediaIndex++;
+
+        const newSlot = document.createElement("div");
+        newSlot.className = "media-slot add-new-slot";
+        newSlot.id = "add-slot";
+        newSlot.style.cssText = "width:100px; height:100px;";
+
+        newSlot.innerHTML = `
+            <label for="new_media_file_${mediaIndex}" class="add-label">＋</label>
+            <input type="file"
+                class="d-none"
+                id="new_media_file_${mediaIndex}"
+                name="media[]"
+                accept="image/*,video/*"
+                onchange="previewNewMedia(this)">
+        `;
+
+        document.getElementById("media-upload-area").appendChild(newSlot);
     }
 
-    window.previewNewImage = function(input) {
+    // メディアの追加処理
+    window.previewNewMedia = function (input) {
         const file = input.files[0];
-        const addSlot = input.closest('.add-new-slot');
-        if (!file || !addSlot) return;
+        if (!file) return;
+
+        const slot = input.closest(".add-new-slot"); // 今の add-slot
+        if (!slot) return;
 
         const reader = new FileReader();
-        reader.onload = function(e) {
-            addSlot.classList.remove('add-new-slot');
-            addSlot.classList.add('new-image-slot');
-            addSlot.style.position = 'relative';
-            addSlot.innerHTML = `
-                <img src="${e.target.result}" alt="new image">
-                <button type="button" class="delete-new-image position-absolute"
-                    style="top:4px; right:4px; width:20px; height:20px; font-size:0.8rem; border:none; border-radius:50%; background-color:#9F6B46; color:white; cursor:pointer;"
-                    onclick="deleteNewImage(this)">&times;</button>
-                <input type="file" class="d-none new-image-input" name="image[]" accept="image/*">
-            `;
+        reader.onload = function (e) {
+            // add-slot を通常スロット化
+            slot.classList.remove("add-new-slot");
+            slot.classList.add("media-slot");
+            slot.removeAttribute("id");
+            slot.innerHTML = "";
+            slot.style.position = "relative";
 
-            const newFileInput = addSlot.querySelector('input[type="file"]');
+            let preview;
+
+            // --- 画像 ---
+            if (file.type.startsWith("image/")) {
+                preview = document.createElement("img");
+                preview.src = e.target.result;
+            }
+            // --- 動画 ---
+            else if (file.type.startsWith("video/")) {
+                preview = document.createElement("video");
+                preview.src = e.target.result;
+                preview.muted = true;
+                preview.playsInline = true;
+            }
+
+            slot.appendChild(preview);
+
+            // 削除ボタン
+            const removeBtn = document.createElement("button");
+            removeBtn.classList.add("remove-btn");
+            removeBtn.innerHTML = "&times;";
+            removeBtn.onclick = () => deleteMedia(removeBtn);
+            slot.appendChild(removeBtn);
+
+            // input を slot 内に保持する
+            const newInput = document.createElement("input");
+            newInput.type = "file";
+            newInput.name = "media[]";
+            newInput.classList.add("d-none");
+
             const dt = new DataTransfer();
             dt.items.add(file);
-            newFileInput.files = dt.files;
+            newInput.files = dt.files;
 
-            addSlot.removeAttribute('id');
+            slot.appendChild(newInput);
 
-            if (getCurrentImageCount() < 3) {
-                newImageIndex++;
-                const newAddSlot = document.createElement('div');
-                newAddSlot.className = 'image-slot add-new-slot';
-                newAddSlot.id = 'add-slot';
-                newAddSlot.style.cssText = 'width:100px; height:100px;';
-                newAddSlot.innerHTML = `<label for="new_image_file_${newImageIndex}">+ Add</label>
-                    <input type="file" class="d-none new-image-input" name="image[]" id="new_image_file_${newImageIndex}" onchange="previewNewImage(this)" accept="image/*">`;
-                document.getElementById('image-upload-area').appendChild(newAddSlot);
-            }
-
-            updateAddSlotVisibility();
+            // 🔥 add-slot を完全再描画する
+            redrawAddSlot();
         };
+
         reader.readAsDataURL(file);
-    }
+    };
 
-    window.deleteNewImage = function(button) {
-        const slot = button.closest('.image-slot');
+    // メディア削除
+    window.deleteMedia = function (button) {
+        const slot = button.closest(".media-slot");
         slot.remove();
-        if (!document.querySelector('.add-new-slot')) {
-            newImageIndex++;
-            const newAddSlot = document.createElement('div');
-            newAddSlot.className = 'image-slot add-new-slot';
-            newAddSlot.id = 'add-slot';
-            newAddSlot.style.cssText = 'width:100px; height:100px;';
-            newAddSlot.innerHTML = `<label for="new_image_file_${newImageIndex}">+ Add</label>
-                <input type="file" class="d-none new-image-input" name="image[]" id="new_image_file_${newImageIndex}" onchange="previewNewImage(this)" accept="image/*">`;
-            document.getElementById('image-upload-area').appendChild(newAddSlot);
-        }
-        updateAddSlotVisibility();
-    }
 
-    // Cost slider
-    const costSlider = document.getElementById('cost-slider');
-    const costDisplay = document.getElementById('cost-current');
-    costSlider?.addEventListener('input', () => {
-        costDisplay.textContent = '¥' + costSlider.value;
-    });
-
-    // Categories max 3
-    const checkboxes = document.querySelectorAll('.category-checkbox');
-    checkboxes.forEach(cb => {
-        cb.addEventListener('change', function() {
-            const checked = document.querySelectorAll('.category-checkbox:checked');
-            if (checked.length > 3) {
-                this.checked = false;
-                alert('Up to 3 categories allowed.');
-            }
-        });
-    });
-});
+        // 再描画
+        redrawAddSlot();
+    };
 </script>
 
 @endsection

@@ -149,23 +149,36 @@
                                 <div class="card border-0 shadow-sm w-100">
                                     <div class="card-body p-0">
                                         @php
-                                            $images = $post->images->pluck('image')->take(3)->toArray();
+                                            $mediaItems = $post->media->take(3);
                                         @endphp
 
-                                        @if (count($images) > 0)
+                                        @if ($mediaItems->count() > 0)
                                             {{-- 画像が2枚以上 → カルーセル --}}
-                                            @if (count($images) > 1)
+                                            @if ($mediaItems->count() > 1)
                                                 <div id="carouselPost{{ $post->id }}" class="carousel slide" data-bs-ride="carousel">
                                                     <div class="carousel-inner">
-                                                        @foreach ($images as $index => $image)
+                                                        @foreach ($mediaItems as $index => $item)
                                                             <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                                                                 <a href="{{ route('post.show', $post->id) }}">
                                                                     <div class="ratio ratio-1x1">
-                                                                        <img 
-                                                                            src="{{ asset('storage/' . $image) }}" 
+                                                                        {{-- Image --}}
+                                                                        @if ($item->type === 'image')
+                                                                            <img 
+                                                                            src="{{ asset('storage/' . $item->path) }}" 
                                                                             class="d-block w-100 h-100"
                                                                             style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
-                                                                            alt="Post Image {{ $index + 1 }}">
+                                                                            alt="Post Media {{ $index + 1 }}">
+                                                                        @endif
+                                                                        {{-- Video --}}
+                                                                        @if ($item->type === 'video')
+                                                                            <video 
+                                                                                src="{{ asset('storage/' . $item->path) }}"
+                                                                                class="d-block w-100 h-100"
+                                                                                style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
+                                                                                muted autoplay playsinline loop>
+                                                                            </video>
+                                                                        @endif
+                                                                        
                                                                     </div>
                                                                 </a>
                                                             </div>
@@ -187,14 +200,29 @@
                                                 </div>
 
                                             {{-- 1枚のみ --}}
-                                            @elseif(count($images) === 1)
+                                            @elseif($mediaItems->count() === 1)
+                                                @php
+                                                    $item = $mediaItems->first();
+                                                @endphp
                                                 <a href="{{ route('post.show', $post->id) }}">
                                                     <div class="ratio ratio-1x1">
-                                                        <img 
-                                                            src="{{ asset('storage/' . $images[0]) }}"
+                                                        {{-- Image --}}
+                                                        @if ($item->type === 'image')
+                                                            <img 
+                                                            src="{{ asset('storage/' . $item->path) }}"
                                                             class="d-block w-100 h-100"
                                                             style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
                                                             alt="Post Image">
+                                                        @endif
+                                                        {{-- Vedeo --}}
+                                                        @if ($item->type === 'video')
+                                                            <video 
+                                                                src="{{ asset('storage/' . $item->path) }}"
+                                                                class="d-block w-100 h-100"
+                                                                style="object-fit: cover; border-radius: 5px;"
+                                                                muted autoplay playsinline loop>
+                                                            </video>
+                                                        @endif
                                                     </div>
                                                 </a>
                                             @endif

@@ -87,4 +87,9 @@ class Post extends Model
     {
         return $this->hasMany(Image::class, 'post_id', 'id');
     }
+
+    public function media()
+    {
+        return $this->hasMany(Media::class);
+    }
 }

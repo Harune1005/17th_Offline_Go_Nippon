@@ -31,7 +31,7 @@
     @else
         <div class="messages-list mb-4 p-4 flex-grow-1" style="overflow-y:auto;">
             @foreach ($conversation->messages as $message)
-                <div class="d-flex mb-2 {{ $message->sender_id == $user_id ? 'justify-content-end' : 'justify-content-start' }} align-items-start">
+                <div class="d-flex mb-1 {{ $message->sender_id == $user_id ? 'justify-content-end' : 'justify-content-start' }} align-items-start">
                     {{-- if this message is partner, show partnar icon --}}
                     @if ($message->sender_id != $user_id)
                         <div class="chat-avatar me-2">
@@ -53,8 +53,18 @@
                             <p class="px-1 mb-1">{{ $message->content }}</p>
                         @endif
 
+                        {{-- image --}}
                         @if ($message->image_path)
                             <img src="{{ asset('storage/'.$message->image_path) }}" alt="image" style="max-width:200px; border-radius:10px; margin-top:5px;">
+                        @endif
+                        {{-- video --}}
+                        @if ($message->video_path)
+                            <video 
+                                src="{{ asset('storage/'.$message->video_path) }}" 
+                                style="max-width:200px; border-radius:10px; margin-top:5px;"
+                                controls
+                                playsinline>
+                            </video>
                         @endif
                         
                         <small class="message-time text-muted d-inline me-2">
@@ -76,9 +86,6 @@
                         @endif
                     </div>
                 </div>
-                
-
-                
             @endforeach
         </div>
     @endif  
@@ -91,8 +98,8 @@
                 <input type="hidden" name="conversation_id" value="{{ $conversation->id }}">
                 <input type="text" name="content" id="content" class="form-control" placeholder="{{ __('messages.dm.message_placeholder') }}">
 
-                <input type="file" name="image" id="imageInput" accept="image/*" style="display:none">
-                <i class="fa-solid fa-image" id="imageIcon" style="font-size: 38px;cursor:pointer; color: #f1bdb2;"></i>
+                <input type="file" name="media" id="mediaInput" accept="image/*,video/*" style="display:none">
+                <i class="fa-solid fa-image" id="mediaIcon" style="font-size: 38px;cursor:pointer; color: #f1bdb2;"></i>
             
                 <button type="submit" class="btn custom-btn">
                     {{ __('messages.dm.send') }}
@@ -102,11 +109,10 @@
 </div>
 
 {{-- preview --}}
-<div id="imagePreviewContainer" class="mt-2" style="display:none; position: relative; width: fit-content;">
+<div id="PreviewContainer" class="mt-2" style="display:none; position: relative; width: fit-content;">
     <p class="text-muted mb-1">Preview:</p>
     <div style="position: relative; display:inline-block;">
-        <img id="imagePreview" src="" alt="Preview" style="max-width:150px; border-radius:10px; cursor:pointer;">
-        <span id="cancelImageBtn">&times;</span>
+         <div id="previewInner" style="position: relative; display:inline-block;"></div>
     </div>
 </div>
 
@@ -121,49 +127,105 @@
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 
-    const userId = @json(2);
+    const userId = @json(auth()->id());
     const messageBoard = document.querySelector(".messages-list");
-
     const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
     //  Ajax Message Send
     const chatForm = document.getElementById("chatForm");
-    const imageInput = document.getElementById("imageInput");
-    const imageIcon = document.getElementById("imageIcon");
-    const imagePreview = document.getElementById("imagePreview");
-    const imagePreviewContainer = document.getElementById("imagePreviewContainer");
+    const mediaInput = document.getElementById("mediaInput");
+    const mediaIcon = document.getElementById("mediaIcon");
+
+    const previewContainer = document.getElementById("PreviewContainer");
+    const previewInner = document.getElementById("previewInner");
+
     const imageModal = document.getElementById("imageModal");
     const modalImage = document.getElementById("modalImage");
-    const cancelImageBtn = document.getElementById("cancelImageBtn");
 
-    // click image
-    imageIcon && imageIcon.addEventListener("click", () => imageInput.click());
+
+    // click image icon
+    mediaIcon && mediaIcon.addEventListener("click", () => mediaInput.click());
 
     // preview
-    imageInput.addEventListener("change", function(){
+    mediaInput.addEventListener("change", function(){
         const file = this.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = e => {
-            imagePreview.src = e.target.result;
-            imagePreviewContainer.style.display = "block";
-        };
-        reader.readAsDataURL(file);
+
+        previewContainer.style.display = "block";
+        previewInner.innerHTML = "";
+
+        // in case image
+        if (file.type.startsWith("image/")) {
+
+            const reader = new FileReader();
+            reader.onload = e => {
+
+                previewInner.innerHTML = `
+                    <img id="imagePreview" src="${e.target.result}" 
+                         style="max-width:150px;border-radius:10px;cursor:pointer;">
+                    <span id="cancelPreviewBtn"
+                          style="position:absolute;top:-10px;right:-10px;
+                                 font-size:30px;cursor:pointer;color:#f1bdb2;">
+                          &times;
+                    </span>
+                `;
+
+                // open modal
+                document.getElementById("imagePreview").addEventListener("click", () => {
+                    modalImage.src = e.target.result;
+                    imageModal.style.display = "flex";
+                });
+
+                // cancel
+                document.getElementById("cancelPreviewBtn").onclick = () => {
+                    mediaInput.value = "";
+                    previewContainer.style.display = "none";
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // in case video
+        else if (file.type.startsWith("video/")) {
+
+            const url = URL.createObjectURL(file);
+
+            previewInner.innerHTML = `
+                <div style="position:relative; display:inline-block;">
+                    <video id="videoPreview"
+                           src="${url}" 
+                           style="max-width:200px;border-radius:10px;"
+                           playsinline muted></video>
+
+                    <span id="cancelPreviewBtn"
+                        style="position:absolute;top:-10px;right:-10px;
+                               font-size:30px;cursor:pointer;color:#f1bdb2;">
+                        &times;
+                    </span>
+                </div>
+            `;
+
+            const videoElem = document.getElementById("videoPreview");
+
+            videoElem.onloadedmetadata = () => {
+                if (video.duration > 30) {
+                    alert("Video must be 30 seconds or shorter.");
+                    mediaInput.value = "";
+                    previewContainer.style.display = "none";
+                    
+                }
+            };
+
+            // cancel
+            document.getElementById("cancelPreviewBtn").onclick = () => {
+                mediaInput.value = "";
+                previewContainer.style.display = "none";
+            };
+        }
     });
 
-    // show modal
-    imagePreview.addEventListener("click", () => {
-        modalImage.src = imagePreview.src;
-        imageModal.style.display = "flex";
-    });
-
-    // clase modal
+    // close modal
     document.querySelector(".custom-image-close-btn").onclick = () => imageModal.style.display = "none";
-
-    cancelImageBtn.addEventListener("click", () => {
-        imageInput.value = "";
-        imagePreviewContainer.style.display = "none";
-    });
 
     // send Ajax
     chatForm.addEventListener("submit", function(e){
@@ -187,6 +249,9 @@ document.addEventListener("DOMContentLoaded", function() {
             // ====== add messege ======
             let msg = data.message;
 
+            let wrapper = document.createElement("div");
+            wrapper.className = "d-flex mb-1 justify-content-end align-items-start";
+
             let div = document.createElement("div");
             div.id = "message-" + msg.id;
             div.className = "chat-message sent";
@@ -196,13 +261,24 @@ document.addEventListener("DOMContentLoaded", function() {
                 p.textContent = msg.content;
                 div.appendChild(p);
             }
-
+            // image message
             if (msg.image_url) {
                 let img = document.createElement("img");
                 img.src = msg.image_url;
                 img.style.maxWidth = "200px";
                 img.style.borderRadius = "10px";
+                img.style.marginTop = "5px";
                 div.appendChild(img);
+            }
+            // video message
+            if (msg.video_url) {
+                let video = document.createElement("video");
+                video.src = msg.video_url;
+                video.controls = true;
+                video.style.maxWidth = "200px";
+                video.style.borderRadius = "10px";
+                video.style.marginTop = "5px";
+                div.appendChild(video);
             }
 
             let small = document.createElement("small");
@@ -223,7 +299,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             // reset form
             chatForm.reset();
-            imagePreviewContainer.style.display = "none";
+            previewContainer.style.display = "none";
 
             // update user list
             refreshConversationList();

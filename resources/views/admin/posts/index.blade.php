@@ -84,29 +84,41 @@
             <td>{{ $post->id }}</td>
             <td>
               @php
-                  $firstImage = $post->images->first();
+                  $firstMedia = $post->media->first();
               @endphp
-              @if ($firstImage)
+              @if ($firstMedia)
                   {{-- post has image --}}
                   @if ($post->trashed())
-                      <img src="{{ asset('storage/' . $firstImage->image) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
+                      {{-- image --}}
+                      @if ($firstMedia->type === 'image')
+                          <img src="{{ asset('storage/' . $firstMedia->path) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
+                      {{-- video --}}
+                      @elseif($firstMedia->type === 'video')
+                          <video src="{{ asset('storage/' . $firstMedia->path) }}"
+                                class="img-thumbnail mx-auto"
+                                style="width:110px; height:110px; object-fit:cover;"
+                                muted playsinline>
+                          </video>
+                      @endif
                   @else
                       <a href="{{ route('post.show', $post->id) }}">
-                          <img src="{{ asset('storage/' . $firstImage->image) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover; max-width: none;">
+                          {{-- image --}}
+                          @if ($firstMedia->type === 'image')
+                              <img src="{{ asset('storage/' . $firstMedia->path) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover; max-width: none;">
+                          {{-- video --}}
+                          @elseif($firstMedia->type === 'video')
+                              <video src="{{ asset('storage/' . $firstMedia->path) }}"
+                                    class="img-thumbnail mx-auto"
+                                    style="width:110px; height:110px; object-fit:cover;"
+                                    muted playsinline>
+                              </video>
+                          @endif
                       </a>
                   @endif
               @else
                   {{-- no image --}}
                   <div class="text-muted">No Image</div>
               @endif
-              {{-- @if ($post->trashed())
-                <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
-              @else
-                <a href="{{ route('post.show', $post->id) }}">
-                  <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover; max-width: none;">
-                </a>
-              @endif --}}
-
             </td>
             <td>
               <div class="col">
