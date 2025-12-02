@@ -46,7 +46,7 @@ class MapController extends Controller
 
         $posts = Post::where('user_id', $user->id)
             ->where('prefecture_id', $prefecture_id)
-            ->with(['user', 'images'])
+            ->with(['user', 'images', 'media'])
             ->latest()
             ->get();
 

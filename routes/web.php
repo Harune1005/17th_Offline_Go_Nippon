@@ -174,9 +174,6 @@ Route::middleware('auth')->group(function () {
 Route::get('auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
 
-// // Badge
-// Route::get('/badges', [BadgeController::class, 'index'])->name('badges.index');
-// Translation
 Route::get('/lang/{locale}', function ($locale) {
     if (! in_array($locale, ['en', 'ja'])) {
         abort(400);
@@ -186,3 +183,4 @@ Route::get('/lang/{locale}', function ($locale) {
 
     return redirect()->back();
 })->name('lang.switch');
+

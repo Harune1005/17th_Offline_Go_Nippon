@@ -147,7 +147,6 @@ class PostController extends Controller
                     ],
                 ]);
             }
-
             return redirect()->route('home')->with('success', 'Post created successfully!');
         } catch (\Exception $e) {
             DB::rollBack(); // ロールバック
@@ -156,7 +155,7 @@ class PostController extends Controller
             \Log::error('Post creation failed: '.$e->getMessage());
 
             return redirect()->back()->with('error', 'Failed to create post. Please try again.');
-        }
+        }       
     }
 
     private function getVideoDuration($file)
@@ -243,7 +242,7 @@ class PostController extends Controller
         );
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, BadgeService $badgeService)
     {
         $post = Post::findOrFail($id);
 
@@ -373,6 +372,8 @@ class PostController extends Controller
             }
         }
 
+     //   $badgeService->syncBadges(Auth::user());
+
         return redirect()
             ->route('post.show', $post->id)
             ->with('success', 'Post updated successfully!');
@@ -381,7 +382,7 @@ class PostController extends Controller
     /**
      * 投稿削除
      */
-    public function destroy($id)
+    public function destroy($id, BadgeService $badgeService)
     {
         $post = Post::with('media')->findOrFail($id);
 
@@ -405,6 +406,8 @@ class PostController extends Controller
         }
 
         $post->forceDelete();
+
+      //  $badgeService->syncBadges(Auth::user());
 
         return redirect()->route('home')->with('success', 'Post deleted successfully!');
     }

@@ -158,56 +158,112 @@ window.tripMap = function({ userId, prefectures }) {
         countElement.innerHTML = `${completed}<span style="font-size: 27px">/47</span>`;
     }
 
-   function loadPosts(prefId, prefName) {
+    function loadPosts(prefId, prefName) {
         const bigCard = document.querySelector('.big-card');
+    
         fetch(`/profile/${userId}/pref/${prefId}`)
             .then(response => response.json())
             .then(posts => {
                 const postContainer = document.querySelector('.big-card-body');
                 const prefHeader = document.querySelector('.big-card h1');
                 prefHeader.textContent = prefName;
-
+    
                 if (!posts || posts.length === 0) {
                     postContainer.innerHTML = `<p class="text-center text-muted">There is no post.</p>`;
                 } else {
                     postContainer.innerHTML = `
                         <div class="row">
                             ${posts.map(post => {
-                                const images = post.images || [];
+                                const mediaItems = post.media || [];
                                 const carouselId = `carouselPost${post.id}`;
-
-                                const carouselHTML = images.length > 1
-                                    ? `
-                                    <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
-                                        <div class="carousel-inner">
-                                            ${images.map((img, index) => `
-                                                <div class="carousel-item ${index === 0 ? "active" : ""}">
-                                                    <a href="/post/${post.id}/show">
-                                                        <img src="/storage/${img.image}" class="d-block w-100 post-image" alt="">
-                                                    </a>
+    
+                                // ---- Carousel or Single Media ----
+                                let mediaHTML = "";
+    
+                                // --- Case 1: 複数 → Carousel ---
+                                if (mediaItems.length > 1) {
+                                    mediaHTML = `
+                                        <a href="/post/${post.id}/show" class="d-block position-relative">
+                                            <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
+                                                <div class="carousel-inner">
+                                                    ${mediaItems.map((media, index) => {
+                                                        const isActive = index === 0 ? "active" : "";
+                                                        let content = "";
+    
+                                                        if (media.type === "image") {
+                                                            content = `
+                                                                <img src="/storage/${media.path}"
+                                                                    class="d-block w-100 post-image"
+                                                                    style="object-fit: cover;">
+                                                            `;
+                                                        } else if (media.type === "video") {
+                                                            content = `
+                                                                <video src="/storage/${media.path}"
+                                                                    muted playsinline
+                                                                    class="d-block w-100"
+                                                                    style="object-fit: cover; aspect-ratio: 1/1;">
+                                                                </video>
+                                                            `;
+                                                        }
+    
+                                                        return `
+                                                            <div class="carousel-item ${isActive}">
+                                                                ${content}
+                                                            </div>
+                                                        `;
+                                                    }).join("")}
                                                 </div>
-                                            `).join('')}
-                                        </div>
-                                        <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon"></span>
-                                        </button>
-                                        <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
-                                            <span class="carousel-control-next-icon"></span>
-                                        </button>
-                                    </div>
-                                    `
-                                    : `
-                                    <a href="/post/${post.id}/show">
-                                        <img src="${images.length ? "/storage/" + images[0].image : "/images/placeholder.jpg"}"
-                                            class="post-image" alt="">
-                                    </a>
+    
+                                                <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon"></span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon"></span>
+                                                </button>
+                                            </div>
+                                        </a>
                                     `;
-
+                                } 
+                                // --- Case 2: 1つ → 画像 or 動画 ---
+                                else if (mediaItems.length === 1) {
+                                    const media = mediaItems[0];
+    
+                                    if (media.type === "image") {
+                                        mediaHTML = `
+                                            <a href="/post/${post.id}/show">
+                                                <img src="/storage/${media.path}"
+                                                    class="d-block w-100 post-image"
+                                                    style="object-fit: cover;">
+                                            </a>
+                                        `;
+                                    } else if (media.type === "video") {
+                                        mediaHTML = `
+                                            <a href="/post/${post.id}/show">
+                                                <video src="/storage/${media.path}"
+                                                    muted playsinline
+                                                    class="d-block w-100"
+                                                    style="object-fit: cover; aspect-ratio: 1/1;">
+                                                </video>
+                                            </a>
+                                        `;
+                                    }
+                                } 
+                                // --- Case 3: メディアなし（保険） ---
+                                else {
+                                    mediaHTML = `
+                                        <a href="/post/${post.id}/show">
+                                            <img src="/images/placeholder.jpg"
+                                                class="d-block w-100 post-image">
+                                        </a>
+                                    `;
+                                }
+    
+                                // ---- Return Final Card HTML ----
                                 return `
                                     <div class="col-12 col-md-6 mb-3 post-col-12">
                                         <div class="card border-0 post-card">
                                             <div class="card-header p-0 border-0">
-                                                ${carouselHTML}
+                                                ${mediaHTML}
                                             </div>
                                         </div>
                                     </div>
@@ -216,12 +272,13 @@ window.tripMap = function({ userId, prefectures }) {
                         </div>
                     `;
                 }
+    
                 bigCard.style.display = 'block';
                 bigCard.classList.add('show');
             })
             .catch(error => console.error('Error loading posts:', error));
     }
-
+    
 
     drawMap();
     fetch(`/prefectures/${userId}/posts`)
