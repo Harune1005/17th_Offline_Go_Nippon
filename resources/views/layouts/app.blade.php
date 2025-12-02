@@ -117,7 +117,7 @@
                                     {{-- バッジ（プロフィール右上） --}}
                                     @if($unreadNotifications > 0)
                                         <span class="position-absolute badge rounded-pill bg-danger"
-                                            id="notificationBadge"
+                                            id="notificationBadgeProfile"
                                             style="font-size:0.8rem; padding:3px 6px; top:0; right:0;">
                                             {{ $unreadNotifications }}
                                         </span>
@@ -140,7 +140,7 @@
                                         <i class="fa-regular fa-bell me-2"></i>{{ __('messages.header.notification') }}
                                         {{-- ドロップダウンの中のnotification通知バッヂ --}}
                                         @if($unreadNotifications > 0)
-                                            <span class="badge bg-danger rounded-pill ms-2"id="notificationBadge">{{ $unreadNotifications }}</span>
+                                            <span class="badge bg-danger rounded-pill ms-2" id="notificationBadgeDropdown">{{ $unreadNotifications }}</span>
                                         @endif
                                     </a>
 
@@ -437,28 +437,32 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            const notificationBtn = document.getElementById('notificationBtn');
-            const mainBadge = document.getElementById('notificationBadge');
-            const mobileBadge = document.getElementById('mobileNotificationBadge');
+            const pcBtn = document.getElementById('notificationBtn');
+            const mobileBtn = document.getElementById('mobileNotificationBtn');
 
-            if (notificationBtn) {
-                notificationBtn.addEventListener('click', function () {
+            const badgeProfile = document.getElementById('notificationBadgeProfile');
+            const badgeDropdown = document.getElementById('notificationBadgeDropdown');
+            const badgeMobile = document.getElementById('mobileNotificationBadge');
 
-                    fetch("{{ route('notifications.readAll') }}", {
-                        method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-                        },
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.status === 'ok') {
-                            if (mainBadge) mainBadge.style.display = 'none';
-                            if (mobileBadge) mobileBadge.style.display = 'none';
-                        }
-                    });
+            function clearNotification() {
+                fetch("{{ route('notifications.readAll') }}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                    },
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        if (badgeProfile) badgeProfile.style.display = 'none';
+                        if (badgeDropdown) badgeDropdown.style.display = 'none';
+                        if (badgeMobile) badgeMobile.style.display = 'none';
+                    }
                 });
             }
+
+            if (pcBtn) pcBtn.addEventListener('click', clearNotification);
+            if (mobileBtn) mobileBtn.addEventListener('click', clearNotification);
 
         });
     </script>
