@@ -62,12 +62,12 @@
                     <td>{{ $category->updated_at->format('Y-m-d H:i') }}</td>
                     <td class="text-end">
                         <div class="d-flex flex-wrap gap-1 justify-content-center">
-                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#edit-category-{{ $category->id }}">
+                            <button class="btn btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#edit-category-{{ $category->id }}">
                                 <i class="fa-solid fa-pen mx-auto"></i>
                             </button>
                             @include('admin.categories.modal.edit')
 
-                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-category-{{ $category->id }}">
+                            <button class="btn btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#delete-category-{{ $category->id }}">
                                 <i class="fa-solid fa-trash-can mx-auto"></i>
                             </button>
                             @include('admin.categories.modal.delete')
