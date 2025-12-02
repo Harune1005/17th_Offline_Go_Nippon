@@ -162,25 +162,25 @@ class ProfileController extends Controller
                 return $pref;
             });
 
-            $allBadges = Badge::all();
-            $earnedBadges = $user->badges()->get();
-            $earnedBadgeIds = $earnedBadges->pluck('id')->toArray();
-            $latestBadge = $user->badges()->orderBy('badge_user.awarded_at', 'desc')->first();
-            $notEarnedBadges = Badge::whereNotIn('id', $earnedBadges->pluck('id'))->get();
-    
-            return view('users.profile.followers_followings', [
-                'user' => $user,
-                'suggested_users' => $suggested_users,
-                'activeTab' => $activeTab,
-                'prefectures' => $prefectures,
-                'allBadges' => $allBadges,
-                'earnedBadges' => $earnedBadges,
-                'earnedBadgeIds' => $earnedBadgeIds,
-                'latestBadge' => $latestBadge,
-                'notEarnedBadges' => $notEarnedBadges,
-            ]);
-            
-        }
+        $allBadges = Badge::all();
+        $earnedBadges = $user->badges()->get();
+        $earnedBadgeIds = $earnedBadges->pluck('id')->toArray();
+        $latestBadge = $user->badges()->orderBy('badge_user.awarded_at', 'desc')->first();
+        $notEarnedBadges = Badge::whereNotIn('id', $earnedBadges->pluck('id'))->get();
+
+        return view('users.profile.followers_followings', [
+            'user' => $user,
+            'suggested_users' => $suggested_users,
+            'activeTab' => $activeTab,
+            'prefectures' => $prefectures,
+            'allBadges' => $allBadges,
+            'earnedBadges' => $earnedBadges,
+            'earnedBadgeIds' => $earnedBadgeIds,
+            'latestBadge' => $latestBadge,
+            'notEarnedBadges' => $notEarnedBadges,
+        ]);
+
+    }
 
     public function following($id, Request $request)
     {
@@ -219,7 +219,7 @@ class ProfileController extends Controller
             'latestBadge' => $latestBadge,
             'notEarnedBadges' => $notEarnedBadges,
         ]);
-            }
+    }
 
     public function showPref($id)
     {

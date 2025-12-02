@@ -147,6 +147,7 @@ class PostController extends Controller
                     ],
                 ]);
             }
+
             return redirect()->route('home')->with('success', 'Post created successfully!');
         } catch (\Exception $e) {
             DB::rollBack(); // ロールバック
@@ -155,7 +156,7 @@ class PostController extends Controller
             \Log::error('Post creation failed: '.$e->getMessage());
 
             return redirect()->back()->with('error', 'Failed to create post. Please try again.');
-        }       
+        }
     }
 
     private function getVideoDuration($file)
@@ -372,7 +373,7 @@ class PostController extends Controller
             }
         }
 
-     //   $badgeService->syncBadges(Auth::user());
+        //   $badgeService->syncBadges(Auth::user());
 
         return redirect()
             ->route('post.show', $post->id)
@@ -407,7 +408,7 @@ class PostController extends Controller
 
         $post->forceDelete();
 
-      //  $badgeService->syncBadges(Auth::user());
+        //  $badgeService->syncBadges(Auth::user());
 
         return redirect()->route('home')->with('success', 'Post deleted successfully!');
     }

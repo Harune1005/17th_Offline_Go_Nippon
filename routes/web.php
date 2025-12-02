@@ -183,4 +183,3 @@ Route::get('/lang/{locale}', function ($locale) {
 
     return redirect()->back();
 })->name('lang.switch');
-
