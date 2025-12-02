@@ -122,7 +122,7 @@
   border-radius: 5px;
   font-size: 0.9em;
   display: none;
-  pointer-events: none; /* ホバーを妨げない */
+  pointer-events: none; 
   white-space: nowrap;
   z-index: 10;
 }
@@ -151,16 +151,12 @@
     margin-right: auto !important;
     
   }
-
-  /* ボタンのマージン調整 */
   .btn {
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
-
-  /* スピナーの位置調整も微修正（右にはみ出ることがあるため） */
   .spinner-wrapper {
-    right: 10%;
+    right: 3%;
     transform: translateX(0) scale(0.8);
   }
 .col-auto{
@@ -170,7 +166,6 @@
     font-size: 12px;
     padding: 0;
   }
-
   .name{
     padding-left: 2rem;
   }
@@ -189,6 +184,9 @@
     margin-left: 1rem;
     padding-right: 0;
     padding-left: 1rem;
+ }
+ .map-container{
+  width: 
  }
 
  }

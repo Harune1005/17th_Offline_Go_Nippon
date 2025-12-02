@@ -14,55 +14,56 @@ class BadgeSeeder extends Seeder
     {
         $badges = [
             [
-                'key' => 'first_post',
+                'key' => 'Cherry Blossom',
                 'name' => 'First Post',
                 'description' => 'Awarded for creating your very first post.',
                 'image_path' => 'images/badges/sakura04.png',
             ],
             [
-                'key' => '3_prefectures',
+                'key' => 'Karesansui',
                 'name' => '3 Prefectures',
                 'description' => 'Awarded for publishing 3 prefectures.',
                 'image_path' => 'images/badges/karesansui.png',
             ],
             [
-                'key' => '5_prefectures',
+                'key' => 'Sumo',
                 'name' => '5 Prefectures',
                 'description' => 'Awarded for publishing 5 prefectures.',
+                'image_path' => 'images/badges/sumo04.png',             
             ],
 
             [
-                'key' => '10_prefectures',
+                'key' => 'Onsen hot spring',
                 'name' => '10 Prefectures',
                 'description' => 'Awarded for publishing 10 prefectures.',
                 'image_path' => 'images/badges/onsen02.png',
             ],
             [
-                'key' => '15_prefectures',
+                'key' => 'Japanese Castle',
                 'name' => '15 Prefectures',
                 'description' => 'Awarded for publishing 15 prefectures.',
                 'image_path' => 'images/badges/japanese_castle.png',
             ],
             [
-                'key' => '20_prefectures',
+                'key' => 'Lucky Cat',
                 'name' => '20 Prefectures',
                 'description' => 'Awarded for publishing 20 prefectures.',
-                'image_path' => 'images/badges/nameki_neko.png',
+                'image_path' => 'images/badges/maneki_neko.png',
             ],
             [
-                'key' => '30_prefectures',
+                'key' => 'Ninja',
                 'name' => '30 Prefectures',
                 'description' => 'Awarded for publishing 30 prefectures.',
                 'image_path' => 'images/badges/ninja05.png',
             ],
             [
-                'key' => '40_prefectures',
+                'key' => 'Maiko-san',
                 'name' => '40 Prefectures',
                 'description' => 'Awarded for publishing 40 prefectures.',
                 'image_path' => 'images/badges/maiko.png',
             ],
             [
-                'key' => '47_prefectures',
+                'key' => 'Mt.Fuji',
                 'name' => '47 Prefectures',
                 'description' => 'Awarded for publishing 47 prefectures.',
                 'image_path' => 'images/badges/fujisan02.png',

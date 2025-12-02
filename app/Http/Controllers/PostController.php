@@ -106,6 +106,7 @@ class PostController extends Controller
                     'success' => 'Post created successfully!',
                     'new_badge' => [
                         'name' => $latestBadge->name,
+                        'key' => $latestBadge->key,
                         'image_path' => $latestBadge->image_path,
                         'description' => $latestBadge->description,
                     ],

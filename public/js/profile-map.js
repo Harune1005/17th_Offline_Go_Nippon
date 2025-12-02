@@ -140,20 +140,21 @@ window.profileMap = function({ userId, prefectures }) {
             if(el && pref.has_post) el.classList.add('has-post');    
         });
         svg.append("line")
-        .attr("x1", 240)
+        .attr("x1", 220)
         .attr("y1", 20)
-        .attr("x2", 240)
-        .attr("y2", 240)
+        .attr("x2", 220)
+        .attr("y2", 180)
         .attr("stroke", "#666")
         .attr("stroke-width", 1);
 
         svg.append("line")
-        .attr("x1", 20)
-        .attr("y1", 240)
-        .attr("x2", 240)
-        .attr("y2", 240)
+        .attr("x1", 40)
+        .attr("y1", 180)
+        .attr("x2", 220)
+        .attr("y2", 180)
         .attr("stroke", "#666")
         .attr("stroke-width", 1);
+
 
     }
 

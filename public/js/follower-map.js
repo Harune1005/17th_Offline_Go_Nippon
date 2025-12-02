@@ -109,6 +109,24 @@ window.followerMap = function({ userId, prefectures }) {
             .style("height","100%");
         adjustProjectionScale();
         d3.json("/geojson/japan.geojson").then(renderMap);
+
+        svg.append("line")
+        .attr("x1", 240)
+        .attr("y1", 20)
+        .attr("x2", 240)
+        .attr("y2", 240)
+        .attr("stroke", "#666")
+        .attr("stroke-width", 1);
+
+        svg.append("line")
+        .attr("x1", 20)
+        .attr("y1", 240)
+        .attr("x2", 240)
+        .attr("y2", 240)
+        .attr("stroke", "#666")
+        .attr("stroke-width", 1);
+
+
     }
 
     function colorPrefectures(prefectures) {

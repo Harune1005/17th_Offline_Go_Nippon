@@ -265,7 +265,7 @@ return [
     // map
     'map' => [
         'map_title1' => 'Click prefecture',
-        'map_title2' => 'toview your posts',
+        'map_title2' => 'to view your posts',
         'completed' => 'Completed',
         'prefecture' => 'Prefecture',
     ],

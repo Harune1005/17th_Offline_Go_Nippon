@@ -396,6 +396,7 @@ th, td {
 }
 
   
+
 /* smartphone size */
 @media screen and (max-width: 768px) {
     /* post size adjustment */
@@ -404,4 +405,8 @@ th, td {
     height: 300px;
     object-fit: cover;
     }
+    .badge-name{
+        color: #CAAE99; 
+        font-size:10px;
+     }
 }

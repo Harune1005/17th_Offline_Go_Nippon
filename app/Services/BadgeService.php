@@ -7,23 +7,18 @@ use App\Models\User;
 
 class BadgeService
 {
-    /**
-     * ユーザーが獲得できるバッジをチェックして付与する
-     * 付与したバッジを配列で返す
-     */
+
     public function checkAndGiveBadges(User $user): array
     {
         $awarded = [];
 
-        // 1. 初投稿バッジ
-        if ($user->posts()->count() === 1) { // この時点で初投稿なら
+        if ($user->posts()->count() === 1) { 
             $badge = $this->award($user, 'Cherry Blossom');
             if ($badge) {
                 $awarded[] = $badge;
             }
         }
 
-        // 2. 都道府県バッジ
         $prefectureCount = $user->posts()->pluck('prefecture_id')->unique()->count();
 
         $prefectureBadges = [
@@ -47,9 +42,7 @@ class BadgeService
         return $awarded;
     }
 
-    /**
-     * バッジをユーザーに付与（未付与なら）
-     */
+    
     public function award(User $user, string $badgeKey)
     {
         $badge = Badge::where('key', $badgeKey)->first();
@@ -58,12 +51,10 @@ class BadgeService
             return null;
         }
 
-        // すでに付与済みか確認
         if ($user->badges()->where('badge_id', $badge->id)->exists()) {
             return null;
         }
 
-        // バッジ付与
         $user->badges()->attach($badge->id, ['awarded_at' => now()]);
 
         return $badge;

@@ -129,6 +129,24 @@ window.tripMap = function({ userId, prefectures }) {
             .style("height", "100%");
         adjustProjectionScale();
         d3.json("/geojson/japan.geojson").then(renderMap);
+
+        svg.append("line")
+        .attr("x1", 220)
+        .attr("y1", 20)
+        .attr("x2", 220)
+        .attr("y2", 180)
+        .attr("stroke", "#666")
+        .attr("stroke-width", 1);
+
+        svg.append("line")
+        .attr("x1", 40)
+        .attr("y1", 180)
+        .attr("x2", 220)
+        .attr("y2", 180)
+        .attr("stroke", "#666")
+        .attr("stroke-width", 1);
+
+
     }
 
     function updateSpinner(prefectures) {
@@ -181,7 +199,7 @@ window.tripMap = function({ userId, prefectures }) {
                                     : `
                                     <a href="/post/${post.id}/show">
                                         <img src="${images.length ? "/storage/" + images[0].image : "/images/placeholder.jpg"}"
-                                            class="post-image w-100" alt="">
+                                            class="post-image" alt="">
                                     </a>
                                     `;
 

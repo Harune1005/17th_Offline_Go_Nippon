@@ -14,7 +14,7 @@
                     <div class="col-6 col-md-5 mb-3 mb-md-0">
                         <label for="prefecture" class="form-label">{{ __('messages.home.prefecture') }}</label>
                         <select name="prefecture_id" class="form-select text-muted">
-                            <option value="" selected hidden>{{ __('messages.home.prefecture_placeholder') }}</option>
+                            <option value="" selected >{{ __('messages.home.prefecture_placeholder') }}</option>
                             @foreach ($prefectures as $prefecture)
                                 <option value="{{ $prefecture->id }}">{{ $prefecture->name }}</option>
                             @endforeach
@@ -24,7 +24,7 @@
                     <div class="col-6 col-md-5 mb-3 mb-md-0">
                         <label for="category" class="form-label">{{ __('messages.home.category') }}</label>
                         <select name="category_id" class="form-select text-muted">
-                            <option value="" selected hidden>{{ __('messages.home.category_placeholder') }}</option>
+                            <option value="" selected>{{ __('messages.home.category_placeholder') }}</option>
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
                             @endforeach

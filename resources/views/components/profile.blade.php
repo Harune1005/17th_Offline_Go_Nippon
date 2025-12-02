@@ -147,7 +147,7 @@
 
     {{-- MAP --}}
     <div class="row">
-        <div class="map-container rounded-2 ms-2">
+        <div class="map-container rounded-2 ">
             <p class="fw-bold h5 click-map text-center mt-3">
                 {{ __('messages.profile.map_title1') }}
                 <span>{{ __('messages.profile.map_title2') }}</span>

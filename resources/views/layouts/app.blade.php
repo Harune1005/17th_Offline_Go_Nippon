@@ -510,7 +510,7 @@
                     <img src="{{ asset(session('new_badge')['image_path']) }}" 
                         alt="{{ session('new_badge')['name'] }}"
                         style="width:160px; height:160px; object-fit:contain;">
-                    <h6 class="mt-2 fw-bold fs-4" style="color: #9F6B46;">{{ session('new_badge')['name'] }}</h6>
+                    <h6 class="mt-2 fw-bold fs-4" style="color: #9F6B46;">{{ session('new_badge')['key'] }}</h6>
                     <p class="text-sm" style="color: #CAAE99;">{{ session('new_badge')['description'] }}</p>
                 </div>
                 {{-- modal footer --}}
