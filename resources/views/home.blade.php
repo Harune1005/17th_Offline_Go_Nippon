@@ -240,7 +240,7 @@
                         @empty
                             <div class="text-center py-5 text-muted">
                                 <h5>No posts available</h5>
-                                <a href="{{ route('post.create') }}" class="text-decoration-none"> Share your first photo!</a>
+                                <a href="{{ route('profile.followers', $user->id) }}" class="text-decoration-none"> Connect with friends and check out their posts!</a>
                             </div>
                         @endforelse
                     </div>

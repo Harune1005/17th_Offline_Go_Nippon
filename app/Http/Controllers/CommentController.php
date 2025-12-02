@@ -17,19 +17,10 @@ class CommentController extends Controller
 
     public function store(Request $request, $post_id)
     {
-        $postField = 'comment_body'.$post_id; // 親コメント用
+        $postField = 'comment_body'.$post_id;
 
-        /**
-         * ▼ 返信かどうか判定
-         * parent_id がある → 返信
-         */
         $isReply = $request->filled('parent_id');
 
-        /**
-         |--------------------------------------------------------------------------
-         | ① 親コメント（parent_id が無い）
-         |--------------------------------------------------------------------------
-         */
         if (! $isReply) {
 
             $request->validate([
@@ -48,11 +39,6 @@ class CommentController extends Controller
             return redirect()->route('post.show', $post_id);
         }
 
-        /**
-         |--------------------------------------------------------------------------
-         | ② 返信コメント（parent_id がある）
-         |--------------------------------------------------------------------------
-         */
         $replyField = 'comment_body_reply_'.$request->parent_id;
 
         $request->validate([
@@ -73,7 +59,7 @@ class CommentController extends Controller
         ]);
 
         return redirect()->route('post.show', $post_id)
-            ->with('open_reply', $request->parent_id); // ←返信元を開いて戻る
+            ->with('open_reply', $request->parent_id);
     }
 
     public function destroy($id)

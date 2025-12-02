@@ -203,8 +203,7 @@
           :prefectures=$prefectures
           :allBadges=$allBadges
           :earnedBadgeIds=$earnedBadgeIds
-          :latestBadge=$latestBadge
-        />
+          :latestBadge=$latestBadge/>
 
         {{-- Post area --}}
         <div class="col-md-8">

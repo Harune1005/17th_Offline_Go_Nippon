@@ -100,7 +100,7 @@ class HomeController extends Controller
         }
         $prefectureRanked = array_slice($prefectureRanked, 0, 10);
 
-        return view('home', compact('posts', 'categoryRanked', 'prefectureRanked', 'order', 'categories', 'prefectures', 'notifications'));
+        return view('home', compact('posts', 'categoryRanked', 'prefectureRanked', 'order', 'categories', 'prefectures', 'notifications', 'user'));
     }
 
     public function rankingPost(Request $request)
