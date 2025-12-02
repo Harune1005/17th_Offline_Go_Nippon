@@ -31,16 +31,15 @@
     {{-- Leaflet  --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    
 
     {{-- D3.js --}}
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
+    {{-- CSS --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    
     @vite(['resources/css/app.css', 'resources/js/app.js']) 
+    
 
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
@@ -84,18 +83,14 @@
                             <li class="nav-item">
                                 <a href="{{ route('conversation.show') }}" class="nav-link fs-2" style="color:#9F6B46;">
                                     <i class="fa-regular fa-comment nav-item p-0"></i>
-                                </a>
-                                 {{-- 未読メッセージバッジ --}}
-                                    @php
-                                        $unreadMessagesCount = Auth::user()->receivedMessages()->where('read_at', null)->count();
-                                    @endphp
-                                    @if($unreadMessagesCount > 0)
+                                    {{-- DM未読通知バッヂ --}}
+                                    @if ($unreadDMs > 0)
                                         <span class="position-absolute badge rounded-pill bg-danger"
-                                            id="dmBadge"
-                                            style="font-size: 0.8rem; padding: 3px 6px; top: -2; right: 0;">
-                                            {{ $unreadMessagesCount }}
+                                            style="font-size:0.8rem; padding:3px 6px;">
+                                            {{ $unreadDMs }}
                                         </span>
                                     @endif
+                                </a>
                             </li>
 
                             <li class="nav-item">
@@ -120,17 +115,11 @@
                                     @endif
 
                                     {{-- バッジ（プロフィール右上） --}}
-                                    @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
-                                        <span 
-                                            class="position-absolute badge rounded-pill bg-danger"
+                                    @if($unreadNotifications > 0)
+                                        <span class="position-absolute badge rounded-pill bg-danger"
                                             id="notificationBadge"
-                                            style="
-                                                font-size: 0.8rem;
-                                                padding: 3px 6px;
-                                                left: 80%;
-                                                transform: translate(-50%, 0);
-                                            ">
-                                            {{ Auth::user()->unreadNotifications->count() }}
+                                            style="font-size:0.8rem; padding:3px 6px; top:0; right:0;">
+                                            {{ $unreadNotifications }}
                                         </span>
                                     @endif
                                 </button>
@@ -149,11 +138,9 @@
                                         data-bs-target="#notificationModal"
                                         id="notificationBtn">
                                         <i class="fa-regular fa-bell me-2"></i>{{ __('messages.header.notification') }}
-
-                                         @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
-                                            <span class="badge bg-danger rounded-pill ms-2">
-                                                {{ Auth::user()->unreadNotifications->count() }}
-                                            </span>
+                                        {{-- ドロップダウンの中のnotification通知バッヂ --}}
+                                        @if($unreadNotifications > 0)
+                                            <span class="badge bg-danger rounded-pill ms-2"id="notificationBadge">{{ $unreadNotifications }}</span>
                                         @endif
                                     </a>
 
@@ -265,18 +252,13 @@
                         <a href="{{ route('conversation.show') }}" class="menu-link nav-text-brown" id="mobileDmBtn">
                             <i class="fa-regular fa-comment me-3"></i> {{ __('messages.header.messages') }}
 
-                            @auth
-                                @php
-                                    $unreadMessagesCount = Auth::user()->receivedMessages()->where('read_at', null)->count();
-                                @endphp
-                                @if($unreadMessagesCount > 0)
-                                    <span class="position-absolute badge rounded-pill bg-danger"
-                                        id="mobileDmBadge"
-                                        style="font-size: 0.8rem; padding: 3px 6px; top: 0; right: 0;">
-                                        {{ $unreadMessagesCount }}
-                                    </span>
-                                @endif
-                            @endauth
+                            @if($unreadDMs > 0)
+                                <span class="position-absolute badge rounded-pill bg-danger"
+                                    id="mobileDmBadge"
+                                    style="right:100px;">
+                                    {{ $unreadDMs }}
+                                </span>
+                            @endif
                         </a>
                     </li>
                     <li class="mb-3">
@@ -290,12 +272,12 @@
                         id="mobileNotificationBtn"
                         data-bs-toggle="modal"
                         data-bs-target="#notificationModal">
-                        <i class="fa-regular fa-bell me-3"></i> {{ __('messages.header.notification') }}
-                        @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
-                            <span class="badge bg-danger rounded-pill ms-2" id="mobileNotificationBadge">
-                                {{ Auth::user()->unreadNotifications->count() }}
-                            </span>
-                        @endif
+                            <i class="fa-regular fa-bell me-3"></i> {{ __('messages.header.notification') }}
+                            @if($unreadNotifications > 0)
+                                <span class="badge bg-danger rounded-pill ms-2" id="mobileNotificationBadge">
+                                    {{ $unreadNotifications }}
+                                </span>
+                            @endif
                         </a>
                     </li>
                     <li class="mb-3">
@@ -346,192 +328,181 @@
             @yield('content')
         </main>
     </div>
-    @yield('scripts')
 
-    @stack('scripts')
-
-                <!-- 通知モーダル -->
-                <div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content p-3">
-                            <div class="modal-header">
-                                <h5 class="modal-title">
-                                    {{ __('messages.notification.title') }} 🔔
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-
-                            <div class="modal-body">
-                                @forelse ($notifications as $n)
-                                    <div class="d-flex align-items-center mb-3">
-
-                                        @php
-                                            // いいねしたユーザーのアバター
-                                            $avatar = $n->data['liker_avatar'] ?? null;
-                                            if ($avatar) {
-                                                $avatar = str_replace('/storage/avatars//storage/avatars/', '/storage/avatars/', $avatar);
-                                            }
-
-                                            // 投稿画像URLの初期値（プレースホルダー）
-                                            $postImageUrl = 'https://via.placeholder.com/60';
-
-                                            // 投稿に紐づく最初の画像を取得
-                                            if (isset($n->data['post_id']) && $post = \App\Models\Post::find($n->data['post_id'])) {
-                                                $firstImage = $post->images->first()?->image; // imagesテーブルのカラム名に合わせる
-                                                if ($firstImage) {
-                                                    $postImageUrl = asset('storage/' . $firstImage);
-                                                }
-                                            }
-                                        @endphp
-
-                                        <!-- いいねしたユーザー画像 -->
-                                        <a href="{{ isset($n->data['liker_id']) ? route('profile.show', ['id' => $n->data['liker_id']]) : '#' }}">
-                                            <img src="{{ $avatar ?? 'https://via.placeholder.com/50' }}"
-                                                class="rounded-circle me-3"
-                                                width="50"
-                                                height="50"
-                                                style="object-fit: cover;">
-                                        </a>
-
-                                        <!-- 名前と通知文 -->
-                                        <div class="flex-grow-1">
-                                            <strong>{{ $n->data['liker_name'] ?? 'Unknown' }}</strong>
-                                            <small>
-                                                {{ __('messages.notification.like_text') }}    
-                                            </small><br>
-                                            <span class="text-muted">{{ $n->created_at->diffForHumans() }}</span>
-                                        </div>
-
-                                        <!-- 投稿画像（右側） -->
-                                        <a href="{{ route('post.show', $n->data['post_id']) }}">
-                                            <img src="{{ $postImageUrl }}" class="post-image-square rounded-0">
-                                        </a>
-
-                                    </div>
-                                @empty
-                                    <p class="text-muted">No notifications.</p>
-                                @endforelse
-                            </div>
-                        </div>
-                    </div>
+    <!-- 通知モーダル -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        {{ __('messages.notification.title') }} 🔔
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
+                <div class="modal-body">
+                    @forelse ($notifications as $n)
+                        <div class="d-flex align-items-center mb-3">
+                            @php
+                                // いいねしたユーザーのアバター
+                                $avatar = $n->data['liker_avatar'] ?? 'https://via.placeholder.com/50';
+
+                                // 投稿画像URLの初期値（プレースホルダー）
+                                $thumbHtml = '<img src="https://via.placeholder.com/60" class="post-image-square rounded-0">';
+                                // $postImageUrl = 'https://via.placeholder.com/60';
+
+                                // 投稿に紐づく最初の画像を取得
+                                if (isset($n->data['post_id'])) {
+
+                                    $post = \App\Models\Post::find($n->data['post_id']);
+
+                                    if($post && $post->media->isNotEmpty()){
+                                        $m = $post->media->first();
+                                        // image
+                                        if($m->type === 'image'){
+                                            $thumbHtml = '
+                                                <img src="' . asset("storage/{$m->path}") . '" 
+                                                    class="post-image-square rounded-0"
+                                                    style="object-fit: cover; width:60px; height:60px;">
+                                            ';
+                                        }
+                                        // video + thumbnail
+                                        if($m->type === 'video' && $m->thumbnail_path){
+                                            $thumbHtml = '
+                                                <img src="' . asset("storage/{$m->thumbnail_path}") . '"
+                                                    class="post-image-square rounded-0"
+                                                    style="object-fit: cover; width:60px; height:60px;">
+                                            ';
+                                        }
+
+                                        // video only
+                                        if($m->type === 'video'){
+                                            $thumbHtml = '
+                                                <video
+                                                    src="' . asset("storage/{$m->path}") . '"
+                                                    muted
+                                                    playsinline
+                                                    class="rounded-0"
+                                                    style="object-fit: cover; width:60px; height:60px;">
+                                                </video>
+                                            ';
+                                        }
+                                    }
+                                }
+                            @endphp
+                            <!-- いいねしたユーザー画像 -->
+                            <a href="{{ isset($n->data['liker_id']) ? route('profile.show', ['id' => $n->data['liker_id']]) : '#' }}">
+                                @php
+                                    $avatar = $n->data['liker_avatar'] ?? null;
+                                    if(!$avatar || $avatar === 'null'){
+                                        $avatar = null;
+                                    }
+                                @endphp
+                                @if ($avatar)
+                                    <img src="{{ $avatar }}"
+                                    class="rounded-circle me-3"
+                                    width="50"
+                                    height="50"
+                                    style="object-fit: cover;">
+                                @else
+                                    <i class="fa-solid fa-circle-user text-secondary me-3" style="font-size:50px; color:#ccc;"></i>
+                                @endif
+                            </a>
+
+                            <!-- 名前と通知文 -->
+                            <div class="flex-grow-1">
+                                <strong>{{ $n->data['liker_name'] ?? 'Unknown' }}</strong>
+                                <small>
+                                    {{ __('messages.notification.like_text') }}    
+                                </small><br>
+                                <span class="text-muted">{{ $n->created_at->diffForHumans() }}</span>
+                            </div>
+
+                            <!-- 投稿画像（右側） -->
+                            <a href="{{ route('post.show', $n->data['post_id']) }}">
+                                {{-- <img src="{{ $postImageUrl }}" class="post-image-square rounded-0"> --}}
+                                {!! $thumbHtml !!}
+                            </a>
+
+                        </div>
+                    @empty
+                        <p class="text-muted">No notifications.</p>
+                    @endforelse
+                </div>
             </div>
         </div>
     </div>
 
+    {{-- for badge --}}
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // 通知ボタン
-        const notificationBtn = document.getElementById('notificationBtn');
-        const profileBadge = document.getElementById('notificationBadge');
+        document.addEventListener('DOMContentLoaded', function () {
 
-        if(notificationBtn) {
-            notificationBtn.addEventListener('click', function() {
-                fetch("{{ route('notifications.readAll') }}", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                        "Content-Type": "application/json"
-                    },
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if(data.status === 'ok' && profileBadge) {
-                        profileBadge.style.display = 'none'; // バッジを消す
-                    }
-                })
-                .catch(err => console.error(err));
-            });
-        }
-    });
+            const notificationBtn = document.getElementById('notificationBtn');
+            const mainBadge = document.getElementById('notificationBadge');
+            const mobileBadge = document.getElementById('mobileNotificationBadge');
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const dmBtn = document.getElementById('dmBtn');
-        const dmBadge = document.getElementById('dmBadge');
+            if (notificationBtn) {
+                notificationBtn.addEventListener('click', function () {
 
-        if(dmBtn) {
-            dmBtn.addEventListener('click', function() {
-                fetch("/messages/mark-read", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                        "Content-Type": "application/json"
-                    },
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if(data.status === 'ok' && dmBadge) {
-                        dmBadge.style.display = 'none';
-                    }
-                })
-                .catch(err => console.error(err));
-            });
-        }
-    });
+                    fetch("{{ route('notifications.readAll') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                        },
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'ok') {
+                            if (mainBadge) mainBadge.style.display = 'none';
+                            if (mobileBadge) mobileBadge.style.display = 'none';
+                        }
+                    });
+                });
+            }
 
-    // スマホ版
-    document.addEventListener('DOMContentLoaded', function () {
-        const mobileNotificationBtn = document.getElementById('mobileNotificationBtn');
-        const mobileNotificationBadge = document.getElementById('mobileNotificationBadge');
-
-        if(mobileNotificationBtn) {
-            mobileNotificationBtn.addEventListener('click', function() {
-                fetch("{{ route('notifications.readAll') }}", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                        "Content-Type": "application/json"
-                    },
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if(data.status === 'ok' && mobileNotificationBadge) {
-                        mobileNotificationBadge.style.display = 'none';
-                    }
-                })
-                .catch(err => console.error(err));
-            });
-        }
-    });
+        });
     </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
 
     @if(session('new_badge'))
-    <div class="modal fade" id="badgeModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                {{-- modal header --}}
-                <div class="modal-header justify-content-center text-center w-100" style="background-color:#b4a08b; color: #fff; border-bottom: none;">
-                    <h3 class="h5 modal-title fw-bold mb-0">New Badge Earned!</h3>
-                </div>
-                {{-- modal body --}}
-                <div class="modal-body d-flex flex-column justify-content-center align-items-center text-center">
-                    <img src="{{ asset(session('new_badge')['image_path']) }}" 
-                        alt="{{ session('new_badge')['name'] }}"
-                        style="width:160px; height:160px; object-fit:contain;">
-                    <h6 class="mt-2 fw-bold fs-4" style="color: #9F6B46;">{{ session('new_badge')['name'] }}</h6>
-                    <p class="text-sm" style="color: #CAAE99;">{{ session('new_badge')['description'] }}</p>
-                </div>
-                {{-- modal footer --}}
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-outline mt-2" data-bs-dismiss="modal">Close</button>
-                    <a href="{{ route('profile.show', Auth::user()->id) }}" class="btn btn-pink mt-2">Profile Page</a>
+        <div class="modal fade" id="badgeModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    {{-- modal header --}}
+                    <div class="modal-header justify-content-center text-center w-100" style="background-color:#b4a08b; color: #fff; border-bottom: none;">
+                        <h3 class="h5 modal-title fw-bold mb-0">New Badge Earned!</h3>
+                    </div>
+                    {{-- modal body --}}
+                    <div class="modal-body d-flex flex-column justify-content-center align-items-center text-center">
+                        <img src="{{ asset(session('new_badge')['image_path']) }}" 
+                            alt="{{ session('new_badge')['name'] }}"
+                            style="width:160px; height:160px; object-fit:contain;">
+                        <h6 class="mt-2 fw-bold fs-4" style="color: #9F6B46;">{{ session('new_badge')['name'] }}</h6>
+                        <p class="text-sm" style="color: #CAAE99;">{{ session('new_badge')['description'] }}</p>
+                    </div>
+                    {{-- modal footer --}}
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-outline mt-2" data-bs-dismiss="modal">Close</button>
+                        <a href="{{ route('profile.show', Auth::user()->id) }}" class="btn btn-pink mt-2">Profile Page</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var badgeModalEl = document.getElementById('badgeModal');
-            if (badgeModalEl) {
-                var badgeModal = new bootstrap.Modal(badgeModalEl);
-                badgeModal.show();
-            }
-        });
-    </script>
-@endif
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var badgeModalEl = document.getElementById('badgeModal');
+                if (badgeModalEl) {
+                    var badgeModal = new bootstrap.Modal(badgeModalEl);
+                    badgeModal.show();
+                }
+            });
+        </script>
+    @endif
 
+    @yield('scripts')
+
+    @stack('scripts')
 </body>
 </html>

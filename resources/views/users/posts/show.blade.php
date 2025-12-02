@@ -4,10 +4,96 @@
 
 @section('content')
 <style>
-    .uniform-img {
+    /* .uniform-img {
         height: 650px; 
         object-fit: cover;
         width: 100%;
+    } */
+
+    /* .uniform-img-img {
+    height: 650px;
+    width: 100%;
+    object-fit: cover;
+    background: #000;
+    } */
+
+    /* .uniform-img-video {
+    height: 650px;
+    width: 100%;
+    background: black; 
+    } */
+
+    .media-frame {
+        width: 100%;
+        height: 650px;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .media-frame img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .media-frame video {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+    }
+
+    @media (max-width: 768px) {
+
+        .media-frame {
+            width: 100%;
+            max-width: 100vw;
+            height: 100;
+            max-height: calc(100vw * 1.25);  /* ← これが 4:5 の制限 */
+            background: #000;
+            overflow: hidden;                /* 超重要：4:5 超えたら切る */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .media-frame img{
+            width: 100%;
+            height: auto;
+            max-height: calc(100vw * 1.25);
+            object-fit: cover;
+            object-position: center center;
+            background: #000;
+        }
+
+        .media-frame video {
+            width: 100%;
+            height: auto;
+            max-height: calc(100vw * 1.25);
+            object-fit: cover;
+            object-position: center center;
+            background: #000;
+        }
+
+        #postCarousel .carousel-item {
+            background: #000;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-height: calc(100vw * 1.25); /* 4:5 に統一 */
+        }
+
+
     }
 
     .text-brown {
@@ -43,7 +129,7 @@
     }
 </style>
 
-    <div class="container mt-3">
+    <div class="container">
         <div class="justify-content-center">
             <div class="card border shadow rounded-2 overflow-hidden">
                 <div class="card-header py-3 border-bottom" style="background-color:#fbefe5;">
@@ -112,32 +198,72 @@
                     <div class="row g-0">
                        <div class="col-md-7">                              
                             @php
-                                $images = $post->images->pluck('image')->toArray();
+                                $mediaItems = $post->media;
                             @endphp
 
-                            @if ($images && count($images) > 1)
-                                <div id="postCarousel" class="carousel slide" data-bs-ride="carousel">
-                                    <div class="carousel-inner">
-                                        @foreach ($images as $index => $img)
-                                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                                <img 
-                                                    src="{{ asset('storage/' . $img) }}" 
-                                                    class="d-block uniform-img" 
-                                                    alt="Post image {{ $index + 1 }}">
-                                            </div>
-                                        @endforeach
+                            @if ($mediaItems->count() > 0 )
+                                @if ($mediaItems->count() > 1)
+                                    <div id="postCarousel{{$post->id}}" class="carousel slide" data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            @foreach ($mediaItems as $index => $media)
+                                                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                                    <div class="media-frame">
+                                                        @if ($media->type === 'image')
+                                                            <img src="{{ asset('storage/' . $media->path) }}" alt="image">
+                                                        @else
+                                                            <video src="{{ asset('storage/' . $media->path) }}" playsinline muted></video>
+                                                            <div class="play-pause-btn">
+                                                                <i class="fa-solid fa-play"></i>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel{{$post->id}}" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#postCarousel{{$post->id}}" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                        </button>
                                     </div>
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon"></span>
-                                    </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon"></span>
-                                    </button>
-                                </div>
-                            @elseif ($images && count($images) === 1)
-                                <img src="{{ asset('storage/' . $images[0]) }}" alt="Post image" class="uniform-img">
+                                @elseif($mediaItems->count() === 1)
+                                    @php
+                                        $media = $mediaItems->first();
+                                    @endphp
+                                    <div class="media-frame">
+                                        @if ($media->type === 'image')
+                                            <img src="{{ asset('storage/' . $media->path) }}">
+                                        @else
+                                            <video src="{{ asset('storage/' . $media->path) }}" playsinline muted></video>
+                                            <div class="play-pause-btn">
+                                                <i class="fa-solid fa-play"></i>
+                                            </div>
+                                        @endif
+                                    </div>
+                                        {{-- Image --}}
+                                    {{-- @if ($media->type === 'image')
+                                        <img 
+                                            src="{{ asset('storage/' . $media->path) }}" 
+                                            class="d-block uniform-img-img" 
+                                            alt="Post image"> --}}
+                                        {{-- Video --}}
+                                    {{-- @elseif( $media->type === 'video')
+                                        <div class="video-wrapper">
+                                            <video 
+                                                src="{{ asset('storage/' . $media->path) }}"
+                                                class="d-block uniform-img-video show-video"
+                                                playsinline
+                                                muted
+                                            ></video>
+                                            <div class="play-pause-btn">
+                                                <i class="fa-solid fa-play"></i>
+                                            </div>
+                                        </div>
+                                    @endif --}}
+                                @endif
                             @else
-                                <img src="{{ asset('images/no-image.png') }}" alt="No image" class="uniform-img">
+                                <img src="{{ asset('images/no-image.png') }}" alt="No media" class="uniform-img">   
                             @endif
 
                             @error('image')
@@ -344,4 +470,54 @@
     });
 </script>
 
+{{-- button for video --}}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    document.querySelectorAll('.media-frame').forEach(frame => {
+
+        const video = frame.querySelector('video');
+        const button = frame.querySelector('.play-pause-btn');
+        const icon = button.querySelector('i');
+
+        // 初期状態: ▶️
+        icon.classList.remove('fa-pause');
+        icon.classList.add('fa-play');
+
+        // ボタンクリック
+        button.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+            } else {
+                video.pause();
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+            }
+        });
+
+        // 動画クリックでも再生 / 停止
+        video.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+            } else {
+                video.pause();
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+            }
+        });
+
+        // 動画再生が終了したら ▶️ に戻す
+        video.addEventListener('ended', () => {
+            icon.classList.remove('fa-pause');
+            icon.classList.add('fa-play');
+        });
+
+    });
+
+});
+</script>
 @endsection

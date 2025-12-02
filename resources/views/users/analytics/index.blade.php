@@ -38,10 +38,28 @@
           </h5>
           <div class="d-flex flex-wrap gap-2 mb-5">
             @foreach($topViewedPosts as $post)
+              @php
+                  $firstMedia = $post->media->first();
+              @endphp
               <div class="mx-auto text-center">
                 <a href="{{ route('post.show', $post->id) }}">
-                  @if ($post->images->first())
-                    <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
+                  @if ($firstMedia)
+                      {{-- image --}}
+                    @if ($firstMedia->type === 'image')
+                      <img src="{{ asset ('storage/' .  $firstMedia->path )}}" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
+                      {{-- video wiht thumbnail --}}
+                    @elseif($firstMedia->type === 'video' && $firstMedia->thumbnail_path)
+                      <img src="{{ asset('storage/' . $fistMedia->thumbnail_path) }}"
+                          class="img-thumbnail"
+                          style="width:110px; height:110px; object-fit: cover;">
+                      {{-- video without thumbnail --}}
+                    @elseif($firstMedia->type === 'video')
+                      <video src="{{ asset('storage/' . $firstMedia->path) }}"
+                            class="img-thumbnail"
+                            style="width:110px; height:110px; object-fit:cover;"
+                            muted playsinline>
+                      </video>
+                    @endif
                   @else
                     <img src="/no-image.png" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
                   @endif
@@ -98,10 +116,28 @@
           </h5>
           <div class="d-flex flex-wrap gap-2 mb-5">
             @foreach($topInteractionPosts as $post)
+              @php
+                  $firstMedia = $post->media->first();
+              @endphp
             <div class="mx-auto text-center">
               <a href="{{ route('post.show', $post->id) }}">
-                @if ($post->images->first())
-                  <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
+                @if ($firstMedia)
+                    {{-- image --}}
+                    @if ($firstMedia->type === 'image')
+                      <img src="{{ asset ('storage/' .  $firstMedia->path )}}" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
+                    {{-- video wiht thumbnail --}}
+                    @elseif($firstMedia->type === 'video' && $firstMedia->thumbnail_path)
+                      <img src="{{ asset('storage/' . $fistMedia->thumbnail_path) }}"
+                         class="img-thumbnail"
+                         style="width:110px; height:110px; object-fit: cover;">
+                    {{-- video without thumbnail --}}
+                    @elseif($firstMedia->type === 'video')
+                      <video src="{{ asset('storage/' . $firstMedia->path) }}"
+                            class="img-thumbnail"
+                            style="width:110px; height:110px; object-fit:cover;"
+                            muted playsinline>
+                      </video>
+                    @endif
                 @else
                   <img src="/no-image.png" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
                 @endif
