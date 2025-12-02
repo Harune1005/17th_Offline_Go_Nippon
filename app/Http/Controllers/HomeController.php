@@ -113,7 +113,7 @@ class HomeController extends Controller
         $query = Post::with(['categories', 'prefecture', 'images']);
 
         $titleParts = [];
-        $headerImage = 'images/default.jpeg';
+        $headerImage = 'images/nippon.jpg';
         $prefectureSelected = false;
         $categorySelected = false;
 
@@ -134,7 +134,9 @@ class HomeController extends Controller
             if ($category) {
                 $query->whereHas('categories', fn ($q) => $q->where('id', $category->id));
                 $titleParts[] = $category->name;
-                $headerImage = $category->image ?? 'images/default.jpeg';
+                if (! $prefectureSelected) {
+                    $headerImage = $category->image ?? 'images/default.jpeg';
+                }
                 $categorySelected = true;
             }
         }

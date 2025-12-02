@@ -267,8 +267,8 @@ p span {
 <div class="container-fluid">
     {{-- Map  --}}
   <div class="row">
-    <div class="col" style="width: 50vh; height: 50vh;">
-        <p class="fw-bold h2 mt-5 text-center  d-flex justify-content-center flex-wrap-nowrap" style="white-space: nowrap;">{{ __('messages.map.map_title1') }}<span>{{ __('messages.map.map_title2') }}</span></p>
+    <div class="col mt-5">
+        <p class="fw-bold h2 text-center d-flex justify-content-center flex-wrap-nowrap" style="white-space: nowrap;">{{ __('messages.map.map_title1') }}<span>{{ __('messages.map.map_title2') }}</span></p>
             <div class="map-container">
                  <div id="map" class="map"></div>
                     <div class="spinner-wrapper">
