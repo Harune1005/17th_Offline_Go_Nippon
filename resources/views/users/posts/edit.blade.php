@@ -85,7 +85,7 @@
                 <div class="mb-4" style="max-width:350px;">
                     <label class="form-label fw-bold">{{ __('messages.edit_post.cost') }}</label>
                     <div class="d-flex align-items-center gap-2">
-                        <span id="cost-current">{{ __('messages.edit_post.$') }}{{ old('cost', $post->cost) }}</span>
+                        <span id="cost-current">¥{{ old('cost', $post->cost) }}</span>
                         <input type="range" name="cost" min="0" max="10000" step="100"
                             value="{{ old('cost', $post->cost) }}" id="cost-slider" class="form-range">
                     </div>
@@ -140,7 +140,7 @@
                 {{-- Buttons --}}
                 <div class="text-end mt-4">
                     <a type="button"
-                       onclick="window.history.back()"
+                       href="{{ route('home') }}"
                        class="btn btn-cancel shadow-sm me-3"
                        style="min-width:150px; font-weight:bold;">
                         {{ __('messages.edit_post.cancel') }}

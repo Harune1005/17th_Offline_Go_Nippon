@@ -81,8 +81,8 @@
                 <div class="mb-4" style="max-width:350px;">
                     <label class="form-label fw-bold">{{ __('messages.create_post.cost') }}</label>
                     <div class="d-flex align-items-center gap-2">
-                        <span id="cost-current">{{ __('messages.create_post.$') }}{{ old('cost',100) }}</span>
-                        <input type="range" name="cost" min="0" max="10000" step="100" value="{{ old('cost',100) }}" id="cost-slider" class="form-range">
+                        <span id="cost-current">{{ old('cost',100) }}</span>
+                        <input type="range" name="cost" min="0" max="10000" step="100" value="" id="cost-slider" class="form-range">
                     </div>
                     @error('cost') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
@@ -106,7 +106,7 @@
                 </div>
 
                 <div class="text-end mt-4">
-                    <a onclick="window.history.back()"
+                    <a href="{{ route('home') }}"
                        class="btn btn-cancel shadow-sm me-3"
                        style="min-width:150px; font-weight:bold;">
                         {{ __('messages.create_post.cancel') }}
@@ -188,11 +188,11 @@
         if (slider && display) {
 
             // 初期値反映
-            display.textContent = "$" + slider.value;
+            display.textContent = "¥" + slider.value;
 
             // スライダー変更時に金額更新
             slider.addEventListener("input", function () {
-                display.textContent = "$" + slider.value;
+                display.textContent = "¥" + slider.value;
             });
         }
     });
