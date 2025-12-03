@@ -23,13 +23,13 @@
                             <img src="{{ asset('storage/' . $media->path) }}" 
                                 alt="Post {{ $post->id }}"
                                 class="rounded shadow-sm mb-2"
-                                style="border: 3px solid #B0A695; max-width: 100%; height: auto;">
+                                style="border: 3px solid #B0A695; max-width: 100%; height: auto; display:block; margin:0 auto;">
                         {{-- video with thumbnail --}}
                         @elseif($media->type === 'video' && $media->thumbnail_path)
                             <img src="{{ asset('storage/' . $media->thumbnail_path) }}"
                                 alt="Video Thumbnail"
                                 class="rounded shadow-sm mb-2"
-                                style="border: 3px solid #B0A695; max-width: 100%; height: auto;">
+                                style="border: 3px solid #B0A695; max-width: 100%; height: auto; display:block; margin:0 auto;">
                         {{-- video without thumbnail --}}
                         @elseif($media->type === 'video')
                             <video
@@ -37,7 +37,7 @@
                                 class="rounded shadow-sm mb-2"
                                 muted
                                 playsinline
-                                style="border: 3px solid #B0A695; max-width: 100%; height: auto;">
+                                style="border: 3px solid #B0A695; max-width: 100%; height: auto;display:block; margin:0 auto;">
                             </video>
                         @endif
                     @else
