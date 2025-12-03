@@ -31,9 +31,13 @@
       <form method="GET" action="{{ route('admin.posts') }}" class="d-flex justify-content-center gap-3">
         <!-- Category -->
         <div class="w-25">
-          <label for="category" class="form-label">Category</label>
+          <label for="category" class="form-label">
+            {{ __('messages.post.category_label') }}
+          </label>
           <select name="category" id="category" class="form-select">
-            <option value="">All</option>
+            <option value="">
+              {{ __('messages.post.search_placeholder') }}
+            </option>
             @foreach ($categories as $category)
               <option value="{{ $category->id }}" {{ $selectedCategory == $category->id ? 'selected' : '' }}>
                 {{ $category->name }}
@@ -44,9 +48,13 @@
 
         <!-- Prefecture -->
         <div class="w-25">
-          <label for="prefecture" class="form-label">Prefecture</label>
+          <label for="prefecture" class="form-label">
+            {{ __('messages.post.prefecture') }}
+          </label>
           <select name="prefecture" id="prefecture" class="form-select">
-            <option value="">All</option>
+            <option value="">
+              {{ __('messages.post.search_placeholder') }}
+            </option>
             @foreach ($prefectures as $prefecture)
               <option value="{{ $prefecture->id }}" {{ $selectedPrefecture == $prefecture->id ? 'selected' : '' }}>
                 {{ $prefecture->name }}
@@ -58,7 +66,7 @@
         <!-- Button -->
         <div class="align-self-end">
           <button type="submit" class="btn btn-outline">
-            <i class="fa-solid fa-magnifying-glass"></i> Search
+            <i class="fa-solid fa-magnifying-glass"></i> {{ __('messages.post.search') }}
           </button>
         </div>
       </form>
@@ -70,11 +78,11 @@
       <thead>
         <tr class="fs-5">
           <th>#</th>
-          <th>POST</th>
-          <th>CATEGORY</th>
-          <th>PREFECTURE</th>
-          <th>OWNER</th>
-          <th>STATUS</th>
+          <th>{{ __('messages.post.post') }}</th>
+          <th>{{ __('messages.post.category') }}</th>
+          <th>{{ __('messages.post.prefecture') }}</th>
+          <th>{{ __('messages.post.owner') }}</th>
+          <th>{{ __('messages.post.status') }}</th>
           <th></th>
         </tr>
       </thead>
@@ -133,9 +141,9 @@
             <td>{{ $post->user->name }}</td>
             <td>
               @if ($post->trashed())
-                <i class="fa-solid fa-circle text-secondary"></i>&nbsp; Hide
+                <i class="fa-solid fa-circle text-secondary"></i>&nbsp; {{ __('messages.post.hide') }}
               @else
-                <i class="fa-solid fa-circle text-success"></i>&nbsp; Visible
+                <i class="fa-solid fa-circle text-success"></i>&nbsp; {{ __('messages.post.visible') }}
               @endif
             </td>
             <td>
@@ -146,11 +154,11 @@
                 <div class="dropdown-menu admin-dropdown-menu">
                     @if ($post->trashed())
                         <button class="dropdown-item admin-dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
-                            <i class="fa-solid fa-check-to-slot"></i>&nbsp; Visible
+                            <i class="fa-solid fa-check-to-slot"></i>&nbsp; {{ __('messages.post.visible') }}
                         </button>
                     @else
                     <button class="dropdown-item admin-dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
-                        <i class="fa-solid fa-ban"></i>&nbsp; Hide
+                        <i class="fa-solid fa-ban"></i>&nbsp; {{ __('messages.post.hide') }}
                     </button>
                     @endif
                 </div>

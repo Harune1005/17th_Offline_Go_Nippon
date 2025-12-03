@@ -17,14 +17,14 @@
                 {{-- Title --}}
                 <div class="mb-4">
                     <label class="form-label fw-bold">{{ __('messages.create_post.title') }}</label>
-                    <input type="text" name="title" class="form-control post-input" value="{{ old('title') }}" required>
+                    <input type="text" name="title" class="form-control post-input" value="{{ old('title') }}">
                     @error('title') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 {{-- Description --}}
                 <div class="mb-4">
                     <label class="form-label fw-bold">{{ __('messages.create_post.description') }}</label>
-                    <textarea name="content" class="form-control post-input" rows="4" required>{{ old('content') }}</textarea>
+                    <textarea name="content" class="form-control post-input" rows="4">{{ old('content') }}</textarea>
                     @error('content') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
@@ -66,7 +66,7 @@
                 {{-- Prefecture --}}
                 <div class="mb-4" style="max-width:300px;">
                     <label class="form-label fw-bold">{{ __('messages.create_post.prefecture') }}</label>
-                    <select name="prefecture_id" class="form-select post-input" required>
+                    <select name="prefecture_id" class="form-select post-input">
                         <option value="">{{ __('messages.create_post.prefecture_placeholder') }}</option>
                         @foreach($prefectures as $prefecture)
                             <option value="{{ $prefecture->id }}" {{ old('prefecture_id')==$prefecture->id ? 'selected' : '' }}>
