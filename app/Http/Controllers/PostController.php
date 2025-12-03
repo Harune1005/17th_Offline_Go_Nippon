@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Image;
 use App\Models\Media;
 use App\Models\Post;
 use App\Models\PostView;
@@ -54,7 +53,7 @@ class PostController extends Controller
             'prefecture_id' => 'required|integer|exists:prefectures,id',
             'cost' => 'nullable|integer|min:0|max:10000',
             'media' => 'required|array|max:3',
-            'media.*' => 'required|file|max:204800',
+            'media.*' => 'required|file|mimes:jpeg,png,jpg,gif,heic,mp4,mov,avi,wmv|max:204800',
         ]);
 
         $visitedAt = $validated['date'].' '.
@@ -89,7 +88,8 @@ class PostController extends Controller
 
                     // in case Image
                     if (str_starts_with($mime, 'image')) {
-                        $path = $file->store('media/posts', 'public');
+
+                        $path = $this->saveImageWithHeicSupport($file);
 
                         $post->media()->create([
                             'type' => 'image',
@@ -158,6 +158,36 @@ class PostController extends Controller
         }
     }
 
+    private function saveImageWithHeicSupport($file)
+    {
+        $ext = strtolower($file->getClientOriginalExtension());
+
+        if ($ext === 'heic') {
+
+            $newName = uniqid('img_') . '.jpg';
+            $savePath = storage_path('app/public/media/posts/' . $newName);
+
+            if (!is_dir(dirname($savePath))) {
+                mkdir(dirname($savePath), 0777, true);
+            }
+
+            // ImageMagick CLIで変換
+            $src = $file->getRealPath();
+            $cmd = "magick convert \"$src\" \"$savePath\"";
+            shell_exec($cmd);
+
+            if (file_exists($savePath)) {
+                return 'media/posts/' . $newName;
+            }
+
+            // 変換失敗時はそのまま保存
+            return $file->store('media/posts', 'public');
+        }
+
+        // normal image
+        return $file->store('media/posts', 'public');
+    }
+
     private function getVideoDuration($file)
     {
 
@@ -191,6 +221,8 @@ class PostController extends Controller
 
         return file_exists($fullThumbPath);
     }
+
+
 
     /**
      * 投稿詳細
@@ -261,7 +293,7 @@ class PostController extends Controller
             'deleted_media.*' => 'exists:media,id',
 
             'new_media' => 'nullable|array|max:3',
-            'new_media.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,wmv|max:204800',
+            'new_media.*' => 'file|mimes:jpeg,png,jpg,gif,heic,mp4,mov,avi,wmv|max:204800',
 
         ]);
 
@@ -300,7 +332,6 @@ class PostController extends Controller
                 ->get();
 
             foreach ($mediaList as $media) {
-
                 // remove main file
                 Storage::disk('public')->delete($media->path);
 
@@ -349,7 +380,12 @@ class PostController extends Controller
                     }
                 }
 
-                $path = $file->store('media/posts', 'public');
+                // image
+                if ($type === 'image') {
+                    $path = $this->saveImageWithHeicSupport($file);
+                } else {
+                    $path = $file->store('media/posts', 'public');
+                }
 
                 $thumbnailPath = null;
 

@@ -176,113 +176,173 @@
 }
 </style>
 
+{{-- HEIC converter --}}
+<script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
+
+{{-- cost slider --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const slider = document.getElementById("cost-slider");
+        const display = document.getElementById("cost-current");
+
+        if (slider && display) {
+
+            // 初期値反映
+            display.textContent = "$" + slider.value;
+
+            // スライダー変更時に金額更新
+            slider.addEventListener("input", function () {
+                display.textContent = "$" + slider.value;
+            });
+        }
+    });
+</script>
+
+{{-- for media slot --}}
 <script>
     let mediaIndex = 0;
     const MAX_MEDIA = 3;
 
-    // 現在のメディア数（add-slot を除く）
     function getMediaCount() {
         return document.querySelectorAll(".media-slot:not(.add-new-slot)").length;
     }
 
-    // add-slot を一度全削除 → 新しく1つだけ作り直す
     function redrawAddSlot() {
-        // 既存の add-slot を削除
-        const oldSlots = document.querySelectorAll(".add-new-slot");
-        oldSlots.forEach(s => s.remove());
-
-        // MAX に達したら作らない
+        document.querySelectorAll(".add-new-slot").forEach(s => s.remove());
         if (getMediaCount() >= MAX_MEDIA) return;
 
-        // 新しい add-slot を作る
         mediaIndex++;
+        const slot = document.createElement("div");
+        slot.className = "media-slot add-new-slot";
+        slot.id = "add-slot";
+        slot.style.cssText = "width:100px; height:100px;";
 
-        const newSlot = document.createElement("div");
-        newSlot.className = "media-slot add-new-slot";
-        newSlot.id = "add-slot";
-        newSlot.style.cssText = "width:100px; height:100px;";
-
-        newSlot.innerHTML = `
+        slot.innerHTML = `
             <label for="new_media_file_${mediaIndex}" class="add-label">＋</label>
             <input type="file"
-                class="d-none"
+                class="d-none new-media-input"
                 id="new_media_file_${mediaIndex}"
                 name="media[]"
                 accept="image/*,video/*"
                 onchange="previewNewMedia(this)">
         `;
-
-        document.getElementById("media-upload-area").appendChild(newSlot);
+        document.getElementById("media-upload-area").appendChild(slot);
     }
 
-    // メディアの追加処理
-    window.previewNewMedia = function (input) {
+    function isQuickTimeVideo(file) {
+        return (
+            file.name.toLowerCase().endsWith(".mov") ||
+            file.type === "video/quicktime"
+        );
+    }
+
+    async function convertHeicToJpeg(file) {
+        try {
+            const convertedBlob = await heic2any({
+                blob: file,
+                toType: "image/jpeg",
+                quality: 0.9
+            });
+
+            return new File([convertedBlob], file.name.replace(/\.heic/i, ".jpg"), {
+                type: "image/jpeg"
+            });
+        } catch (err) {
+            console.error("Failed HEIC → JPG:", err);
+            return null;
+        }
+    }
+
+    /* ===============================
+        メディアプレビュー処理（MOV 対応版）
+    ================================ */
+    window.previewNewMedia = async function (input) {
         const file = input.files[0];
         if (!file) return;
 
-        const slot = input.closest(".add-new-slot"); // 今の add-slot
+        const slot = input.closest(".add-new-slot");
         if (!slot) return;
 
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            // add-slot を通常スロット化
-            slot.classList.remove("add-new-slot");
-            slot.classList.add("media-slot");
-            slot.removeAttribute("id");
-            slot.innerHTML = "";
-            slot.style.position = "relative";
+        let previewFile = file;
+        const ext = file.name.toLowerCase();
+        const isHeic = ext.endsWith(".heic");
+        const isMov = isQuickTimeVideo(file);
 
-            let preview;
+        /* ---------- HEIC 自動変換 ---------- */
+        if (isHeic) {
+            const converted = await convertHeicToJpeg(file);
 
-            // --- 画像 ---
-            if (file.type.startsWith("image/")) {
-                preview = document.createElement("img");
-                preview.src = e.target.result;
+            if (converted) {
+                previewFile = converted; // JPEG に置き換え
+            } else {
+                // 変換失敗 → HEIC アイコン
+                renderPreviewSlot(slot, "/images/heic-placeholder.png", file, true);
+                return;
             }
-            // --- 動画 ---
-            else if (file.type.startsWith("video/")) {
-                preview = document.createElement("video");
-                preview.src = e.target.result;
-                preview.muted = true;
-                preview.playsInline = true;
-            }
+        }
 
-            slot.appendChild(preview);
+        /* ---------- プレビュー URL 生成 ---------- */
 
-            // 削除ボタン
-            const removeBtn = document.createElement("button");
-            removeBtn.classList.add("remove-btn");
-            removeBtn.innerHTML = "&times;";
-            removeBtn.onclick = () => deleteMedia(removeBtn);
-            slot.appendChild(removeBtn);
+        let previewSrc = URL.createObjectURL(previewFile);
 
-            // input を slot 内に保持する
-            const newInput = document.createElement("input");
-            newInput.type = "file";
-            newInput.name = "media[]";
-            newInput.classList.add("d-none");
+        let isImage = false;
+        if (isMov) isImage = false;
+        else if (previewFile.type.startsWith("image/")) isImage = true;
+        else isImage = false;
 
-            const dt = new DataTransfer();
-            dt.items.add(file);
-            newInput.files = dt.files;
-
-            slot.appendChild(newInput);
-
-            // 🔥 add-slot を完全再描画する
-            redrawAddSlot();
-        };
-
-        reader.readAsDataURL(file);
+        renderPreviewSlot(slot, previewSrc, previewFile, isImage);
     };
 
-    // メディア削除
-    window.deleteMedia = function (button) {
-        const slot = button.closest(".media-slot");
-        slot.remove();
+    /* ===============================
+        スロット描画
+    ================================ */
+    function renderPreviewSlot(slot, src, fileToSend, isImage) {
+        slot.classList.remove("add-new-slot");
+        slot.classList.add("media-slot");
+        slot.removeAttribute("id");
+        slot.innerHTML = "";
+        slot.style.position = "relative";
 
-        // 再描画
+        let el;
+        if (isImage) {
+            el = document.createElement("img");
+            el.src = src;
+        } else {
+            el = document.createElement("video");
+            el.src = src;
+            el.muted = true;
+            el.playsInline = true;
+            el.controls = true; 
+        }
+
+        el.style.cssText = "width:100%;height:100%;object-fit:cover;";
+        slot.appendChild(el);
+
+        const removeBtn = document.createElement("button");
+        removeBtn.classList.add("remove-btn");
+        removeBtn.innerHTML = "&times;";
+        removeBtn.onclick = () => deleteMedia(removeBtn);
+        slot.appendChild(removeBtn);
+
+        const hiddenInput = document.createElement("input");
+        hiddenInput.type = "file";
+        hiddenInput.name = "media[]";
+        hiddenInput.classList.add("d-none");
+
+        const dt = new DataTransfer();
+        dt.items.add(fileToSend);
+        hiddenInput.files = dt.files;
+
+        slot.appendChild(hiddenInput);
+
+        redrawAddSlot();
+    }
+
+    window.deleteMedia = function (btn) {
+        btn.closest(".media-slot").remove();
         redrawAddSlot();
     };
 </script>
+
 
 @endsection
