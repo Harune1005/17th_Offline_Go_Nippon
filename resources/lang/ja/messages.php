@@ -148,7 +148,6 @@ return [
     'show_post' => [
         'edit' => '編集',
         'delete' => '削除',
-        'currentry' => '¥',
         'hour' => '時間',
         'min' => '分',
         'comment_placeholder' => 'コメントを追加する',

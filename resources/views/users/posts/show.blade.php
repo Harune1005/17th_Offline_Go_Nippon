@@ -307,15 +307,12 @@
                                 <div class="d-flex align-items-center justify-content-end text-brown small mb-3 gap-3">
                                   <span><i class="fa-regular fa-calendar me-1 text-info"></i>{{ $post->visited_at ? $post->visited_at->format('Y-m-d') : 'Unknown' }}</span>
                                    <span><i class="fa-solid fa-coins me-1 text-warning"></i>
-                                    {{ $post->cost ?? 'Cost' }}
-                                {{ __('messages.show_post.currentry') }}</span>
+                                    ¥ {{ $post->cost ?? 'Cost' }}
+                                   </span>
                                    <span>
                                     <i class="fa-regular fa-clock me-1 text-secondary"></i>
                                     {{ $post->time_hour }} {{ __('messages.show_post.hour') }}
                                     {{ $post->time_min }} {{ __('messages.show_post.min') }}
-                                    @if (!$post->time_hour && !$post->time_min)
-                                        Time
-                                    @endif
                                     </span>
 
                                 </div>

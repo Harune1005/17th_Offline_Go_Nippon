@@ -165,7 +165,7 @@ class HomeController extends Controller
             $query->orderByDesc('created_at');
         }
 
-        $title = implode(' × ', $titleParts) ?: 'RANKING';
+        $title = implode(' × ', $titleParts) ?: '';
         $posts = $query->paginate(30)->appends($request->query());
 
         return view('users.posts.rank', compact('posts', 'title', 'headerImage', 'order'));

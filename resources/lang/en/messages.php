@@ -148,7 +148,6 @@ return [
     'show_post' => [
         'edit' => 'Edit',
         'delete' => 'Delete',
-        'currentry' => '$',
         'hour' => 'h',
         'min' => 'min',
         'comment_placeholder' => 'Add a comment...',
