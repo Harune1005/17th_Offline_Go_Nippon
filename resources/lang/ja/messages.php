@@ -110,7 +110,22 @@ return [
 
     // post
     'post' => [
-
+        'category_label' => 'カテゴリー',
+        'search_placeholder' => '全て',
+        'prefecture_label' => '都道府県',
+        'search' => '検索',
+        'post' => '投稿',
+        'category' => 'カテゴリー',
+        'prefecture' => '都道府県',
+        'owner' => '投稿者',
+        'status' => '状態',
+        'visible' => '表示',
+        'hide' => '非表示',
+        'v_modal_title' => '非表示投稿',
+        'v_modal_text' => '本当にこの投稿を表示しますか?',
+        'cancel' => 'キャンセル',
+        'h_modal_title' => '表示投稿',
+        'h_modal_text' => '本当にこの投稿を非表示にしますか?',
     ],
 
     // category

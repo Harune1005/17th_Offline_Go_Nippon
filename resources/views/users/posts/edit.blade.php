@@ -18,12 +18,14 @@
                 <div class="mb-4">
                     <label class="form-label fw-bold">{{ __('messages.edit_post.title') }}</label>
                     <input type="text" name="title" class="form-control post-input"
-                        value="{{ old('title', $post->title) }}" required>
+                        value="{{ old('title', $post->title) }}">
+                    @error('title') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label fw-bold">{{ __('messages.edit_post.description') }}</label>
-                    <textarea name="content" class="form-control post-input" rows="4" required>{{ old('content', $post->content) }}</textarea>
+                    <textarea name="content" class="form-control post-input" rows="4">{{ old('content', $post->content) }}</textarea>
+                    @error('content') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="row mb-4">
@@ -31,6 +33,7 @@
                         <label class="form-label fw-bold">{{ __('messages.edit_post.date') }}</label>
                         <input type="date" name="date" class="form-control post-input"
                             value="{{ old('date', \Carbon\Carbon::parse($post->visited_at)->format('Y-m-d')) }}">
+                        @error('date') <div class="text-danger small">{{ $message }}</div> @enderror
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">{{ __('messages.edit_post.time') }}</label>
@@ -42,6 +45,8 @@
                                 min="0" max="59" value="{{ old('time_min', $post->time_min) }}">
                             <span>{{ __('messages.edit_post.min') }}</span>
                         </div>
+                        @error('time_hour') <div class="text-danger small">{{ $message }}</div> @enderror
+                        @error('time_min') <div class="text-danger small">{{ $message }}</div> @enderror
                     </div>
                 </div>
 
@@ -60,11 +65,12 @@
                             </div>
                         @endforeach
                     </div>
+                    @error('category') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="mb-4" style="max-width:300px;">
                     <label class="form-label fw-bold">{{ __('messages.edit_post.prefecture') }}</label>
-                    <select name="prefecture_id" class="form-select post-input" required>
+                    <select name="prefecture_id" class="form-select post-input">
                         <option value="">{{ __('messages.edit_post.prefecture_placeholder') }}</option>
                         @foreach($prefectures as $prefecture)
                             <option value="{{ $prefecture->id }}"
@@ -73,6 +79,7 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('prefecture_id') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="mb-4" style="max-width:350px;">
@@ -82,6 +89,7 @@
                         <input type="range" name="cost" min="0" max="10000" step="100"
                             value="{{ old('cost', $post->cost) }}" id="cost-slider" class="form-range">
                     </div>
+                    @error('cost') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 

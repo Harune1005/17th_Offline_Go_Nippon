@@ -110,7 +110,22 @@ return [
 
     // post
     'post' => [
-
+        'category_label' => 'Category',
+        'search_placeholder' => 'All',
+        'prefecture_label' => 'Prefecture',
+        'search' => 'Search',
+        'post' => 'POST',
+        'category' => 'CATEGORY',
+        'prefecture' => 'PREFECTURE',
+        'owner' => 'OWNER',
+        'status' => 'STATUS',
+        'visible' => 'Visible',
+        'hide' => 'Hide',
+        'v_modal_title' => 'Hide Post',
+        'v_modal_text' => 'Are you sure you want to visible this post?',
+        'cancel' => 'Cancel',
+        'h_modal_title' => 'Visible Post',
+        'h_modal_text' => 'Are you sure you want to hide this post?',
     ],
 
     // category

@@ -8,7 +8,7 @@
                 <div class="modal-header">
                     <h3 class="fs-4 fw-bold modal-title modal-font ps-0">
                         <i class="fa-solid fa-check-to-slot"></i> 
-                        Visible Post
+                        {{ __('messages.post.v_modal_title') }}
                     </h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -33,7 +33,9 @@
                         </div>
                     @endif
                     {{-- <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" alt="No post" class="img-thumbnail me-3" style="width:110px; height:110px; object-fit: cover;"> --}}
-                    <p class="mb-0 modal-font">Are you sure you want to visible this post?</p>
+                    <p class="mb-0 modal-font">
+                        {{ __('messages.post.v_modal_text') }}
+                    </p>
                 </div>
 
                 {{-- footer --}}
@@ -42,8 +44,12 @@
                         @csrf
                         @method('PATCH')
 
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-outline">Activate</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            {{ __('messages.post.cancel') }}
+                        </button>
+                        <button type="submit" class="btn btn-outline">
+                            {{ __('messages.post.visible') }}
+                        </button>
                     </form>
                 </div>
 
@@ -60,7 +66,7 @@
                 <div class="modal-header">
                     <h3 class="fs-4 fw-bold modal-title modal-font ps-0">
                         <i class="fa-solid fa-ban"></i> 
-                        Hide Post
+                        {{ __('messages.post.h_modal_title') }}
                     </h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -84,7 +90,9 @@
                         <div class="text-muted me-3">No Image</div>
                     @endif
                     {{-- <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" alt="No post" class="img-thumbnail me-3" style="width:110px; height:110px; object-fit: cover;"> --}}
-                    <p class="mb-0 modal-font">Are you sure you want to hide this post?</p>
+                    <p class="mb-0 modal-font">
+                        {{ __('messages.post.h_modal_text') }}
+                    </p>
                 </div>
 
                 {{-- footer --}}
@@ -93,8 +101,12 @@
                         @csrf
                         @method('DELETE')
 
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-outline">Hide</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            {{ __('messages.post.cancel') }}
+                        </button>
+                        <button type="submit" class="btn btn-outline">
+                            {{ __('messages.post.hide') }}
+                        </button>
                     </form>
                 </div>
 
