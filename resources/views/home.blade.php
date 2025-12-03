@@ -42,7 +42,7 @@
         <div class="row">
             {{-- sidebar --}}
             <div class="col-12 col-md-4 mb-5">
-                <div class="card shadow-sm border-0">
+                <div class="card shadow border-0">
                     <div id="carouselRanking" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             {{-- Category Ranking --}}

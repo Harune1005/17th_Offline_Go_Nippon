@@ -3,195 +3,6 @@
 @section('title', 'Profile ')
 
 @section('content')
-<style>
-    .col-md-4{
-        font-family: 'Source Serif Pro', serif;
-    }
-    div{
-        color:#9F6B46;
-    }
-    span{
-        color:#CAAE99;
-    }
-
-    .card{
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);   
-    }
-
-    .post-image{
-        width: 100%;
-        aspect-ratio:1 / 1;
-        oblect-fit:cover;
-    }
-
-
-    .map-container {
-  position: relative;
-  width: 420px;
-  height: 350px;
-  background-color: #E6F4FA;
-  overflow: hidden;
-}
-
- 
-  path {
-    stroke: #333;
-    stroke-width: 0.5;
-    fill: #ccc;
-  }
-  path:hover {
-    fill: #F1BDB2;
-  }
-
-
-.spinner-outer {
-  position: relative;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background: transparent;
-}
-
-.spinner-circle {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: conic-gradient(#F1BDB2 0deg, #FFFF 0deg); 
-  transition: background 0.5s ease;
-}
-
-.spinner-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-
-.spinner-text p {
-  margin: 0;
-}
-
-.spinner-text .label {
-  font-family: 'Source Serif Pro', serif;
-  color: #9F6B46;
-  font-weight: 600;
-  font-size: 20px;
-  margin-bottom: 2px;
-}
-
-.spinner-text .count {
-  font-family: 'Source Serif Pro', serif;
-  color: #9F6B46;
-  font-weight: bold;
-  font-size: 45px;
-  line-height: 1;
-}
-.spinner-text .small-text {
-    font-size: 15px;
-    color: #CAAE99;
-    
-}
-.spinner-wrapper {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  z-index: 10; 
-}
-.map-container svg {
-  width: 100%;
-  max-width: 600px;
-  height: auto;
-}
-
-.selected-pref {
-    fill: #ffb08a !important;
-    stroke: #cc6644;
-    stroke-width: 1.5;
-    transition: all 0.3s ease;
-}
-.has-post {
-  fill: #F1BDB2;
-  transition: fill 0.3s;
-}
-.tooltip {
-  position: absolute;
-  padding: 5px 10px;
-  background-color: #333;
-  color: #fff;
-  border-radius: 5px;
-  font-size: 0.9em;
-  display: none;
-  pointer-events: none; 
-  white-space: nowrap;
-  z-index: 10;
-}
-
-
-
-@media (max-width: 600px) {
-    html, body {
-    overflow-x: hidden; 
-  }
-
-  .col-md-4{
-    padding-right:0;
-  }
-
-  .trip-map-a{
-    padding-right:0%;
-    padding-left: 0.5rem;
-  }
-  .trip-map-a,
-  .profile-row,
-  .click-map {
-    padding-left: 0 !important;
-    padding-right: 10 !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    
-  }
-  .btn {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-  }
-  .spinner-wrapper {
-    right: 3%;
-    transform: translateX(0) scale(0.8);
-  }
-.col-auto{
-    padding: 0;
-}
-  .phone {
-    font-size: 12px;
-    padding: 0;
-  }
-  .name{
-    padding-left: 2rem;
-  }
-  .number{
-    padding-left: 2rem;
-  }
- .profile-row{
-   padding-left: 0.5rem;
- }
- 
- .btn{
-    margin-left:0.5rem;
-    margin-right:0.5rem;
- }
- .click-map{
-    margin-left: 1rem;
-    padding-right: 0;
-    padding-left: 1rem;
- }
- .map-container{
-  width: 
- }
-
- }
-
-</style>
 
     {{-- Profile area --}}
 <div class="container">
@@ -201,7 +12,8 @@
           :prefectures=$prefectures
           :allBadges=$allBadges
           :earnedBadgeIds=$earnedBadgeIds
-          :latestBadge=$latestBadge/>
+          :latestBadge=$latestBadge
+          />
 
         {{-- Post area --}}
         <div class="col-md-8">
@@ -214,7 +26,7 @@
                                   $mediaItems = $post->media->take(3);
                               @endphp
                                 <div class="col-4 col-sm-4 col-md-4 col-lg-4">
-                                    <div class="card border-0 p-0 shadow-sm rounded-2 overflow-hidden">
+                                    <div class="card  post-card border-0 p-0 shadow rounded-2 overflow-hidden">
                                         <div class="card-header border-0 p-0">
 
                                             <a href="{{ route('post.show', $post->id) }}" class="d-block position-relative">

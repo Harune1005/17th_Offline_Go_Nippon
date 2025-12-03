@@ -33,17 +33,17 @@
             <h3 style="margin-left: 15px;">{{ $user->name }}</h3>
 
             <div class="d-flex justify-content-between text-center fw-semibold flex-wrap number">
-                <a href="{{ route('profile.show', $user->id) }}" class="text-decoration-none flex-fill">
+                <a href="{{ route('profile.show', $user->id) }}" class="text-decoration-none flex-fill" style="color: #9F6B46;">
                     <div class="fs-5 fw-bold">{{ $user->posts->count() }}</div>
                     <div class="small">{{ __('messages.profile.posts') }}</div>
                 </a>
 
-                <a href="{{ route('profile.followers', $user->id) }}" class="text-decoration-none flex-fill">
+                <a href="{{ route('profile.followers', $user->id) }}" class="text-decoration-none flex-fill"  style="color: #9F6B46;">
                     <div class="fs-5 fw-bold">{{ $user->followers->count() }}</div>
                     <div class="small">{{ __('messages.profile.followers') }}</div>
                 </a>
 
-                <a href="{{ route('profile.following', $user->id) }}" class="text-decoration-none flex-fill">
+                <a href="{{ route('profile.following', $user->id) }}" class="text-decoration-none flex-fill"  style="color: #9F6B46;">
                     <div class="fs-5 fw-bold">{{ $user->following->count() }}</div>
                     <div class="small">{{ __('messages.profile.following') }}</div>
                 </a>
@@ -121,7 +121,7 @@
     </div>
     {{-- Badge --}}
     <h5 class="fw-bold text-center mb-3">
-        ------------ Your Badges ------------
+        ------------ My Badges ------------
     </h5>
 
      <div class="d-flex flex-wrap gap-3 mb-3">
@@ -150,7 +150,7 @@
         <div class="map-container rounded-2 ">
             <p class="fw-bold h5 click-map text-center mt-3">
                 {{ __('messages.profile.map_title1') }}
-                <span>{{ __('messages.profile.map_title2') }}</span>
+                <span style="color:#CAAE99;">{{ __('messages.profile.map_title2') }}</span>
             </p>
 
             <a href="{{ route('map.show', $user->id) }}" class="trip-map-a">
@@ -169,9 +169,8 @@
                         <p class="label">{{ __('messages.profile.completed') }}</p>
                         <p class="count">
                             {{ collect($prefectures)->where('has_post', true)->count() }}
-                            <span>/47</span>
                         </p>
-                        <p class="small-text">{{ __('messages.profile.prefecture') }}</p>
+                        <p class="small-text" style="color: #CAAE99;">{{ __('messages.profile.prefecture') }}</p>
                     </div>
                 </div>
             </div>
