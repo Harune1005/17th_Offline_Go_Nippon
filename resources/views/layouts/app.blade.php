@@ -46,7 +46,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-lg shadow-sm fixed-top py-1" style="background-color:#fbefe5;">
+        <nav class="navbar navbar-expand-lg shadow-sm fixed-top py-1" style="background-color:#fbefe5; height:75px;">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center brand" href="{{ url('/') }}">
                     <img src="{{ asset('images/image_480.png') }}" alt="Logo" width="50" class="me-2">
