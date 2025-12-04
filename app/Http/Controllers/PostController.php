@@ -296,6 +296,24 @@ class PostController extends Controller
 
         ]);
 
+        $currentCount = $post->media()->count();
+        $deleteCount = count($validated['deleted_media'] ?? []);
+        $newCount = count($request->file('new_media') ?? []);
+
+        $finalCount = $currentCount - $deleteCount + $newCount;
+
+        if ($finalCount <= 0) {
+            return back()
+                ->withErrors(['new_media' => 'You must have at least 1 image or video.'])
+                ->withInput();
+        }
+
+        if ($finalCount > 3) {
+            return back()
+                ->withErrors(['new_media' => 'You can have a maximum of 3 media total.'])
+                ->withInput();
+        }
+
         // 1.update
         $post->title = $validated['title'];
         $post->content = $validated['content'];
@@ -312,7 +330,6 @@ class PostController extends Controller
                 $validated['time_hour'],
                 $validated['time_min']
             );
-            $post->save();
         }
 
         $post->save();
@@ -341,23 +358,6 @@ class PostController extends Controller
 
                 $media->delete();
             }
-        }
-
-        // count the number of media
-        $currentCount = $post->media()->count();
-
-        // the number of new upload media
-        $newCount = count($request->file('new_media') ?? []);
-
-        // check the total number of media
-        if (($currentCount + $newCount) === 0) {
-            return back()
-                ->withErrors(['new_media' => 'You must have at least 1 image or video.'])
-                ->withInput();
-        }
-        if ($currentCount + $newCount > 3) {
-            return back()->withErrors(['new_media' => 'You can have a maximum of 3 media total (current remaining + new uploads).'])
-                ->withInput();
         }
 
         // 3. new upload
@@ -407,8 +407,6 @@ class PostController extends Controller
             }
         }
 
-        //   $badgeService->syncBadges(Auth::user());
-
         return redirect()
             ->route('post.show', $post->id)
             ->with('success', 'Post updated successfully!');
@@ -436,8 +434,6 @@ class PostController extends Controller
         $post->media()->delete();
 
         $post->forceDelete();
-
-        //  $badgeService->syncBadges(Auth::user());
 
         return redirect()->route('home')->with('success', 'Post deleted successfully!');
     }
