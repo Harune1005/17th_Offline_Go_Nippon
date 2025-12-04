@@ -91,7 +91,7 @@
                 <div class="mb-5">
                     <label class="form-label">{{ __('messages.create_post.image') }}</label>
                     <div class="d-flex flex-wrap gap-3" id="media-upload-area">
-                        <div class="media-slot add-new-slot" id="add-slot" style="width:100px; height:100px;">
+                        <div class="media-slot add-new-slot" id="add-slot">
                             <label for="new_media_file_0" class="add-label">＋</label>
                             <input type="file"
                                 class="d-none new-media-input"
@@ -121,60 +121,6 @@
         </div>
     </div>
 </div>
-
-<style>
-.media-slot {
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
-    width: 100px;
-    height: 100px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-}
-
-.add-new-slot .add-label {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    background-color: #f0f0f0;
-    border: 1px solid #B0B0B0;
-    color: #9F6B46;
-    font-weight: bold;
-    border-radius: inherit; 
-}
-
-.image-slot img,
-.media-slot video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.remove-btn {
-    position: absolute;
-    top: 3px;
-    right: 3px;
-    background: rgba(0,0,0,0.6);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    font-size: 16px;
-    cursor: pointer;
-    line-height: 24px;
-    text-align: center;
-}
-
-.image-slot button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-</style>
 
 {{-- HEIC converter --}}
 <script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
@@ -321,6 +267,10 @@
         const removeBtn = document.createElement("button");
         removeBtn.classList.add("remove-btn");
         removeBtn.innerHTML = "&times;";
+        removeBtn.style.cssText = `position:absolute; top:4px; right:4px; width:24px; height:24px;
+                            background: #9F6B46;
+                            border-radius:50%; color:#fff; border:none; cursor:pointer;
+                            line-height:24px; text-align:center; font-weight:bold;`
         removeBtn.onclick = () => deleteMedia(removeBtn);
         slot.appendChild(removeBtn);
 

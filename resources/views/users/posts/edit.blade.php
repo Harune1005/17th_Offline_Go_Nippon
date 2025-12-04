@@ -92,28 +92,21 @@
                     @error('cost') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
-                
                 <div class="mb-5">
                     <label class="form-label fw-bold">{{ __('messages.edit_post.image') }}</label>
                     
-                     <div class="d-flex flex-wrap gap-3 mb-2" id="media-upload-area">
+                    <div class="d-flex flex-wrap gap-3 mb-2" id="media-upload-area">
                         {{-- show existing Media --}}
                         @foreach ($post->media as $media)
-                            <div class="media-slot existing-media" data-id="{{ $media->id }}"
-                                style="position:relative; width:100px; height:100px; border-radius:12px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.15);">
+                            <div class="media-slot existing-media" data-id="{{ $media->id }}">
                                 @if ($media->type === 'image')
-                                    <img src="{{ asset('storage/'.$media->path) }}" alt="existing image"
-                                         style="width:100%; height:100%; object-fit:cover;">
+                                    <img src="{{ asset('storage/'.$media->path) }}" alt="existing image">
                                 @else
-                                    <video src="{{ asset('storage/'.$media->path) }}" muted playsinline controls
-                                        style="width:100%; height:100%; object-fit:cover;"></video>
+                                    <video src="{{ asset('storage/'.$media->path) }}" muted playsinline controls></video>
                                 @endif
                                 <button type="button"
                                         class="remove-btn"
-                                        onclick="deleteExistingMedia(this)"
-                                        style="position:absolute; top:4px; right:4px; width:24px; height:24px;
-                                            border-radius:50%; color:#fff; border:none; cursor:pointer;
-                                            line-height:24px; text-align:center; font-weight:bold;">
+                                        onclick="deleteExistingMedia(this)">
                                     &times;
                                 </button>
                             </div>
@@ -121,16 +114,15 @@
                         {{-- add slot --}}
                         <div class="media-slot add-new-slot" id="add-slot">
                             <label class="d-flex justify-content-center align-items-center h-100 w-100"
-                                style="cursor:pointer; background:#f0f0f0; border:1px solid #B0B0B0; color:#9F6B46; font-weight:bold;"
                                 for="new_media_file_0">
-                                + Add
+                                +
                             </label>
                             <input type="file" class="d-none new-media-input" 
                                 name="new_media[]" id="new_media_file_0"
                                 accept="image/*,video/*"
                                 onchange="previewNewMedia(this)">
                         </div>
-                     </div>
+                    </div>
 
                     @error('new_media') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                     @error('new_media.*') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
@@ -189,7 +181,7 @@
             <label class="d-flex justify-content-center align-items-center h-100 w-100"
                 style="cursor:pointer;background:#f0f0f0;border:1px solid #B0B0B0;color:#9F6B46;font-weight:bold;"
                 for="new_media_file_${mediaIndex}">
-                + Add
+                +
             </label>
             <input type="file" class="d-none new-media-input"
                 name="new_media[]" id="new_media_file_${mediaIndex}"
@@ -311,10 +303,7 @@
         const btn = document.createElement("button");
         btn.innerHTML = "&times;";
         btn.className = "remove-btn";
-        btn.style.cssText = `position:absolute; top:4px; right:4px; width:24px; height:24px;
-                            border-radius:50%; color:#fff; border:none; cursor:pointer;
-                            line-height:24px; text-align:center; font-weight:bold;`
-
+        btn.classList.add("remove-btn");
         btn.onclick = () => {
             slot.remove();
             redrawAddSlot();

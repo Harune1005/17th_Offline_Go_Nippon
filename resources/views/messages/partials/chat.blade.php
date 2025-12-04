@@ -100,12 +100,12 @@
         <form action="{{ route('messages.store') }}" method="post" id="chatForm" class="d-flex align-items-center w-100 gap-3" enctype="multipart/form-data">
             @csrf
                 <input type="hidden" name="conversation_id" value="{{ $conversation->id }}">
-                <input type="text" name="content" id="content" class="form-control" placeholder="{{ __('messages.dm.message_placeholder') }}">
+                <input type="text" name="content" id="content" class="form-control flex-grow-1" style="min-width: 0;" placeholder="{{ __('messages.dm.message_placeholder') }}">
 
                 <input type="file" name="media" id="mediaInput" accept="image/*,video/*" style="display:none">
                 <i class="fa-solid fa-image" id="mediaIcon" style="font-size: 38px;cursor:pointer; color: #f1bdb2;"></i>
             
-                <button type="submit" class="btn custom-btn">
+                <button type="submit" class="btn custom-btn white-space-nowrap px-3" style="min-width: 90px;">
                     {{ __('messages.dm.send') }}
                 </button>
         </form>
