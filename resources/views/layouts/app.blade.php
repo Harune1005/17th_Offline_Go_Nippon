@@ -401,9 +401,7 @@
                                 @if ($avatar)
                                     <img src="{{ $avatar }}"
                                     class="rounded-circle me-3"
-                                    width="50"
-                                    height="50"
-                                    style="object-fit: cover;">
+                                    style="width:50px; height:50px; object-fit:cover;">
                                 @else
                                     <i class="fa-solid fa-circle-user text-secondary me-3" style="font-size:50px; color:#ccc;"></i>
                                 @endif
