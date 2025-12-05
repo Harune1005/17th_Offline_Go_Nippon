@@ -1,61 +1,264 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Go Nippon - Instagram-like SNS for Foreign Visitors to Japan  
+### 日本語版はこの下にあります ⬇️
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+# 🇺🇸 English Version
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Go Nippon** is an Instagram-style SNS designed specifically for foreigners traveling or living in Japan.  
+It provides features such as posts, trip map, DM, and analytics to make sharing Japan experiences more fun and intuitive.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Tech Stack
 
-## Learning Laravel
+- **Backend / Frontend**: Laravel + Blade  
+- **Authentication**: Laravel/UI (Email Verification & Google Login)
+- **Async Communication**: JavaScript (Ajax)
+- **UI Design**: Bootstrap
+- **Media Uploads**: Multiple images & video support
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## ✨ Main Features
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🔐 Auth / User
+- User Registration / Login  
+- Email Verification  
+- Google Login  
+- Profile Editing  
+- Follow / Follower System  
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🏠 Home (Feed)
+Browse posts with multiple filters:
 
-### Premium Partners
+- Newest  
+- Favorite order  
+- Follower posts only  
+- Most liked  
+- Category ranking  
+- Prefecture post ranking  
+- Keyword / category / prefecture search  
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Actions on posts:
+- Like  
+- Add to Favorites  
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 📝 Posts
+- Create / Edit / Delete posts  
+- Support for **multiple images**  
+- Support for **video uploads**  
+- On Show Post page:  
+  - Like  
+  - Favorite  
+  - Comment  
+  - Reply to comments  
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 👤 Profile
+- Edit profile  
+- View your favorite posts  
+- View your own posts  
+- **Travel completion rate by prefecture**  
+- **Achievement badges** earned from traveling  
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🗾 Trip Map
+- Display a full map of Japan  
+- Prefectures you've visited are automatically colored  
+- Completion rate visualization  
+- Sort by prefectures  
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 💬 DM (Direct Message)
+- DM with followers / following users  
+- Read/unread message indicator  
+- Non-blocking asynchronous UI  
+
+---
+
+## 📢 Notification
+- Like notification function
+
+---
+
+## 📊 Analytics
+Visualize your activity:
+
+### 👀 View
+- Profile visitors  
+- Post views  
+
+### 💬 Interact
+- Likes received  
+- Favorites received  
+- Comments received  
+
+### 👥 Follower
+- Follower count trend  
+- Followers by country  
+
+---
+
+## 🛠 Admin Panel
+- Manage users (show / hide)  
+- Manage posts (show / hide)  
+- Manage categories (add / edit / delete)
+
+---
+
+## 🧩 Design & Architecture
+
+### 🎨 Figma UI Design
+- [View Figma Design](https://www.figma.com/design/odwXTf4hT5fwNlIyziwAfJ/Go-Nippon?node-id=4-3356&t=Da3AIvyDdeiQq3fx-1)
+
+### 📸 Images
+- [Login](/readme-images/login)
+- [Home](/readme-images/home)
+- [Show Post](/readme-images/showpost)
+- [Edit Post](/readme-images/editpost)
+- [Favarite Post](/readme-images/favorite)
+- [Profile](/readme-images/profile)
+- [Follower](/readme-images/follower)
+- [Trip Map](/readme-images/tripmap)
+- [DM](/readme-images/dm)
+- [Analytics](/readme-images/analytics)
+- [Admin](/readme-images/admin)
+
+---
+
+# 🇯🇵 日本語版
+
+**Go Nippon（ゴー・ニッポン）** は、日本を旅行・滞在している外国人向けに特化したインスタ風 SNS です。  
+投稿・地図・DM・アナリティクスなど多機能で、日本での体験共有を楽しく便利にします。
+
+---
+
+## 🚀 使用技術
+
+- **バックエンド / フロント**: Laravel + Blade  
+- **認証**: Laravel/UI（メール認証 & Google Login）
+- **非同期通信**: JavaScript（Ajax）
+- **デザイン**: Bootstrap  
+- **画像・動画投稿**: 複数枚の画像 & 動画に対応
+
+---
+
+## ✨ 主な機能
+
+### 🔐 認証 / ユーザー
+- 登録 / ログイン  
+- メール認証  
+- Google ログイン  
+- プロフィール編集  
+- フォロー / フォロワー機能  
+
+---
+
+## 🏠 Home（ホーム）
+投稿を次の条件で表示可能：
+
+- 新しい順  
+- お気に入り順  
+- フォロワー投稿のみ  
+- いいね順  
+- カテゴリー別ランキング  
+- 都道府県別投稿数ランキング  
+- キーワード・カテゴリ・都道府県検索  
+
+投稿へのアクション：
+- いいね  
+- お気に入り追加  
+
+---
+
+## 📝 投稿
+- 投稿作成 / 編集 / 削除  
+- 複数枚の画像投稿  
+- 動画投稿  
+- 投稿詳細ページでは：  
+  - いいね  
+  - お気に入り  
+  - コメント  
+  - コメントへのリプライ  
+
+---
+
+## 👤 プロフィール
+- プロフィール編集  
+- お気に入り投稿一覧  
+- 自分の投稿一覧  
+- **訪れた都道府県の達成率表示**  
+- **達成バッジの獲得状況**  
+
+---
+
+## 🗾 Trip Map（日本地図）
+- 日本地図を表示  
+- 訪れた都道府県を自動色付け  
+- 達成率の可視化  
+- 都道府県別ソート  
+
+---
+
+## 💬 DM（ダイレクトメッセージ）
+- フォロー / フォロワーと DM  
+- 既読表示あり  
+- 非同期でスムーズな UI  
+
+---
+
+## 📢 Notification（通知）
+- いいねに関する通知機能
+
+---
+
+## 📊 Analytics（アナリティクス）
+ユーザーのアクションを可視化：
+
+### 👀 View  
+- プロフィール訪問数  
+- 投稿閲覧数  
+
+### 💬 Interact  
+- いいね数  
+- お気に入り数  
+- コメント数  
+
+### 👥 Follower  
+- フォロワー数推移  
+- フォロワーの国別割合  
+
+---
+
+## 🛠 Admin（管理画面）
+- ユーザー管理（表示 / 非表示）  
+- 投稿管理（表示 / 非表示）  
+- カテゴリー管理（追加・編集・削除）  
+
+---
+
+## 🧩 デザイン　& イメージ
+
+### 🎨 Figma UI デザイン
+- [View Figma Design](https://www.figma.com/design/odwXTf4hT5fwNlIyziwAfJ/Go-Nippon?node-id=4-3356&t=Da3AIvyDdeiQq3fx-1)
+
+### 📸 イメージ
+- [Login](/readme-images/login)
+- [Home](/readme-images/home)
+- [Show Post](/readme-images/showpost)
+- [Edit Post](/readme-images/editpost)
+- [Favarite Post](/readme-images/favorite)
+- [Profile](/readme-images/profile)
+- [Follower](/readme-images/follower)
+- [Trip Map](/readme-images/tripmap)
+- [DM](/readme-images/dm)
+- [Analytics](/readme-images/analytics)
+- [Admin](/readme-images/admin)
