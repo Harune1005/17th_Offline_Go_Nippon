@@ -239,9 +239,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cost slider
     const costSlider = document.getElementById('cost-slider');
     const costDisplay = document.getElementById('cost-current');
-    costSlider?.addEventListener('input', () => {
+   costSlider?.addEventListener('input', () => {
+    if (costSlider.value == 10000) {
+        costDisplay.textContent = '¥10000~';
+    } else {
         costDisplay.textContent = '¥' + costSlider.value;
-    });
+    }
+});
+
 
     // Categories max 3
     const checkboxes = document.querySelectorAll('.category-checkbox');

@@ -246,8 +246,13 @@ function deleteNewImage(button) {
 const costSlider = document.getElementById('cost-slider');
 const costDisplay = document.getElementById('cost-current');
 costSlider?.addEventListener('input', () => {
-    costDisplay.textContent = '¥' + costSlider.value;
+    if (costSlider.value == 10000) {
+        costDisplay.textContent = '¥10000~';
+    } else {
+        costDisplay.textContent = '¥' + costSlider.value;
+    }
 });
+
 
 document.querySelectorAll('.category-checkbox').forEach(cb => {
     cb.addEventListener('change', function() {
