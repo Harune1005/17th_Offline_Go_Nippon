@@ -149,234 +149,211 @@
     </div>
 </div>
 
+
 {{-- HEIC converter --}}
 <script src="https://unpkg.com/heic2any/dist/heic2any.min.js"></script>
 
 <script>
-    let mediaIndex = 0;
-    const MAX_MEDIA = 3;
+let mediaIndex = 0;
+const MAX_MEDIA = 3;
 
-    /* ===============================
-    合計メディア数（既存 + 新規）
-    =============================== */
-    function getTotalMediaCount() {
-        return document.querySelectorAll(".media-slot:not(.add-new-slot)").length;
+/* ===============================
+合計メディア数（既存 + 新規）
+=============================== */
+function getTotalMediaCount() {
+    return document.querySelectorAll(".media-slot:not(.add-new-slot)").length;
+}
+
+/* ===============================
+add-slot（＋）再描画
+=============================== */
+function redrawAddSlot() {
+    document.querySelectorAll(".add-new-slot").forEach(e => e.remove());
+
+    if (getTotalMediaCount() >= MAX_MEDIA) return;
+
+    mediaIndex++;
+
+    const slot = document.createElement("div");
+    slot.className = "media-slot add-new-slot";
+    slot.id = "add-slot";
+
+    slot.innerHTML = `
+        <label class="d-flex justify-content-center align-items-center h-100 w-100"
+            style="cursor:pointer;background:#f0f0f0;border:1px solid #B0B0B0;color:#9F6B46;font-weight:bold;"
+            for="new_media_file_${mediaIndex}">
+            +
+        </label>
+        <input type="file" class="d-none new-media-input"
+            name="new_media[]" id="new_media_file_${mediaIndex}"
+            accept="image/*,video/*"
+            onchange="previewNewMedia(this)">
+    `;
+
+    document.querySelector("#media-upload-area").appendChild(slot);
+}
+
+/* ===============================
+MOV / QuickTime 判定
+=============================== */
+function isQuickTimeVideo(file) {
+    return (
+        file.name.toLowerCase().endsWith(".mov") ||
+        file.type === "video/quicktime"
+    );
+}
+
+/* ===============================
+HEIC → JPEG 変換
+=============================== */
+async function convertHeicToJpeg(file) {
+    try {
+        const convertedBlob = await heic2any({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.9
+        });
+        return new File([convertedBlob], file.name.replace(/\.heic/i, ".jpg"), {
+            type: "image/jpeg"
+        });
+    } catch (error) {
+        console.error("HEIC → JPG 変換失敗:", error);
+        return null;
     }
+}
 
-    /* ===============================
-    add-slot（＋）再描画
-    =============================== */
-    function redrawAddSlot() {
-        document.querySelectorAll(".add-new-slot").forEach(e => e.remove());
+/* ===============================
+新規メディアプレビュー
+=============================== */
+window.previewNewMedia = async function (input) {
+    const file = input.files[0];
+    if (!file) return;
 
-        if (getTotalMediaCount() >= MAX_MEDIA) return;
+    const slot = input.closest(".add-new-slot");
+    if (!slot) return;
 
-        mediaIndex++;
+    let previewFile = file;
+    const ext = file.name.toLowerCase();
+    const isHeic = ext.endsWith(".heic");
+    const isMov = isQuickTimeVideo(file);
 
-        const slot = document.createElement("div");
-        slot.className = "media-slot add-new-slot";
-        slot.id = "add-slot";
-
-        slot.innerHTML = `
-            <label class="d-flex justify-content-center align-items-center h-100 w-100"
-                style="cursor:pointer;background:#f0f0f0;border:1px solid #B0B0B0;color:#9F6B46;font-weight:bold;"
-                for="new_media_file_${mediaIndex}">
-                +
-            </label>
-            <input type="file" class="d-none new-media-input"
-                name="new_media[]" id="new_media_file_${mediaIndex}"
-                accept="image/*,video/*"
-                onchange="previewNewMedia(this)">
-        `;
-
-        document.querySelector("#media-upload-area").appendChild(slot);
-    }
-
-const costSlider = document.getElementById('cost-slider');
-const costDisplay = document.getElementById('cost-current');
-costSlider?.addEventListener('input', () => {
-    if (costSlider.value == 10000) {
-        costDisplay.textContent = '¥10000~';
-    } else {
-        costDisplay.textContent = '¥' + costSlider.value;
-    }
-});
-
-
-document.querySelectorAll('.category-checkbox').forEach(cb => {
-    cb.addEventListener('change', function() {
-        if (document.querySelectorAll('.category-checkbox:checked').length > 3) {
-            this.checked = false;
-            alert('You can select up to 3 categories.');
-        }
-    /* ===============================
-    MOV / QuickTime 判定
-    =============================== */
-    function isQuickTimeVideo(file) {
-        return (
-            file.name.toLowerCase().endsWith(".mov") ||
-            file.type === "video/quicktime"
-        );
-    }
-
-    /* ===============================
-    HEIC → JPEG 変換
-    =============================== */
-    async function convertHeicToJpeg(file) {
-        try {
-            const convertedBlob = await heic2any({
-                blob: file,
-                toType: "image/jpeg",
-                quality: 0.9
-            });
-
-            return new File([convertedBlob], file.name.replace(/\.heic/i, ".jpg"), {
-                type: "image/jpeg"
-            });
-        } catch (error) {
-            console.error("HEIC → JPG 変換失敗:", error);
-            return null;
-        }
-    }
-
-    /* ===============================
-    新規メディアプレビュー（createObjectURL ベース）
-    =============================== */
-    window.previewNewMedia = async function (input) {
-        const file = input.files[0];
-        if (!file) return;
-
-        const slot = input.closest(".add-new-slot");
-        if (!slot) return;
-
-        let previewFile = file;
-        const ext = file.name.toLowerCase();
-        const isHeic = ext.endsWith(".heic");
-        const isMov = isQuickTimeVideo(file);
-
-        /* --- HEIC → JPEG 自動変換 --- */
-        if (isHeic) {
-            const converted = await convertHeicToJpeg(file);
-
-            if (converted) {
-                previewFile = converted;
-            } else {
-                // fallback → HEIC アイコン表示
-                renderPreviewSlot(slot, "/images/heic-placeholder.png", file, true);
-                return;
-            }
-        }
-
-        /* --- 重要：FileReaderではなく createObjectURL を使う（MOV対応） --- */
-        let previewSrc = URL.createObjectURL(previewFile);
-
-        /* 画像判定 */
-        let isImage = false;
-        if (isMov) {
-            isImage = false;
-        } else if (previewFile.type.startsWith("image/")) {
-            isImage = true;
-        }
-
-        renderPreviewSlot(slot, previewSrc, previewFile, isImage);
-    };
-
-    /* ===============================
-    プレビュー描画（動画 / 画像 / HEICアイコン）
-    =============================== */
-    function renderPreviewSlot(slot, src, fileToSend, isImage) {
-        slot.classList.remove("add-new-slot");
-        slot.classList.add("media-slot");
-        slot.removeAttribute("id");
-        slot.innerHTML = "";
-        slot.style.position = "relative";
-
-        let el;
-
-        if (isImage) {
-            el = document.createElement("img");
-            el.src = src;
+    // HEIC → JPEG 自動変換
+    if (isHeic) {
+        const converted = await convertHeicToJpeg(file);
+        if (converted) {
+            previewFile = converted;
         } else {
-            el = document.createElement("video");
-            el.src = src;
-            el.muted = true;
-            el.playsInline = true;
-            el.controls = true;
+            // fallback → HEIC アイコン表示
+            renderPreviewSlot(slot, "/images/heic-placeholder.png", file, true);
+            return;
         }
-
-        el.style.cssText = "width:100%;height:100%;object-fit:cover;";
-        slot.appendChild(el);
-
-        addDeleteButton(slot);
-        addHiddenInput(slot, fileToSend);
-
-        redrawAddSlot();
     }
 
-    /* ===============================
-    新規メディア削除ボタン
-    =============================== */
-    function addDeleteButton(slot) {
-        const btn = document.createElement("button");
-        btn.innerHTML = "&times;";
-        btn.className = "remove-btn";
-        btn.classList.add("remove-btn");
-        btn.onclick = () => {
-            slot.remove();
-            redrawAddSlot();
-        };
-        slot.appendChild(btn);
+    // createObjectURL でプレビュー
+    const previewSrc = URL.createObjectURL(previewFile);
+
+    // 画像判定
+    const isImage = !isMov && previewFile.type.startsWith("image/");
+
+    renderPreviewSlot(slot, previewSrc, previewFile, isImage);
+};
+
+/* ===============================
+プレビュー描画（動画 / 画像 / HEICアイコン）
+=============================== */
+function renderPreviewSlot(slot, src, fileToSend, isImage) {
+    slot.classList.remove("add-new-slot");
+    slot.classList.add("media-slot");
+    slot.removeAttribute("id");
+    slot.innerHTML = "";
+    slot.style.position = "relative";
+
+    let el;
+    if (isImage) {
+        el = document.createElement("img");
+        el.src = src;
+    } else {
+        el = document.createElement("video");
+        el.src = src;
+        el.muted = true;
+        el.playsInline = true;
+        el.controls = true;
     }
+    el.style.cssText = "width:100%;height:100%;object-fit:cover;";
+    slot.appendChild(el);
 
-    /* ===============================
-    hidden input 追加（サーバー送信用）
-    =============================== */
-    function addHiddenInput(slot, file) {
-        const input = document.createElement("input");
-        input.type = "file";
-        input.name = "new_media[]";
-        input.classList.add("d-none");
+    addDeleteButton(slot);
+    addHiddenInput(slot, fileToSend);
 
-        const dt = new DataTransfer();
-        dt.items.add(file);
-        input.files = dt.files;
+    redrawAddSlot();
+}
 
-        slot.appendChild(input);
-    }
-
-    /* ===============================
-    既存メディア削除（DB削除依頼）
-    =============================== */
-    window.deleteExistingMedia = function (btn) {
-        const slot = btn.closest(".media-slot");
-        const id = slot.dataset.id;
-
-        const hidden = document.createElement("input");
-        hidden.type = "hidden";
-        hidden.name = "deleted_media[]";
-        hidden.value = id;
-
-        document.querySelector("#edit-form").appendChild(hidden);
-
+/* ===============================
+新規メディア削除ボタン
+=============================== */
+function addDeleteButton(slot) {
+    const btn = document.createElement("button");
+    btn.innerHTML = "&times;";
+    btn.className = "remove-btn";
+    btn.onclick = () => {
         slot.remove();
         redrawAddSlot();
     };
+    slot.appendChild(btn);
+}
 
-    /* ===============================
-    初期化
-    =============================== */
-    document.addEventListener("DOMContentLoaded", () => {
-        redrawAddSlot();
-    });
+/* ===============================
+hidden input 追加（サーバー送信用）
+=============================== */
+function addHiddenInput(slot, file) {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.name = "new_media[]";
+    input.classList.add("d-none");
+
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    input.files = dt.files;
+
+    slot.appendChild(input);
+}
+
+/* ===============================
+既存メディア削除（DB削除依頼）
+=============================== */
+window.deleteExistingMedia = function (btn) {
+    const slot = btn.closest(".media-slot");
+    const id = slot.dataset.id;
+
+    const hidden = document.createElement("input");
+    hidden.type = "hidden";
+    hidden.name = "deleted_media[]";
+    hidden.value = id;
+
+    document.querySelector("#edit-form").appendChild(hidden);
+
+    slot.remove();
+    redrawAddSlot();
+};
+
+/* ===============================
+初期化
+=============================== */
+document.addEventListener("DOMContentLoaded", () => {
+    redrawAddSlot();
 
     // cost slider
     const costSlider = document.getElementById('cost-slider');
     const costDisplay = document.getElementById('cost-current');
     costSlider?.addEventListener('input', () => {
-        costDisplay.textContent = '¥' + costSlider.value;
+        if (costSlider.value == 10000) {
+            costDisplay.textContent = '¥10000~';
+        } else {
+            costDisplay.textContent = '¥' + costSlider.value;
+        }
     });
 
-    // category check
+    // category checkbox
     document.querySelectorAll('.category-checkbox').forEach(cb => {
         cb.addEventListener('change', function() {
             if (document.querySelectorAll('.category-checkbox:checked').length > 3) {
@@ -384,17 +361,9 @@ document.querySelectorAll('.category-checkbox').forEach(cb => {
                 alert('You can select up to 3 categories.');
             }
         });
-
-        // at least 1 media
-        form.addEventListener('submit', function(e) {
-            const existingCount = existing.querySelectorAll('.media-item').length;
-            const newCount = previews.querySelectorAll('.media-item').length;
-
-            if (existingCount + newCount === 0) {
-                e.preventDefault();
-                alert('You must have at least 1 image or video.');
-            }
-        });
     });
+
+});
 </script>
+
 @endsection

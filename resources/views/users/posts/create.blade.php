@@ -131,16 +131,17 @@
         const slider = document.getElementById("cost-slider");
         const display = document.getElementById("cost-current");
 
-        if (slider && display) {
+        if (costSlider && costDisplay) {
+    // 初期表示
+    costDisplay.textContent = 
+        costSlider.value == 10000 ? '¥10000~' : '¥' + costSlider.value;
 
-            // 初期値反映
-            display.textContent = "¥" + slider.value;
-
-            // スライダー変更時に金額更新
-            slider.addEventListener("input", function () {
-                display.textContent = "¥" + slider.value;
-            });
-        }
+    // スライダー変更時
+    costSlider.addEventListener('input', () => {
+        costDisplay.textContent = 
+            costSlider.value == 10000 ? '¥10000~' : '¥' + costSlider.value;
+    });
+}
     });
 
     let newImageIndex = 0;
@@ -224,7 +225,6 @@
     }
 });
 
-
     // Categories max 3
     const checkboxes = document.querySelectorAll('.category-checkbox');
     checkboxes.forEach(cb => {
@@ -236,7 +236,6 @@
             }
         });
     });
-});
 </script>
 
 {{-- for media slot --}}
