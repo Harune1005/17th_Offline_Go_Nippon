@@ -4,10 +4,96 @@
 
 @section('content')
 <style>
-    .uniform-img {
+    /* .uniform-img {
         height: 650px; 
         object-fit: cover;
         width: 100%;
+    } */
+
+    /* .uniform-img-img {
+    height: 650px;
+    width: 100%;
+    object-fit: cover;
+    background: #000;
+    } */
+
+    /* .uniform-img-video {
+    height: 650px;
+    width: 100%;
+    background: black; 
+    } */
+
+    .media-frame {
+        width: 100%;
+        height: 650px;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .media-frame img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .media-frame video {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+    }
+
+    @media (max-width: 768px) {
+
+        .media-frame {
+            width: 100%;
+            max-width: 100vw;
+            height: 100;
+            max-height: calc(100vw * 1.25);  /* ← これが 4:5 の制限 */
+            background: #000;
+            overflow: hidden;                /* 超重要：4:5 超えたら切る */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .media-frame img{
+            width: 100%;
+            height: auto;
+            max-height: calc(100vw * 1.25);
+            object-fit: cover;
+            object-position: center center;
+            background: #000;
+        }
+
+        .media-frame video {
+            width: 100%;
+            height: auto;
+            max-height: calc(100vw * 1.25);
+            object-fit: cover;
+            object-position: center center;
+            background: #000;
+        }
+
+        #postCarousel .carousel-item {
+            background: #000;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-height: calc(100vw * 1.25); /* 4:5 に統一 */
+        }
+
+
     }
 
     .text-brown {
@@ -43,10 +129,10 @@
     }
 </style>
 
-    <div class="container mt-3">
+    <div class="container">
         <div class="justify-content-center">
             <div class="card border shadow rounded-2 overflow-hidden">
-                <div class="card-header py-3 border-bottom" style="background: linear-gradient(to right, #fffaf7, #fbefe5, #fffaf7);">
+                <div class="card-header py-3 border-bottom" style="background-color:#fbefe5;">
                     <div class="row align-items-center justify-content-between">
                         <div class="col-auto d-flex align-items-center">
                             <a href="{{ route('profile.show', $post->user->id) }}">
@@ -74,12 +160,14 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end shadow-sm">
                                         <a href="{{ route('post.edit', ['id' => $post->id]) }}" class="dropdown-item text-brown">
-                                            <i class="fa-regular fa-pen-to-square me-2"></i>Edit
+                                            <i class="fa-regular fa-pen-to-square me-2"></i>
+                                            {{ __('messages.show_post.edit') }}
                                         </a>
                                         
                                         <button class="dropdown-item text-danger" data-bs-toggle="modal"
                                             data-bs-target="#delete-post-{{ $post->id }}">
-                                            <i class="fa-regular fa-trash-can me-2"></i>Delete
+                                            <i class="fa-regular fa-trash-can me-2"></i>
+                                            {{ __('messages.show_post.delete') }}
                                         </button>
                                     </div>
                                      @include('users.posts.modals.delete')
@@ -91,12 +179,14 @@
                                     <form action="{{ route('follow.destroy', $post->user_id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-outline btn-md fw-bold">Following</button>
+                                        <input type="hidden" name="return_url" value="{{ url()->full() }}">
+                                        <button type="submit" class="btn btn-cancel btn-md fw-bold">Following</button>
                                     </form>
                                 @else 
                                     <form action="{{ route('follow.store', $post->user_id) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn btn-pink btn-md fw-bold">Follow</button>
+                                        <input type="hidden" name="return_url" value="{{ url()->full() }}">
+                                        <button type="submit" class="btn btn-outline btn-md fw-bold">Follow</button>
                                     </form>
                                 @endif
                             @endif
@@ -108,32 +198,72 @@
                     <div class="row g-0">
                        <div class="col-md-7">                              
                             @php
-                                $images = $post->images->pluck('image')->toArray();
+                                $mediaItems = $post->media;
                             @endphp
 
-                            @if ($images && count($images) > 1)
-                                <div id="postCarousel" class="carousel slide" data-bs-ride="carousel">
-                                    <div class="carousel-inner">
-                                        @foreach ($images as $index => $img)
-                                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                                <img 
-                                                    src="{{ asset('storage/' . $img) }}" 
-                                                    class="d-block uniform-img" 
-                                                    alt="Post image {{ $index + 1 }}">
-                                            </div>
-                                        @endforeach
+                            @if ($mediaItems->count() > 0 )
+                                @if ($mediaItems->count() > 1)
+                                    <div id="postCarousel{{$post->id}}" class="carousel slide" data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            @foreach ($mediaItems as $index => $media)
+                                                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                                    <div class="media-frame">
+                                                        @if ($media->type === 'image')
+                                                            <img src="{{ asset('storage/' . $media->path) }}" alt="image">
+                                                        @else
+                                                            <video src="{{ asset('storage/' . $media->path) }}" playsinline muted></video>
+                                                            <div class="play-pause-btn">
+                                                                <i class="fa-solid fa-play"></i>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel{{$post->id}}" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#postCarousel{{$post->id}}" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                        </button>
                                     </div>
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon"></span>
-                                    </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon"></span>
-                                    </button>
-                                </div>
-                            @elseif ($images && count($images) === 1)
-                                <img src="{{ asset('storage/' . $images[0]) }}" alt="Post image" class="uniform-img">
+                                @elseif($mediaItems->count() === 1)
+                                    @php
+                                        $media = $mediaItems->first();
+                                    @endphp
+                                    <div class="media-frame">
+                                        @if ($media->type === 'image')
+                                            <img src="{{ asset('storage/' . $media->path) }}">
+                                        @else
+                                            <video src="{{ asset('storage/' . $media->path) }}" playsinline muted></video>
+                                            <div class="play-pause-btn">
+                                                <i class="fa-solid fa-play"></i>
+                                            </div>
+                                        @endif
+                                    </div>
+                                        {{-- Image --}}
+                                    {{-- @if ($media->type === 'image')
+                                        <img 
+                                            src="{{ asset('storage/' . $media->path) }}" 
+                                            class="d-block uniform-img-img" 
+                                            alt="Post image"> --}}
+                                        {{-- Video --}}
+                                    {{-- @elseif( $media->type === 'video')
+                                        <div class="video-wrapper">
+                                            <video 
+                                                src="{{ asset('storage/' . $media->path) }}"
+                                                class="d-block uniform-img-video show-video"
+                                                playsinline
+                                                muted
+                                            ></video>
+                                            <div class="play-pause-btn">
+                                                <i class="fa-solid fa-play"></i>
+                                            </div>
+                                        </div>
+                                    @endif --}}
+                                @endif
                             @else
-                                <img src="{{ asset('images/no-image.png') }}" alt="No image" class="uniform-img">
+                                <img src="{{ asset('images/no-image.png') }}" alt="No media" class="uniform-img">   
                             @endif
 
                             @error('image')
@@ -176,14 +306,13 @@
                                 
                                 <div class="d-flex align-items-center justify-content-end text-brown small mb-3 gap-3">
                                   <span><i class="fa-regular fa-calendar me-1 text-info"></i>{{ $post->visited_at ? $post->visited_at->format('Y-m-d') : 'Unknown' }}</span>
-                                   <span><i class="fa-solid fa-coins me-1 text-warning"></i>{{ $post->cost ?? 'Cost' }} Yen</span>
+                                   <span><i class="fa-solid fa-coins me-1 text-warning"></i>
+                                    ¥ {{ $post->cost ?? 'Cost' }}
+                                   </span>
                                    <span>
                                     <i class="fa-regular fa-clock me-1 text-secondary"></i>
-                                    {{ $post->time_hour ? $post->time_hour . 'h ' : '' }}
-                                    {{ $post->time_min ? $post->time_min . 'min' : '' }}
-                                    @if (!$post->time_hour && !$post->time_min)
-                                        Time
-                                    @endif
+                                    {{ $post->time_hour }} {{ __('messages.show_post.hour') }}
+                                    {{ $post->time_min }} {{ __('messages.show_post.min') }}
                                     </span>
 
                                 </div>
@@ -200,8 +329,8 @@
                                     @endforeach
                                 </div>
 
-                            {{-- コメントフォーム --}}
-                               <form action="{{ route('comment.store', $post->id) }}" method="POST" class="mb-4">
+                            {{-- 親コメントフォーム --}}
+                                <form action="{{ route('comment.store', $post->id) }}" method="POST" class="mb-4">
                                     @csrf
                                     <div class="input-group">
                                         <input type="text" 
@@ -209,70 +338,24 @@
                                             class="form-control post-input rounded-start @error('comment_body'.$post->id) is-invalid @enderror" 
                                             placeholder="Add a comment..." 
                                             value="{{ old('comment_body'.$post->id) }}">
-                                        <button class="btn btn-brown rounded-end" type="submit">
+
+                                        <button class="btn btn-brown rounded-end">
                                             <i class="fa-solid fa-paper-plane"></i>
                                         </button>
                                     </div>
 
                                     @error('comment_body'.$post->id)
-                                        <div class="text-danger small mt-1">
-                                            {{ $message }}
-                                        </div>
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
                                 </form>
 
 
-                          {{-- コメント一覧 --}}
+                                {{-- コメント一覧 --}}
                                 <div class="comment-list">
-                                    @forelse ($post->comments as $comment)
-                                        <div class="p-2 mb-2 bg-yellow-light rounded-3">
-
-                                            <!-- アイコン + ユーザーネーム -->
-                                            <div class="d-flex align-items-start justify-content-between mb-1">
-
-                                                <div class="d-flex align-items-start">
-                                                    <a href="{{ route('profile.show', $comment->user->id) }}">
-                                                        @if ($comment->user->avatar)
-                                                            <img src="{{ $comment->user->avatar }}" 
-                                                                alt="{{ $comment->user->name }}" 
-                                                                class="rounded-circle me-2"
-                                                                style="width:32px; height:32px; object-fit:cover;">
-                                                        @else
-                                                            <i class="fa-solid fa-circle-user text-secondary me-2" style="font-size:1.7rem;"></i>
-                                                        @endif
-                                                    </a>
-                                                    <strong class="text-brown" style="position: relative; top: -2px;">
-                                                        {{ $comment->user->name ?? 'User' }}
-                                                    </strong>
-                                                </div>
-
-                                                @if ($comment->user_id === auth()->id())
-                                                    <form action="{{ route('comment.destroy', $comment->id) }}" method="POST" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="btn p-0 bg-transparent border-0">
-                                                            <i class="fa-regular fa-trash-can text-danger"></i>
-                                                        </button>
-                                                    </form>
-                                                @endif
-
-                                            </div>
-
-                                            <span class="text-brown d-block"
-                                                style="font-size:1.0rem; margin-left:42px;">
-                                                {{ $comment->content }}
-                                            </span>
-
-                                            <div class="text-end small text-secondary mt-1">
-                                                {{ $comment->created_at->format('M d, Y') }}
-                                            </div>
-
-                                        </div>
-                                    @empty
-                                        <p class="text-center text-secondary small">No comments yet.</p>
-                                    @endforelse
+                                    @foreach ($post->comments->where('parent_id', null) as $comment)
+                                        @include('components.comment', ['comment' => $comment])
+                                    @endforeach
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -384,4 +467,54 @@
     });
 </script>
 
+{{-- button for video --}}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    document.querySelectorAll('.media-frame').forEach(frame => {
+
+        const video = frame.querySelector('video');
+        const button = frame.querySelector('.play-pause-btn');
+        const icon = button.querySelector('i');
+
+        // 初期状態: ▶️
+        icon.classList.remove('fa-pause');
+        icon.classList.add('fa-play');
+
+        // ボタンクリック
+        button.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+            } else {
+                video.pause();
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+            }
+        });
+
+        // 動画クリックでも再生 / 停止
+        video.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+            } else {
+                video.pause();
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+            }
+        });
+
+        // 動画再生が終了したら ▶️ に戻す
+        video.addEventListener('ended', () => {
+            icon.classList.remove('fa-pause');
+            icon.classList.add('fa-play');
+        });
+
+    });
+
+});
+</script>
 @endsection

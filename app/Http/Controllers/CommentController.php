@@ -17,23 +17,49 @@ class CommentController extends Controller
 
     public function store(Request $request, $post_id)
     {
+        $postField = 'comment_body'.$post_id;
 
-        $field = 'comment_body'.$post_id;
+        $isReply = $request->filled('parent_id');
 
-        $request->validate([
-            $field => 'required|max:150',
-        ],
-            [
-                $field.'.required' => 'You cannot submit an empty comment.',
-                $field.'.max' => 'The comment must not have more than 150 characters.',
+        if (! $isReply) {
+
+            $request->validate([
+                $postField => 'required|max:150',
+            ], [
+                $postField.'.required' => 'You cannot submit an empty comment.',
+                $postField.'.max' => 'The comment must not have more than 150 characters.',
             ]);
 
-        $this->comment->content = $request->input('comment_body'.$post_id);
-        $this->comment->user_id = Auth::id();
-        $this->comment->post_id = $post_id;
-        $this->comment->save();
+            Comment::create([
+                'post_id' => $post_id,
+                'user_id' => Auth::id(),
+                'content' => $request->$postField,
+            ]);
 
-        return redirect()->route('post.show', $post_id);
+            return redirect()->route('post.show', $post_id);
+        }
+
+        $replyField = 'comment_body_reply_'.$request->parent_id;
+
+        $request->validate([
+            $replyField => 'required|max:150',
+            'parent_id' => 'required|integer|exists:comments,id',
+            'reply_to_user_id' => 'nullable|integer|exists:users,id',
+        ], [
+            $replyField.'.required' => 'Reply cannot be empty.',
+            $replyField.'.max' => 'The reply must not exceed 150 characters.',
+        ]);
+
+        Comment::create([
+            'post_id' => $post_id,
+            'user_id' => Auth::id(),
+            'content' => $request->$replyField,
+            'parent_id' => $request->parent_id,
+            'reply_to_user_id' => $request->reply_to_user_id,
+        ]);
+
+        return redirect()->route('post.show', $post_id)
+            ->with('open_reply', $request->parent_id);
     }
 
     public function destroy($id)

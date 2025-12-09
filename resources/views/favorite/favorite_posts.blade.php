@@ -5,22 +5,37 @@
             <div class="card border-0 shadow m-2">
                 <div class="card-body p-0">
                     @php
-                        $images = $favorite->post->images->pluck('image')->take(3)->toArray();
+                        $mediaItems = $favorite->post->media->take(3);
                     @endphp
-                    @if (count($images)>0)
-                        @if (count($images)>1)
+                    @if ($mediaItems->count() > 0)
+                        {{-- multiple media --}}
+                        @if ($mediaItems->count() > 1)
                             <div id="carouselPost{{ $favorite->post->id }}" class="carousel slide" data-bs-ride="carousel">
                                 <div class="carousel-inner">
-                                    @foreach ($images as $index => $image)
+                                    @foreach ($mediaItems as $index => $media)
                                         <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                                             <a href="{{ route('post.show', $favorite->post->id) }}">
                                                 <a href="{{ route('post.show', $favorite->post->id) }}">
                                                     <div class="ratio ratio-1x1">
-                                                        <img 
-                                                            src="{{ asset('storage/' . $image) }}" 
+                                                        {{-- image --}}
+                                                        @if ($media->type === 'image')
+                                                            <img 
+                                                            src="{{ asset('storage/' . $media->path) }}" 
                                                             class="d-block w-100 h-100"
                                                             style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
                                                             alt="Post Image {{ $index + 1 }}">
+                                                        @endif
+                                                        {{-- video --}}
+                                                        @if ($media->type === 'video')
+                                                             <video
+                                                                src="{{ asset('storage/' . $media->path) }}"
+                                                                class="d-block w-100 h-100"
+                                                                muted
+                                                                autoplay
+                                                                playsinline
+                                                                style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
+                                                            ></video>
+                                                        @endif
                                                     </div>
                                                 </a>
                                                 
@@ -42,16 +57,30 @@
                                 </button>
 
                             </div>
-
-                        @elseif(count($images)===1)
+                        {{-- single media --}}
+                        @else
                             <a href="{{ route('post.show', $favorite->post->id) }}">
                                 <div class="card-body ratio ratio-1x1">
-                                    <img src="{{ asset('storage/' . $images[0]) }}" class="d-block w-100 h-100" style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;" alt="Post Image">
+                                    @if ($mediaItems[0]->type === 'image')
+                                        <img src="{{ asset('storage/' . $mediaItems[0]->path) }}" 
+                                        class="d-block w-100 h-100" 
+                                        style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;" alt="Post Image">
+                                    @else
+                                        <video
+                                            src="{{ asset('storage/' . $mediaItems[0]->path) }}"
+                                            class="d-block w-100 h-100"
+                                            muted
+                                            playsinline
+                                            autoplay
+                                            loop
+                                            style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;">
+                                        </video>
+                                    @endif
                                 </div>
                             </a>
                         @endif
                     @else
-                        <div class="text-center py-5 text-muted">No image available.</div>
+                        <div class="text-center py-5 text-muted">No media available.</div>
                     @endif
                 </div>
 

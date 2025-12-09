@@ -1,6 +1,6 @@
 body {
     font-family: 'Source Serif Pro', serif; 
-    background-color: #fffffe;
+    background-color: #fffdf9;
     padding-top: 70px;
 }
 
@@ -17,7 +17,7 @@ body {
 }
 
 .btn-pink {
-    background-color: transparent;
+    background-color: #fffffe;
     color: #F1BDB2;
     border: 2px solid #F1BDB2;
     transition: 0.3s;
@@ -51,7 +51,7 @@ h5, span, label {
 }
 
 .card-header {
-    background: rgba(159, 107, 70, 0.2);
+    background:#fae9db;
 }
 
 .nav-link.active {
@@ -86,10 +86,21 @@ h5, span, label {
 
 /* navber */
 .brand-text {
-    color: #4a3b2d;
+    color: #836653;
     font-style: italic;
     letter-spacing: 0.5px;
 }
+
+.logo-text {
+    font-size: 40px;
+    font-style: italic;
+    font-weight: 600;
+    background: linear-gradient(90deg, #59331A, #8F7058);        
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+}
+
 
 .nav-text-brown {
     color: #9F6B46 !important;
@@ -113,59 +124,78 @@ h5, span, label {
 }
 
 /* create edit post */
-.form-control.post-input:hover,
-.form-select.post-input:hover,
-.form-control.post-input:focus,
-.form-select.post-input:focus {
-    border-color: #9F6B46;
-    box-shadow: 0 0 0 0.2rem rgba(159,107,70,0.25);
+/* ================================
+   共通：メディアスロット（画像/動画/HEICアイコン）
+================================ */
+.media-slot {
+    position: relative ;
+    width: 100px ;
+    height: 100px ;
+    border-radius: 12px ;
+    overflow: hidden ;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
 
-.image-preview-area {
+/* 追加スロット（＋） */
+.add-new-slot .add-label {
     display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    overflow-x: auto;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    background:#f0f0f0;
+    border:1px solid #B0B0B0;
+    color:#9F6B46;
+    font-weight:bold;
+    border-radius: inherit;
 }
-.image-item {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #ccc;
-}
-.image-item img {
+
+/* 画像・動画のプレビュー */
+.media-slot img,
+.media-slot video {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-.remove-btn {
-    position: absolute;
-    top: 3px;
-    right: 3px;
+
+/* 削除ボタン（新規・既存共通） */
+.media-slot .remove-btn {
+    position:absolute; 
+    top:4px; 
+    right:4px; 
+    width:24px; 
+    height:24px;
     background: #9F6B46;
-    color: #fff;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    font-weight: bold;
+    border-radius:50%; 
+    color:#fff; 
+    border:none; 
+    cursor:pointer;
+    line-height:24px; 
+    text-align:center; 
+    font-weight:bold;
 }
 
-.image-btn {
-    background-color: #F8F8F8;
-    border: 1px solid #9F6B46;
-    color: #9F6B46;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 500;
+/* アニメーション（UX向上） */
+.media-slot:hover .remove-btn {
+    transform: scale(1.1);
+    transition: 0.15s ease;
 }
 
+/* ================================
+   既存メディア（edit.blade用）
+================================ */
+.existing-media {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ================================
+   コストスライダー（既存CSS）
+================================ */
 #cost-slider::-webkit-slider-runnable-track { 
     height: 6px; 
     background: #F8C7B3;
@@ -181,9 +211,20 @@ h5, span, label {
     border: 2px solid white; 
     cursor: pointer; 
     transition: transform 0.2s ease; 
-} 
+}
 #cost-slider::-webkit-slider-thumb:hover { 
     transform: scale(1.1); 
+}
+
+/* ================================
+   入力系ホバー（既存と統合）
+================================ */
+.form-control.post-input:hover,
+.form-select.post-input:hover,
+.form-control.post-input:focus,
+.form-select.post-input:focus {
+    border-color: #9F6B46;
+    box-shadow: 0 0 0 0.2rem rgba(159,107,70,0.25);
 }
 
 /* post */
@@ -323,16 +364,238 @@ th, td {
 }
 
 .nav-item:hover{
-    transform: translateY(-4px);
+    transform: translateY(-1.5px);
     box-shadow: 0 8px 20px var(--shadow);
 }
 .brand:hover{
-    transform: scale(1.05); 
+    transform: scale(1.02); 
 }
+
 .admin a {
     color: #9F6B46;
 }
 
 .admin a:hover {
     color: #9F6B46;
+}
+
+
+/* Badge */
+.all-badges:hover{
+    transform: scale(1.30); 
+}
+
+.tooltip-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltip-wrapper::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    
+    background: #FFFFFF; 
+    color: #9F6B46;       
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    opacity: 0;
+    pointer-events: none;
+  
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  
+  .tooltip-wrapper:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  .latest-badge{
+    width: 60px; 
+    height: 60px; 
+    object-fit: contain; 
+    bottom: 10%; 
+    right: -20%;
+  }
+  
+  .all-badges{
+    width: 50px; 
+    height:50px;
+  }
+ 
+ .badge-name{
+    color: #CAAE99; 
+    font-size:12px;
+ }
+ .all-badges-container {
+    justify-content: center;
+}
+
+  
+
+/* smartphone size */
+@media screen and (max-width: 768px) {
+    /* post size adjustment */
+    .col-md-7 > .uniform-img {
+    max-width: 100%;
+    height: 300px;
+    object-fit: cover;
+    }
+    .badge-name{
+        color: #CAAE99; 
+        font-size:10px;
+     }
+}
+
+/* show&follow.profile */
+.post-image{
+    width: 100%;
+    aspect-ratio:1 / 1;
+    object-fit:cover;
+}
+.map-container {
+position: relative;
+width: 420px;
+height: 350px;
+background-color: #E6F4FA;
+overflow: hidden;
+}
+
+
+path {
+stroke: #333;
+stroke-width: 0.5;
+fill: #ccc;
+}
+path:hover {
+fill: #F1BDB2;
+}
+
+
+.spinner-outer {
+position: relative;
+width: 150px;
+height: 150px;
+border-radius: 50%;
+background: transparent;
+}
+.spinner-wrapper {
+position: absolute;
+bottom: 10px;
+right: 10px;
+z-index: 10; 
+}
+
+.spinner-text {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+text-align: center;
+}
+
+.spinner-text p {
+margin: 0;
+}
+.spinner-text .label {
+color: #9F6B46;
+font-weight: 600;
+font-size: 20px;
+}
+.spinner-text .count {
+color: #9F6B46;
+font-weight: bold;
+font-size: 45px;
+line-height: 1;
+}
+.has-post {
+fill: #F1BDB2;
+transition: fill 0.3s;
+}
+
+
+@media (max-width: 600px) {
+    html, body {
+    overflow-x: hidden; 
+}
+
+.col-12.col-md-4 {
+    margin-right: auto !important;
+    margin-left: auto !important;
+}
+
+.trip-map-a{
+    padding-right:0%;
+    padding-left: 0.5rem;
+}
+.trip-map-a,
+.profile-row,
+.click-map {
+    padding-left: 0 !important;
+    padding-right: 10 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.btn {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.col-auto{
+    padding: 0;
+}
+.phone {
+    font-size: 12px;
+    padding: 0;
+}
+
+.name{
+    padding-left: 2rem;
+}
+.number{
+    padding-left: 2rem;
+}
+.profile-row{
+padding-left: 0.5rem;
+}
+.spinner-wrapper {
+    bottom: 5px;
+    right: 30px;
+    transform: translateX(10%) scale(0.9);
+}
+
+.btn{
+    margin-left:0.5rem;
+    margin-right:0.5rem;
+}
+.click-map{
+    margin-left: 1rem;
+    padding-right: 0;
+    padding-left: 1rem;
+}
+.search-area{
+    margin-top: 1.5rem;
+}
+.map-container{
+    margin-left: 0;
+}
+.all-badges{
+    width: 50px;
+    height: 50px;
+}
+.badge-name{
+    color: #CAAE99; 
+    font-size:10px;
+}
+
+.tooltip-wrapper {
+    margin: 0 auto; 
+}
+
 }

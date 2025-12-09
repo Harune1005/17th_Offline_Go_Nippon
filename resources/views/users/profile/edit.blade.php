@@ -8,7 +8,7 @@
             <div class="card shadow border-0 rounded-4 p-4 mx-auto fade-in" style="max-width: 800px;">
                 <div class="card-header bg-transparent">
                     <h2 class="fw-bold mb-4 text-center" style="color:#9F6B46;">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+                        <i class="fa-solid fa-pen-to-square"></i> {{ __('messages.edit_profile.title') }}
                     </h2>
                 </div>
                 
@@ -27,10 +27,10 @@
                                 @endif
                             </div>
                             <div class="col">
-                                <input type="file" name="avatar" id="avatar" class="form-control shadow-sm border-0 w-75" accept="image/*">
+                                <input type="file" name="avatar" id="avatar" class="form-control post-input w-75" accept="image/*">
                                 <div class="form-text small mt-1" style="color:#9F6B46;">
-                                    Acceptable formats: jpeg, jpg, png, gif <br>
-                                    Max file size: 1048kb
+                                    {{ __('messages.edit_profile.formats') }} <br>
+                                    {{ __('messages.edit_profile.size') }}
                                 </div>
                             </div>
                                 @error('avatar')
@@ -41,16 +41,20 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="name" class="form-label fw-bold">Name</label>
-                            <input type="text" name="name" id="name" class="form-control shadow-sm border-0" value="{{ old('name', $user->name) }}" autofocus>
+                            <label for="name" class="form-label fw-bold">
+                                {{ __('messages.edit_profile.name') }}
+                            </label>
+                            <input type="text" name="name" id="name" class="form-control post-input" value="{{ old('name', $user->name) }}" autofocus>
                             @error('name')
                                 <div class="text-danger small">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="mb-4">
-                            <label for="email" class="form-label fw-bold">Email</label>
-                            <input type="email" name="email" id="email" class="form-control shadow-sm border-0" value="{{ old('email', $user->email) }}">
+                            <label for="email" class="form-label fw-bold">
+                                {{ __('messages.edit_profile.email') }}
+                            </label>
+                            <input type="email" name="email" id="email" class="form-control post-input" value="{{ old('email', $user->email) }}">
                             @error('email')
                                 <div class="text-danger small">{{ $message }}</div>
                             @enderror
@@ -64,8 +68,10 @@
                                 });
                         @endphp
                         <div class="mb-4">
-                            <label for="country" class="form-label fw-bold">Country</label>
-                            <select name="country" class="form-control shadow-sm border-0 select2">
+                            <label for="country" class="form-label fw-bold">
+                                {{ __('messages.edit_profile.country') }}
+                            </label>
+                            <select name="country" class="form-control post-input select2">
                                 @foreach ($groupedCountries as $letter => $group)
                                     <optgroup label="{{ $letter }}">
                                         @foreach ($group as $code => $country)
@@ -80,8 +86,10 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="introduction" class="form-label fw-bold">Introduction</label>
-                            <textarea name="introduction" id="introduction" rows="5" class="form-control shadow-sm border-0" 
+                            <label for="introduction" class="form-label fw-bold">
+                                {{ __('messages.edit_profile.introduction') }}
+                            </label>
+                            <textarea name="introduction" id="introduction" rows="5" class="form-control post-input" 
                                         placeholder="Describe yourself">{{ old('introduction', $user->introduction) }}</textarea>
                             @error('introduction')
                                 <div class="text-danger small">{{ $message }}</div>
@@ -90,7 +98,10 @@
 
                         <div class="mb-4">
                             <label for="category" class="form-label fw-bold">
-                                Interest <span class="fw-normal small">(choose up to 3)</span>
+                                {{ __('messages.edit_profile.interest') }} 
+                                <span class="fw-normal small">
+                                    {{ __('messages.edit_profile.interest_sub') }}
+                                </span>
                             </label>
                             <div>
                                 @foreach ($categories as $category)
@@ -106,10 +117,12 @@
                             </div>
                         </div>
 
-                        <label for="current_password" class="form-label fw-bold">Change Password</label>
+                        <label for="current_password" class="form-label fw-bold">
+                            {{ __('messages.edit_profile.password') }}
+                        </label>
                         <div class="mb-4">             
                             <input type="password" name="current_password" id="current_password" 
-                                class="form-control shadow-sm border-0" placeholder="Current Password">
+                                class="form-control post-input" placeholder="{{ __('messages.edit_profile.password_placeholder') }}">
                             @error('current_password')
                                 <div class="text-danger small">{{ $message }}</div>
                             @enderror
@@ -117,7 +130,7 @@
 
                         <div class="mb-4">
                             <input type="password" name="password" id="password" 
-                                class="form-control shadow-sm border-0" placeholder="New Password">
+                                class="form-control post-input" placeholder="{{ __('messages.edit_profile.new_password_placeholder') }}">
                             @error('password')
                                 <div class="text-danger small">{{ $message }}</div>
                             @enderror
@@ -125,19 +138,19 @@
 
                         <div class="mb-4">
                             <input type="password" name="password_confirmation" id="password_confirmation" 
-                                class="form-control shadow-sm border-0" placeholder="Confirm New Password">
+                                class="form-control post-input" placeholder="{{ __('messages.edit_profile.confirm_password_placeholder') }}">
                         </div>
 
                         <div class="text-end">
                            <a href="{{ route('profile.show', $user->id) }}" 
                                 class="btn btn-cancel shadow-sm me-3"
                                 style="min-width:150px; font-weight:bold;">
-                                Cancel
+                                {{ __('messages.edit_profile.cancel') }}
                             </a>
 
                             <button type="submit" class="btn btn-outline shadow-sm"
                                 style="min-width:150px; font-weight:bold; transition:0.3s;">
-                                Save
+                                {{ __('messages.edit_profile.save') }}
                             </button>
                         </div>
                     </form>

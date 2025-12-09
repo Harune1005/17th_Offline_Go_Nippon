@@ -8,13 +8,19 @@
   {{-- Navigation --}}
   <div class="row nav nav-underline text-center">
     <div class="col-auto">
-      <a class="nav-link px-3 active" href="{{ route('admin.users') }}">User</a>
+      <a class="nav-link px-3 active" href="{{ route('admin.users') }}">
+        {{ __('messages.user.user') }}
+      </a>
     </div>
     <div class="col-auto">
-      <a class="nav-link px-3" href="{{ route('admin.posts') }}">Post</a>
+      <a class="nav-link px-3" href="{{ route('admin.posts') }}">
+        {{ __('messages.user.post') }}
+      </a>
     </div>
     <div class="col-auto">
-      <a class="nav-link" href="{{ route('admin.categories') }}">Category</a>
+      <a class="nav-link" href="{{ route('admin.categories') }}">
+        {{ __('messages.user.category') }}
+      </a>
     </div>
   </div>
 
@@ -25,11 +31,11 @@
     <form action="{{ route('admin.users.search') }}" class="row justify-content-center gap-2">
       @csrf
       <div class="col-5">
-        <input type="text" name="search" class="form-control" placeholder="Search by Name...">
+        <input type="text" name="search" class="form-control" placeholder="{{ __('messages.user.search_placeholder') }}">
       </div>
       <div class="col-auto">
         <button class="btn btn-outline">
-          <i class="fa-solid fa-magnifying-glass"></i> Search
+          <i class="fa-solid fa-magnifying-glass"></i> {{ __('messages.user.search') }}
         </button>
       </div>
     </form>
@@ -41,12 +47,12 @@
       <thead>
         <tr class="fs-5">
           <th>#</th>
-          <th>Avatar</th>
-          <th>Name</th>
-          <th>Country</th>
-          <th>Email</th>
-          <th>Created at</th>
-          <th>Status</th>
+          <th>{{ __('messages.user.avatar') }}</th>
+          <th>{{ __('messages.user.name') }}</th>
+          <th>{{ __('messages.user.country') }}</th>
+          <th>{{ __('messages.user.email') }}</th>
+          <th>{{ __('messages.user.created_at') }}</th>
+          <th>{{ __('messages.user.status') }}</th>
           <th></th>
         </tr>
       </thead>
@@ -56,7 +62,7 @@
           <td>{{ $user->id }}</td>
           <td>
             @if ($user->avatar)
-              <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="rounded-circle d-block mx-auto border border-2 border-dark" style="width:45px; height:45px; object-fit: cover;">
+              <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="rounded-circle d-block mx-auto  border-2 " style="width:45px; height:45px; object-fit: cover; border:1px solid 9F6B46;">
             @else
               <i class="fa-solid fa-circle-user fa-3x d-block text-center text-secondary icon-md m-auto"></i>
             @endif
@@ -75,9 +81,9 @@
           <td>{{ $user->created_at }}</td>
           <td>
             @if ($user->trashed())
-              <i class="fa-solid fa-circle text-secondary"></i>&nbsp; Inactive
+              <i class="fa-solid fa-circle text-secondary"></i>&nbsp; {{ __('messages.user.deactive') }}
             @else
-              <i class="fa-solid fa-circle text-success"></i>&nbsp; Active
+              <i class="fa-solid fa-circle text-success"></i>&nbsp; {{ __('messages.user.active') }}
             @endif
           </td>
           <td>
@@ -88,11 +94,11 @@
               <div class="dropdown-menu admin-dropdown-menu">
                 @if ($user->trashed())
                 <button class="dropdown-item admin-dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-user-{{ $user->id }}">
-                  <i class="fa-solid fa-user-check"></i> Activate {{ $user->name }}
+                  <i class="fa-solid fa-user-check"></i> {{ __('messages.user.deactive') }} {{ $user->name }}
                 </button>
                 @else
                 <button class="dropdown-item admin-dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#deactivate-user-{{ $user->id }}">
-                  <i class="fa-solid fa-user-slash"></i> Deactivate {{ $user->name }}
+                  <i class="fa-solid fa-user-slash"></i> {{ __('messages.user.active') }} {{ $user->name }}
                 </button>
                 @endif
               </div>

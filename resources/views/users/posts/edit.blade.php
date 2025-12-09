@@ -1,11 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container mt-3">
     <div class="card shadow border-0 rounded-4 p-4 mx-auto fade-in" style="max-width: 800px;">
         <div class="card-header bg-transparent">
             <h2 class="fw-bold text-center mb-4" style="color:#9F6B46;">
-                <i class="fa-solid fa-pen-to-square"></i> Edit Post
+                <i class="fa-solid fa-pen-to-square"></i> {{ __('messages.edit_post.main_title') }}
             </h2>
         </div>
 
@@ -15,32 +16,37 @@
                 @method('PATCH')
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Title</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.title') }}</label>
                     <input type="text" name="title" class="form-control post-input"
-                        value="{{ old('title', $post->title) }}" required>
+                        value="{{ old('title', $post->title) }}">
+                    @error('title') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Description</label>
-                    <textarea name="content" class="form-control post-input" rows="4" required>{{ old('content', $post->content) }}</textarea>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.description') }}</label>
+                    <textarea name="content" class="form-control post-input" rows="4">{{ old('content', $post->content) }}</textarea>
+                    @error('content') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Date</label>
+                        <label class="form-label fw-bold">{{ __('messages.edit_post.date') }}</label>
                         <input type="date" name="date" class="form-control post-input"
                             value="{{ old('date', \Carbon\Carbon::parse($post->visited_at)->format('Y-m-d')) }}">
+                        @error('date') <div class="text-danger small">{{ $message }}</div> @enderror
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Time</label>
+                        <label class="form-label fw-bold">{{ __('messages.edit_post.time') }}</label>
                         <div class="d-flex align-items-center gap-1">
                             <input type="number" name="time_hour" class="form-control post-input"
                                 min="0" max="23" value="{{ old('time_hour', $post->time_hour) }}">
-                            <span>hour</span>
+                            <span>{{ __('messages.edit_post.hour') }}</span>
                             <input type="number" name="time_min" class="form-control post-input"
                                 min="0" max="59" value="{{ old('time_min', $post->time_min) }}">
-                            <span>min</span>
+                            <span>{{ __('messages.edit_post.min') }}</span>
                         </div>
+                        @error('time_hour') <div class="text-danger small">{{ $message }}</div> @enderror
+                        @error('time_min') <div class="text-danger small">{{ $message }}</div> @enderror
                     </div>
                 </div>
 
@@ -48,7 +54,7 @@
                     $old_categories = old('category', $post->categories->pluck('id')->toArray());
                 @endphp
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Categories (max 3)</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.categories') }}</label>
                     <div class="d-flex flex-wrap gap-2" >
                         @foreach ($all_categories as $category)
                             <div class="form-check" style="width: 130px">
@@ -59,12 +65,13 @@
                             </div>
                         @endforeach
                     </div>
+                    @error('category') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="mb-4" style="max-width:300px;">
-                    <label class="form-label fw-bold">Prefecture</label>
-                    <select name="prefecture_id" class="form-select post-input" required>
-                        <option value="">Select Prefecture</option>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.prefecture') }}</label>
+                    <select name="prefecture_id" class="form-select post-input">
+                        <option value="">{{ __('messages.edit_post.prefecture_placeholder') }}</option>
                         @foreach($prefectures as $prefecture)
                             <option value="{{ $prefecture->id }}"
                                 {{ old('prefecture_id', $post->prefecture_id) == $prefecture->id ? 'selected' : '' }}>
@@ -72,63 +79,69 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('prefecture_id') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="mb-4" style="max-width:350px;">
-                    <label class="form-label fw-bold">Cost</label>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.cost') }}</label>
                     <div class="d-flex align-items-center gap-2">
                         <span id="cost-current">¥{{ old('cost', $post->cost) }}</span>
                         <input type="range" name="cost" min="0" max="10000" step="100"
                             value="{{ old('cost', $post->cost) }}" id="cost-slider" class="form-range">
                     </div>
+                    @error('cost') <div class="text-danger small">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="mb-5">
-                    <label class="form-label fw-bold">Images (max 3 total)</label>
-                    <div class="d-flex gap-3" id="image-upload-area">
-                        @foreach ($post->images as $image)
-                        <div class="image-slot existing-image position-relative" data-image-id="{{ $image->id }}" 
-                            style="width: 100px; height: 100px; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.15);">
-                            <img src="{{ asset('storage/' . $image->image) }}" alt="existing image" 
-                                style="width:100%; height:100%; object-fit:cover;">
-                            <button type="button"
-                                class="delete-existing-image position-absolute"
-                                style="top: 4px;right: 4px; width: 20px; height: 20px; font-size: 0.8rem; border: none; border-radius: 50%;
-                                    background-color: #9F6B46; color: white; cursor: pointer; display: flex; align-items: center;justify-content: center;opacity: 1;"
-                                aria-label="Delete Image"
-                                data-image-id="{{ $image->id }}"
-                                onclick="deleteExistingImage(this)"
-                            >
-                                &times;
-                            </button>
-                            <input type="hidden" name="deleted_images[]" class="deleted-image-input" value="" disabled>
-                        </div>
+                    <label class="form-label fw-bold">{{ __('messages.edit_post.image') }}</label>
+                    
+                    <div class="d-flex flex-wrap gap-3 mb-2" id="media-upload-area">
+                        {{-- show existing Media --}}
+                        @foreach ($post->media as $media)
+                            <div class="media-slot existing-media" data-id="{{ $media->id }}">
+                                @if ($media->type === 'image')
+                                    <img src="{{ asset('storage/'.$media->path) }}" alt="existing image">
+                                @else
+                                    <video src="{{ asset('storage/'.$media->path) }}" muted playsinline controls></video>
+                                @endif
+                                <button type="button"
+                                        class="remove-btn"
+                                        onclick="deleteExistingMedia(this)">
+                                    &times;
+                                </button>
+                            </div>
                         @endforeach
-
-                        <div class="image-slot add-new-slot" id="add-slot" style="width: 100px; height: 100px;">
-                            <label class="d-flex justify-content-center align-items-center rounded-3 h-100 w-100"
-                                style="cursor: pointer; background-color: #f0f0f0; border: 1px solid #B0B0B0; color: #555;"
-                                for="new_image_file_0">
-                                <span class="small font-weight-bold">+ Add</span>
+                        {{-- add slot --}}
+                        <div class="media-slot add-new-slot" id="add-slot">
+                            <label class="d-flex justify-content-center align-items-center h-100 w-100"
+                                for="new_media_file_0">
+                                +
                             </label>
-                            <input type="file" class="d-none new-image-input" name="new_image[]" id="new_image_file_0" onchange="previewNewImage(this)" accept="image/*">
+                            <input type="file" class="d-none new-media-input" 
+                                name="new_media[]" id="new_media_file_0"
+                                accept="image/*,video/*"
+                                onchange="previewNewMedia(this)">
                         </div>
                     </div>
-                    @error('new_image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                    @error('new_image.*') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+
+                    @error('new_media') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                    @error('new_media.*') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+
                 </div>
 
+                {{-- Buttons --}}
                 <div class="text-end mt-4">
-                    <a onclick="window.history.back()"
+                    <a type="button"
+                       href="{{ route('home') }}"
                        class="btn btn-cancel shadow-sm me-3"
                        style="min-width:150px; font-weight:bold;">
-                        Cancel
+                        {{ __('messages.edit_post.cancel') }}
                     </a>
 
                     <button type="submit"
                         class="btn btn-outline shadow-sm"
                         style="min-width:150px; font-weight:bold; transition:0.3s;">
-                        Update
+                        {{ __('messages.edit_post.button') }}
                     </button>
                 </div>
             </form>
@@ -136,112 +149,48 @@
     </div>
 </div>
 
+{{-- HEIC converter --}}
+<script src="https://unpkg.com/heic2any/dist/heic2any.min.js"></script>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    updateAddSlotVisibility();
+    let mediaIndex = 0;
+    const MAX_MEDIA = 3;
 
-    document.querySelector('form').addEventListener('submit', function(e) {
-        if (getCurrentImageCount() > 3) {
-            alert('You can upload up to 3 images.');
-            e.preventDefault();
-        }
-    });
-});
-
-function getCurrentImageCount() {
-    const existingCount = document.querySelectorAll('.existing-image:not(.d-none)').length;
-    const newCount = document.querySelectorAll('.new-image-slot').length;
-    return existingCount + newCount;
-}
-
-function updateAddSlotVisibility() {
-    const addSlot = document.getElementById('add-slot');
-    if (addSlot) {
-        getCurrentImageCount() >= 3 ? addSlot.classList.add('d-none') : addSlot.classList.remove('d-none');
+    /* ===============================
+    合計メディア数（既存 + 新規）
+    =============================== */
+    function getTotalMediaCount() {
+        return document.querySelectorAll(".media-slot:not(.add-new-slot)").length;
     }
-}
 
-let newImageIndex = 0;
+    /* ===============================
+    add-slot（＋）再描画
+    =============================== */
+    function redrawAddSlot() {
+        document.querySelectorAll(".add-new-slot").forEach(e => e.remove());
 
-function previewNewImage(input) {
-    const file = input.files[0];
-    const addSlot = input.closest('.add-new-slot');
-    if (!file || !addSlot) return;
+        if (getTotalMediaCount() >= MAX_MEDIA) return;
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        addSlot.classList.remove('add-new-slot');
-        addSlot.classList.add('new-image-slot');
-        addSlot.style.position = 'relative';
-        addSlot.innerHTML = `
-            <img src="${e.target.result}" alt="new image" class="rounded-3" style="width: 100%; height: 100%; object-fit: cover; border: 1px solid #ccc;">
-            <button type="button" class="delete-new-image position-absolute"
-                style="top:4px; right:4px; width:20px; height:20px; font-size:0.8rem; border:none; border-radius:50%; background-color:#9F6B46; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:1;"
-                aria-label="Delete Image"
-                onclick="deleteNewImage(this)">&times;</button>
-            <input type="file" class="d-none new-image-input" name="new_image[]" accept="image/*">
-        `;
+        mediaIndex++;
 
-        const newFileInput = addSlot.querySelector('input[type="file"]');
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(file);
-        newFileInput.files = dataTransfer.files;
+        const slot = document.createElement("div");
+        slot.className = "media-slot add-new-slot";
+        slot.id = "add-slot";
 
-        addSlot.removeAttribute('id');
-
-        if (getCurrentImageCount() < 3) {
-            newImageIndex++;
-            const newAddSlot = document.createElement('div');
-            newAddSlot.className = 'image-slot add-new-slot';
-            newAddSlot.id = 'add-slot';
-            newAddSlot.style.cssText = 'width:100px; height:100px;';
-            newAddSlot.innerHTML = `
-                <label class="d-flex justify-content-center align-items-center rounded-3 h-100 w-100"
-                    style="cursor:pointer; background-color:#f0f0f0; border:1px solid #ccc; color:#555;"
-                    for="new_image_file_${newImageIndex}">
-                    <span class="small font-weight-bold">+ Add</span>
-                </label>
-                <input type="file" class="d-none new-image-input" name="new_image[]" id="new_image_file_${newImageIndex}" onchange="previewNewImage(this)" accept="image/*">
-            `;
-            document.getElementById('image-upload-area').appendChild(newAddSlot);
-        }
-
-        updateAddSlotVisibility();
-    };
-    reader.readAsDataURL(file);
-}
-
-function deleteExistingImage(button) {
-    const slot = button.closest('.image-slot');
-    const imageId = button.getAttribute('data-image-id');
-    const hiddenInput = slot.querySelector('.deleted-image-input');
-    hiddenInput.value = imageId;
-    hiddenInput.disabled = false;
-    slot.classList.add('d-none');
-    updateAddSlotVisibility();
-}
-
-function deleteNewImage(button) {
-    const slot = button.closest('.image-slot');
-    slot.remove();
-    if (!document.querySelector('.add-new-slot')) {
-        newImageIndex++;
-        const newAddSlot = document.createElement('div');
-        newAddSlot.className = 'image-slot add-new-slot';
-        newAddSlot.id = 'add-slot';
-        newAddSlot.style.cssText = 'width:100px; height:100px;';
-        newAddSlot.innerHTML = `
-            <label class="d-flex justify-content-center align-items-center rounded-3 h-100 w-100"
-                style="cursor:pointer; background-color:#f0f0f0; border:1px solid #ccc; color:#555;"
-                for="new_image_file_${newImageIndex}">
-                <span class="small font-weight-bold">+ Add</span>
+        slot.innerHTML = `
+            <label class="d-flex justify-content-center align-items-center h-100 w-100"
+                style="cursor:pointer;background:#f0f0f0;border:1px solid #B0B0B0;color:#9F6B46;font-weight:bold;"
+                for="new_media_file_${mediaIndex}">
+                +
             </label>
-            <input type="file" class="d-none new-image-input" name="new_image[]" id="new_image_file_${newImageIndex}" onchange="previewNewImage(this)" accept="image/*">
+            <input type="file" class="d-none new-media-input"
+                name="new_media[]" id="new_media_file_${mediaIndex}"
+                accept="image/*,video/*"
+                onchange="previewNewMedia(this)">
         `;
-        document.getElementById('image-upload-area').appendChild(newAddSlot);
+
+        document.querySelector("#media-upload-area").appendChild(slot);
     }
-    updateAddSlotVisibility();
-}
 
 const costSlider = document.getElementById('cost-slider');
 const costDisplay = document.getElementById('cost-current');
@@ -260,7 +209,192 @@ document.querySelectorAll('.category-checkbox').forEach(cb => {
             this.checked = false;
             alert('You can select up to 3 categories.');
         }
+    /* ===============================
+    MOV / QuickTime 判定
+    =============================== */
+    function isQuickTimeVideo(file) {
+        return (
+            file.name.toLowerCase().endsWith(".mov") ||
+            file.type === "video/quicktime"
+        );
+    }
+
+    /* ===============================
+    HEIC → JPEG 変換
+    =============================== */
+    async function convertHeicToJpeg(file) {
+        try {
+            const convertedBlob = await heic2any({
+                blob: file,
+                toType: "image/jpeg",
+                quality: 0.9
+            });
+
+            return new File([convertedBlob], file.name.replace(/\.heic/i, ".jpg"), {
+                type: "image/jpeg"
+            });
+        } catch (error) {
+            console.error("HEIC → JPG 変換失敗:", error);
+            return null;
+        }
+    }
+
+    /* ===============================
+    新規メディアプレビュー（createObjectURL ベース）
+    =============================== */
+    window.previewNewMedia = async function (input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const slot = input.closest(".add-new-slot");
+        if (!slot) return;
+
+        let previewFile = file;
+        const ext = file.name.toLowerCase();
+        const isHeic = ext.endsWith(".heic");
+        const isMov = isQuickTimeVideo(file);
+
+        /* --- HEIC → JPEG 自動変換 --- */
+        if (isHeic) {
+            const converted = await convertHeicToJpeg(file);
+
+            if (converted) {
+                previewFile = converted;
+            } else {
+                // fallback → HEIC アイコン表示
+                renderPreviewSlot(slot, "/images/heic-placeholder.png", file, true);
+                return;
+            }
+        }
+
+        /* --- 重要：FileReaderではなく createObjectURL を使う（MOV対応） --- */
+        let previewSrc = URL.createObjectURL(previewFile);
+
+        /* 画像判定 */
+        let isImage = false;
+        if (isMov) {
+            isImage = false;
+        } else if (previewFile.type.startsWith("image/")) {
+            isImage = true;
+        }
+
+        renderPreviewSlot(slot, previewSrc, previewFile, isImage);
+    };
+
+    /* ===============================
+    プレビュー描画（動画 / 画像 / HEICアイコン）
+    =============================== */
+    function renderPreviewSlot(slot, src, fileToSend, isImage) {
+        slot.classList.remove("add-new-slot");
+        slot.classList.add("media-slot");
+        slot.removeAttribute("id");
+        slot.innerHTML = "";
+        slot.style.position = "relative";
+
+        let el;
+
+        if (isImage) {
+            el = document.createElement("img");
+            el.src = src;
+        } else {
+            el = document.createElement("video");
+            el.src = src;
+            el.muted = true;
+            el.playsInline = true;
+            el.controls = true;
+        }
+
+        el.style.cssText = "width:100%;height:100%;object-fit:cover;";
+        slot.appendChild(el);
+
+        addDeleteButton(slot);
+        addHiddenInput(slot, fileToSend);
+
+        redrawAddSlot();
+    }
+
+    /* ===============================
+    新規メディア削除ボタン
+    =============================== */
+    function addDeleteButton(slot) {
+        const btn = document.createElement("button");
+        btn.innerHTML = "&times;";
+        btn.className = "remove-btn";
+        btn.classList.add("remove-btn");
+        btn.onclick = () => {
+            slot.remove();
+            redrawAddSlot();
+        };
+        slot.appendChild(btn);
+    }
+
+    /* ===============================
+    hidden input 追加（サーバー送信用）
+    =============================== */
+    function addHiddenInput(slot, file) {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.name = "new_media[]";
+        input.classList.add("d-none");
+
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+
+        slot.appendChild(input);
+    }
+
+    /* ===============================
+    既存メディア削除（DB削除依頼）
+    =============================== */
+    window.deleteExistingMedia = function (btn) {
+        const slot = btn.closest(".media-slot");
+        const id = slot.dataset.id;
+
+        const hidden = document.createElement("input");
+        hidden.type = "hidden";
+        hidden.name = "deleted_media[]";
+        hidden.value = id;
+
+        document.querySelector("#edit-form").appendChild(hidden);
+
+        slot.remove();
+        redrawAddSlot();
+    };
+
+    /* ===============================
+    初期化
+    =============================== */
+    document.addEventListener("DOMContentLoaded", () => {
+        redrawAddSlot();
     });
-});
+
+    // cost slider
+    const costSlider = document.getElementById('cost-slider');
+    const costDisplay = document.getElementById('cost-current');
+    costSlider?.addEventListener('input', () => {
+        costDisplay.textContent = '¥' + costSlider.value;
+    });
+
+    // category check
+    document.querySelectorAll('.category-checkbox').forEach(cb => {
+        cb.addEventListener('change', function() {
+            if (document.querySelectorAll('.category-checkbox:checked').length > 3) {
+                this.checked = false;
+                alert('You can select up to 3 categories.');
+            }
+        });
+
+        // at least 1 media
+        form.addEventListener('submit', function(e) {
+            const existingCount = existing.querySelectorAll('.media-item').length;
+            const newCount = previews.querySelectorAll('.media-item').length;
+
+            if (existingCount + newCount === 0) {
+                e.preventDefault();
+                alert('You must have at least 1 image or video.');
+            }
+        });
+    });
 </script>
 @endsection

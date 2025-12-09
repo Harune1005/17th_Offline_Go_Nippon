@@ -28,10 +28,7 @@ class LikeController extends Controller
 
         if ($post && $post->user_id !== $user->id) {
 
-            // ✔ プロフィール画像の正しいURLを作る
-            $avatar = $user->avatar
-                ? asset('storage/avatars/'.$user->avatar)
-                : 'https://via.placeholder.com/50';
+            $avatar = $user->avatar ? asset($user->avatar) : null;
 
             // ✔ 通知を送る（配列が正しく渡る）
             $post->user->notify(new LikeNotification(

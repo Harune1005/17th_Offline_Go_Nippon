@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Badge;
 use App\Models\Follow;
 use App\Models\Post;
 use App\Models\Prefecture;
@@ -100,6 +101,22 @@ class FollowController extends Controller
         }
 
         $suggested_users = $this->getSuggestedUsers();
+        $prefecture_ids = Post::where('user_id', $user->id)
+            ->pluck('prefecture_id')
+            ->unique();
+
+        $prefectures = Prefecture::select('id', 'name', 'code')
+            ->get()
+            ->map(function ($pref) use ($prefecture_ids) {
+                $pref->has_post = $prefecture_ids->contains($pref->id);
+
+                return $pref;
+            });
+        $allBadges = Badge::all();
+        $earnedBadges = $user->badges()->get();
+        $earnedBadgeIds = $earnedBadges->pluck('id')->toArray();
+        $latestBadge = $user->badges()->orderBy('badge_user.awarded_at', 'desc')->first();
+        $notEarnedBadges = Badge::whereNotIn('id', $earnedBadges->pluck('id'))->get();
 
         return view('users.profile.followers_followings', [
             'user' => $user,
@@ -107,7 +124,13 @@ class FollowController extends Controller
             'tab' => $tab,
             'activeTab' => $tab,
             'keyword' => $keyword,
+            'prefectures' => $prefectures,
             'suggested_users' => $this->getSuggestedUsers(),
+            'allBadges' => $allBadges,
+            'earnedBadges' => $earnedBadges,
+            'earnedBadgeIds' => $earnedBadgeIds,
+            'latestBadge' => $latestBadge,
+            'notEarnedBadges' => $notEarnedBadges,
         ]);
     }
 

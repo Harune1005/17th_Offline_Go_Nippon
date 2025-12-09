@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Image;
+use App\Models\Media;
 use App\Models\Post;
 use App\Models\PostView;
 use App\Models\Prefecture;
+use App\Services\BadgeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
@@ -30,7 +32,7 @@ class PostController extends Controller
     public function create()
     {
         $all_categories = Category::all();
-        $prefectures = Prefecture::all();
+        $prefectures = Prefecture::orderBy('name')->get();
 
         return view('users.posts.create', compact('all_categories', 'prefectures'));
     }
@@ -38,7 +40,7 @@ class PostController extends Controller
     /**
      * 投稿保存
      */
-    public function store(Request $request)
+    public function store(Request $request, BadgeService $badgeService)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -50,42 +52,175 @@ class PostController extends Controller
             'category.*' => 'nullable|integer|exists:categories,id',
             'prefecture_id' => 'required|integer|exists:prefectures,id',
             'cost' => 'nullable|integer|min:0|max:10000',
-            'image' => 'required|array|max:3',
-            'image.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:5048',
-
+            'media' => 'required|array|max:3',
+            'media.*' => 'required|file|mimes:jpeg,png,jpg,gif,heic,mp4,mov,avi,wmv|max:204800',
         ]);
 
         $visitedAt = $validated['date'].' '.
             str_pad($validated['time_hour'], 2, '0', STR_PAD_LEFT).':'.
             str_pad($validated['time_min'], 2, '0', STR_PAD_LEFT).':00';
 
-        $post = Post::create([
-            'user_id' => Auth::id(),
-            'title' => $validated['title'],
-            'content' => $validated['content'],
-            'prefecture_id' => $validated['prefecture_id'],
-            'visited_at' => $visitedAt,
-            'cost' => $validated['cost'] ?? 0,
-            'time_hour' => $validated['time_hour'],
-            'time_min' => $validated['time_min'],
-        ]);
+        DB::beginTransaction();
 
-        if (! empty($validated['category'])) {
-            $post->categories()->attach(array_filter($validated['category']));
-        }
+        try {
+            // 投稿作成
+            $post = Post::create([
+                'user_id' => Auth::id(),
+                'title' => $validated['title'],
+                'content' => $validated['content'],
+                'prefecture_id' => $validated['prefecture_id'],
+                'visited_at' => $visitedAt,
+                'cost' => $validated['cost'] ?? 0,
+                'time_hour' => $validated['time_hour'],
+                'time_min' => $validated['time_min'],
+            ]);
 
-        if ($request->hasFile('image')) {
-            foreach ($request->file('image') as $img) {
-                if ($img && $img->isValid()) {
-                    $path = $img->store('images/posts', 'public');
-                    $post->images()->create([
-                        'image' => $path,
-                    ]);
+            // カテゴリ保存
+            if (! empty($validated['category'])) {
+                $post->categories()->attach(array_filter($validated['category']));
+            }
+
+            // save media
+            if ($request->hasFile('media')) {
+                foreach ($request->file('media') as $file) {
+
+                    $mime = $file->getMimeType();
+
+                    // in case Image
+                    if (str_starts_with($mime, 'image')) {
+
+                        $path = $this->saveImageWithHeicSupport($file);
+
+                        $post->media()->create([
+                            'type' => 'image',
+                            'path' => $path,
+                        ]);
+                    }
+                    // in case Video
+                    elseif (str_starts_with($mime, 'video')) {
+                        // get duration of video
+                        $duration = $this->getVideoDuration($file);
+
+                        if ($duration > 30) {
+                            return redirect()->back()
+                                ->withErrors(['media' => 'The video duration must be less than 30 seconds']);
+                        }
+
+                        // save video file
+                        $path = $file->store('media/posts', 'public');
+
+                        // thumbnail path
+                        $thumbPath = 'thumbnails/posts/'.uniqid('thumb_').'.jpg';
+
+                        // make thumbnail
+                        $ok = $this->generateVideoThumbnail($path, $thumbPath);
+                        if (! $ok) {
+                            $thumbPath = null;
+                        }
+
+                        $post->media()->create([
+                            'type' => 'video',
+                            'path' => $path,
+                            'thumbnail_path' => $thumbPath,
+                        ]);
+                    }
                 }
             }
+
+            // バッジチェック
+            $user = Auth::user();
+            $user->posts->push($post);
+            $awardedBadges = $badgeService->checkAndGiveBadges($user);
+
+            DB::commit(); // コミット
+
+            if (! empty($awardedBadges)) {
+                $latestBadge = end($awardedBadges);
+
+                return redirect()->route('home')->with([
+                    'success' => 'Post created successfully!',
+                    'new_badge' => [
+                        'name' => $latestBadge->name,
+                        'key' => $latestBadge->key,
+                        'image_path' => $latestBadge->image_path,
+                        'description' => $latestBadge->description,
+                    ],
+                ]);
+            }
+
+            return redirect()->route('home')->with('success', 'Post created successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack(); // ロールバック
+
+            // ログにエラーを出す場合
+            \Log::error('Post creation failed: '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'Failed to create post. Please try again.');
+        }
+    }
+
+    private function saveImageWithHeicSupport($file)
+    {
+        $ext = strtolower($file->getClientOriginalExtension());
+
+        if ($ext === 'heic') {
+
+            $newName = uniqid('img_').'.jpg';
+            $savePath = storage_path('app/public/media/posts/'.$newName);
+
+            if (! is_dir(dirname($savePath))) {
+                mkdir(dirname($savePath), 0777, true);
+            }
+
+            // ImageMagick CLIで変換
+            $src = $file->getRealPath();
+            $cmd = "magick convert \"$src\" \"$savePath\"";
+            shell_exec($cmd);
+
+            if (file_exists($savePath)) {
+                return 'media/posts/'.$newName;
+            }
+
+            // 変換失敗時はそのまま保存
+            return $file->store('media/posts', 'public');
         }
 
-        return redirect()->route('home')->with('success', 'Post created successfully!');
+        // normal image
+        return $file->store('media/posts', 'public');
+    }
+
+    private function getVideoDuration($file)
+    {
+
+        $path = $file->getRealPath();
+
+        // get video information
+        $cmd = "ffprobe -v quiet -print_format json -show_format \"$path\"";
+        $output = shell_exec($cmd);
+
+        $info = json_decode($output, true);
+
+        return isset($info['format']['duration']) ? floatval($info['format']['duration']) : 0;
+
+    }
+
+    private function generateVideoThumbnail($filePath, $thumbnailPath)
+    {
+        // excute FFmpeg command
+        $fullVideoPath = storage_path("app/public/{$filePath}");
+        $fullThumbPath = storage_path("app/public/{$thumbnailPath}");
+
+        // if there is no directly, make new it
+        if (! is_dir(dirname($fullThumbPath))) {
+            mkdir(dirname($fullThumbPath), 0777, true);
+        }
+
+        // ffmpeg: get the frame at the time 1second passed
+        $cmd = "ffmpeg -y -i {$fullVideoPath} -vf 'thumbnail,scale=300:-1' -frames:v 1 {$fullThumbPath} 2>&1";
+
+        shell_exec($cmd);
+
+        return file_exists($fullThumbPath);
     }
 
     /**
@@ -93,7 +228,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::with(['categories', 'user', 'images', 'comments.user'])->findOrFail($id);
+        $post = Post::with(['categories', 'user', 'media', 'comments.user'])->findOrFail($id);
 
         $viewer = Auth::user();
 
@@ -129,7 +264,7 @@ class PostController extends Controller
     {
         $post = Post::with('categories')->findOrFail($id);
         $all_categories = Category::all();
-        $prefectures = Prefecture::all();
+        $prefectures = Prefecture::orderBy('name')->get();
         $selected_categories = $post->categories->pluck('id')->toArray();
 
         return view(
@@ -138,7 +273,7 @@ class PostController extends Controller
         );
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, BadgeService $badgeService)
     {
         $post = Post::findOrFail($id);
 
@@ -152,68 +287,122 @@ class PostController extends Controller
             'category.*' => 'integer|exists:categories,id',
             'prefecture_id' => 'required|integer|exists:prefectures,id',
             'cost' => 'nullable|integer|min:0|max:10000',
-            'deleted_images' => 'nullable|array',
-            'deleted_images.*' => 'exists:images,id',
-            'new_image' => 'nullable|array|max:3',
-            'new_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:5048',
+
+            'deleted_media' => 'nullable|array',
+            'deleted_media.*' => 'exists:media,id',
+
+            'new_media' => 'nullable|array|max:3',
+            'new_media.*' => 'file|mimes:jpeg,png,jpg,gif,heic,mp4,mov,avi,wmv|max:204800',
+
         ]);
 
-        // 既存画像の数と削除予定の数を計算
-        $currentImageCount = $post->images->count();
-        $deletedCount = count($request->deleted_images ?? []);
-        $remainingCount = $currentImageCount - $deletedCount;
+        $currentCount = $post->media()->count();
+        $deleteCount = count($validated['deleted_media'] ?? []);
+        $newCount = count($request->file('new_media') ?? []);
 
-        $newImageCount = count($request->file('new_image') ?? []);
+        $finalCount = $currentCount - $deleteCount + $newCount;
 
-        // 画像必須チェック
-        if ($remainingCount + $newImageCount === 0) {
-            return redirect()->back()->withInput()->withErrors(['new_image' => 'At least one image is required.']);
+        if ($finalCount <= 0) {
+            return back()
+                ->withErrors(['new_media' => 'You must have at least 1 image or video.'])
+                ->withInput();
         }
 
-        if ($remainingCount + $newImageCount > 3) {
-            return redirect()->back()->withInput()->withErrors(['new_image' => 'You can have a maximum of 3 images total (current remaining + new uploads).']);
+        if ($finalCount > 3) {
+            return back()
+                ->withErrors(['new_media' => 'You can have a maximum of 3 media total.'])
+                ->withInput();
         }
 
+        // 1.update
         $post->title = $validated['title'];
         $post->content = $validated['content'];
         $post->prefecture_id = $validated['prefecture_id'];
         $post->cost = $validated['cost'] ?? 0;
         $post->time_hour = $validated['time_hour'];
         $post->time_min = $validated['time_min'];
-        $post->save();
 
-        if (! empty($validated['date']) && isset($validated['time_hour'], $validated['time_min'])) {
+        // update visited_at
+        if (! empty($validated['date'])) {
             $post->visited_at = sprintf(
                 '%s %02d:%02d:00',
                 $validated['date'],
                 $validated['time_hour'],
                 $validated['time_min']
             );
-            $post->save();
         }
 
+        $post->save();
+
+        // update category
         if (isset($validated['category'])) {
             $post->categories()->sync($validated['category']);
         } else {
             $post->categories()->detach();
         }
 
-        // 既存画像の削除
-        if ($request->has('deleted_images')) {
-            $deletedImageIds = $request->deleted_images;
-            $imagesToDelete = Image::whereIn('id', $deletedImageIds)->where('post_id', $post->id)->get();
-            foreach ($imagesToDelete as $image) {
-                Storage::disk('public')->delete($image->image);
-                $image->delete();
+        // 2. remove media
+        if (! empty($validated['deleted_media'])) {
+            $mediaList = Media::whereIn('id', $validated['deleted_media'])
+                ->where('post_id', $post->id)
+                ->get();
+
+            foreach ($mediaList as $media) {
+                // remove main file
+                Storage::disk('public')->delete($media->path);
+
+                // if media has thumbnail, remove it
+                if ($media->thumbnail_path) {
+                    Storage::disk('public')->delete($media->thumbnail_path);
+                }
+
+                $media->delete();
             }
         }
 
-        // 新規画像アップロード
-        if ($request->hasFile('new_image')) {
-            foreach ($request->file('new_image') as $newImageFile) {
-                $path = $newImageFile->store('images/posts', 'public');
-                $post->images()->create([
-                    'image' => $path,
+        // 3. new upload
+        if ($request->hasFile('new_media')) {
+            foreach ($request->file('new_media') as $file) {
+
+                $mime = $file->getMimeType();
+                $type = str_starts_with($mime, 'image') ? 'image' : 'video';
+
+                // video duration check
+                if ($type === 'video') {
+                    $duration = $this->getVideoDuration($file);
+
+                    if ($duration > 30) {
+
+                        return back()->withErrors([
+                            'new_media' => 'The video duration must be less than 30seconds',
+                        ])->withInput();
+                    }
+                }
+
+                // image
+                if ($type === 'image') {
+                    $path = $this->saveImageWithHeicSupport($file);
+                } else {
+                    $path = $file->store('media/posts', 'public');
+                }
+
+                $thumbnailPath = null;
+
+                if ($type === 'video') {
+
+                    $thumbnailPath = 'thumbnails/posts/'.uniqid('thumb_').'.jpg';
+
+                    $ok = $this->generateVideoThumbnail($path, $thumbnailPath);
+                    // if you fail to generate thumb nail, leave it null
+                    if (! $ok) {
+                        $thumbnailPath = null;
+                    }
+                }
+
+                $post->media()->create([
+                    'type' => $type,
+                    'path' => $path,
+                    'thumbnail_path' => $thumbnailPath,
                 ]);
             }
         }
@@ -226,18 +415,23 @@ class PostController extends Controller
     /**
      * 投稿削除
      */
-    public function destroy($id)
+    public function destroy($id, BadgeService $badgeService)
     {
-        $post = Post::findOrFail($id);
+        $post = Post::with('media')->findOrFail($id);
 
         if (Auth::id() != $post->user_id) {
             return redirect()->route('home')->with('error', 'Unauthorized');
         }
 
-        foreach ($post->images as $image) {
-            Storage::disk('public')->delete($image->image);
-            $image->delete();
+        foreach ($post->media as $media) {
+            Storage::disk('public')->delete($media->path);
+
+            if ($media->thumbnail_path) {
+                Storage::disk('public')->delete($media->thumbnail_path);
+            }
         }
+
+        $post->media()->delete();
 
         $post->forceDelete();
 

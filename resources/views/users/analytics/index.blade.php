@@ -9,7 +9,9 @@
     <div class="col-md-4">
       <div class="card shadow h-100">
         <div class="card-body">
-          <h2 class="card-title fw-bold text-center">~ Views ~</h2>
+          <h2 class="card-title fw-bold text-center">
+            {{ __('messages.analytics.title_1') }}
+          </h2>
           <h4 class="fs-3 text-center" style="color: #9F6B46;">
             {{ number_format($viewsTotal) }}
           </h4>
@@ -24,20 +26,40 @@
               $nonFollowersRate = 100 - $followersRate;
             @endphp
             <span class="ms-4 text-followers">
-              Followers {{ $followersRate }}%
+              {{ __('messages.analytics.followers') }} {{ $followersRate }}%
             </span>
             <span class="ms-4 text-nonfollowers">
-              Non-followers {{ $nonFollowersRate }}%
+              {{ __('messages.analytics.non-followers') }} {{ $nonFollowersRate }}%
             </span>
           </div>
 
-          <h5 class="text-decoration-underline fw-bold">Top posts</h5>
+          <h5 class="text-decoration-underline fw-bold">
+            {{ __('messages.analytics.subtitle_1') }}
+          </h5>
           <div class="d-flex flex-wrap gap-2 mb-5">
             @foreach($topViewedPosts as $post)
+              @php
+                  $firstMedia = $post->media->first();
+              @endphp
               <div class="mx-auto text-center">
                 <a href="{{ route('post.show', $post->id) }}">
-                  @if ($post->images->first())
-                    <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
+                  @if ($firstMedia)
+                      {{-- image --}}
+                    @if ($firstMedia->type === 'image')
+                      <img src="{{ asset ('storage/' .  $firstMedia->path )}}" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
+                      {{-- video wiht thumbnail --}}
+                    @elseif($firstMedia->type === 'video' && $firstMedia->thumbnail_path)
+                      <img src="{{ asset('storage/' . $fistMedia->thumbnail_path) }}"
+                          class="img-thumbnail"
+                          style="width:110px; height:110px; object-fit: cover;">
+                      {{-- video without thumbnail --}}
+                    @elseif($firstMedia->type === 'video')
+                      <video src="{{ asset('storage/' . $firstMedia->path) }}"
+                            class="img-thumbnail"
+                            style="width:110px; height:110px; object-fit:cover;"
+                            muted playsinline>
+                      </video>
+                    @endif
                   @else
                     <img src="/no-image.png" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
                   @endif
@@ -47,9 +69,13 @@
             @endforeach
           </div>
 
-          <h5 class="text-decoration-underline fw-bold">Profile activity</h5>
+          <h5 class="text-decoration-underline fw-bold">
+            {{ __('messages.analytics.subtitle_2') }}
+          </h5>
           <div class="d-flex justify-content-between">
-            <span class="visit">Profile visits:</span>
+            <span class="visit">
+              {{ __('messages.analytics.visit') }}
+            </span>
             <span>
               {{ number_format($profileVisitsNow) }}
               <span class="{{ $profileVisitChange >= 0 ? 'text-success' : 'text-danger' }}">
@@ -65,7 +91,9 @@
     <div class="col-md-4">
       <div class="card shadow h-100">
         <div class="card-body">
-          <h2 class="card-title fw-bold text-center">~ Interactions ~</h2>
+          <h2 class="card-title fw-bold text-center">
+            {{ __('messages.analytics.title_2') }}
+          </h2>
           <h4 class="fs-3 text-center" style="color: #9F6B46;">
             {{ number_format($interactionsTotal) }}
           </h4>
@@ -76,20 +104,40 @@
 
           <div class="d-flex justify-content-center mb-5">
             <span class="ms-4 text-followers">
-              Followers {{ $interactionFollowersRate }}%
+              {{ __('messages.analytics.followers') }} {{ $interactionFollowersRate }}%
             </span>
             <span class="ms-4 text-nonfollowers">
-              Non-followers {{ $interactionNonFollowersRate }}%
+              {{ __('messages.analytics.non-followers') }} {{ $interactionNonFollowersRate }}%
             </span>
           </div>
 
-          <h5 class="text-decoration-underline fw-bold">Top posts</h5>
+          <h5 class="text-decoration-underline fw-bold">
+            {{ __('messages.analytics.subtitle_1') }}
+          </h5>
           <div class="d-flex flex-wrap gap-2 mb-5">
             @foreach($topInteractionPosts as $post)
+              @php
+                  $firstMedia = $post->media->first();
+              @endphp
             <div class="mx-auto text-center">
               <a href="{{ route('post.show', $post->id) }}">
-                @if ($post->images->first())
-                  <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
+                @if ($firstMedia)
+                    {{-- image --}}
+                    @if ($firstMedia->type === 'image')
+                      <img src="{{ asset ('storage/' .  $firstMedia->path )}}" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
+                    {{-- video wiht thumbnail --}}
+                    @elseif($firstMedia->type === 'video' && $firstMedia->thumbnail_path)
+                      <img src="{{ asset('storage/' . $fistMedia->thumbnail_path) }}"
+                         class="img-thumbnail"
+                         style="width:110px; height:110px; object-fit: cover;">
+                    {{-- video without thumbnail --}}
+                    @elseif($firstMedia->type === 'video')
+                      <video src="{{ asset('storage/' . $firstMedia->path) }}"
+                            class="img-thumbnail"
+                            style="width:110px; height:110px; object-fit:cover;"
+                            muted playsinline>
+                      </video>
+                    @endif
                 @else
                   <img src="/no-image.png" class="img-thumbnail" style="width:110px; height:110px; object-fit: cover;">
                 @endif
@@ -99,15 +147,20 @@
             @endforeach
           </div>
 
-          <h5 class="text-decoration-underline fw-bold">By interaction</h5>
+          <h5 class="text-decoration-underline fw-bold">
+            {{ __('messages.analytics.subtitle_3') }}
+          </h5>
           <ul class="list-unstyled" style="color: #9F6B46;">
-            <li class="d-flex justify-content-between mb-1">Likes:
+            <li class="d-flex justify-content-between mb-1">
+              {{ __('messages.analytics.like') }}
               <span>{{ $likes }}</span>
             </li>
-            <li class="d-flex justify-content-between mb-1">Comments:
+            <li class="d-flex justify-content-between mb-1">
+              {{ __('messages.analytics.comment') }}
               <span>{{ $comments }}</span>
             </li>
-            <li class="d-flex justify-content-between mb-1">Saves:
+            <li class="d-flex justify-content-between mb-1">
+              {{ __('messages.analytics.favorite') }}
               <span>{{ $saves }}</span>
             </li>
           </ul>
@@ -119,20 +172,26 @@
     <div class="col-md-4">
       <div class="card shadow h-100">
         <div class="card-body">
-          <h2 class="card-title fw-bold text-center">~ Followers ~</h2>
+          <h2 class="card-title fw-bold text-center">
+            {{ __('messages.analytics.title_3') }}
+          </h2>
           <h4 class="fs-3 text-center" style="color: #9F6B46;">
             {{ number_format($followersNow) }}
           </h4>
           <div class="text-center text-danger mb-3">
-            {{ $followersPercent >= 0 ? '+' : '' }}{{ $followersPercent }}% vs last month
+            {{ $followersPercent >= 0 ? '+' : '' }}{{ $followersPercent }}{{ __('messages.analytics.percent') }}
           </div>
 
-          <h5 class="text-decoration-underline fw-bold">Followers Trend</h5>
+          <h5 class="text-decoration-underline fw-bold">
+            {{ __('messages.analytics.subtitle_4') }}
+          </h5>
           <div class="mb-5" style="height:250px;">
             <canvas id="followersChangeChart" class="w-100 h-100"></canvas>
           </div>
 
-          <h5 class="text-decoration-underline fw-bold">Top countries</h5>
+          <h5 class="text-decoration-underline fw-bold">
+            {{ __('messages.analytics.subtitle_5') }}
+          </h5>
           <div class="country-list">
             @foreach($countryStats as $country)
               @php
@@ -165,7 +224,7 @@
   new Chart(document.getElementById('viewsDonutChart'), {
     type: 'doughnut',
     data: {
-      labels: ['Followers', 'Non-followers'],
+      labels: ['{{ __('messages.analytics.followers') }}', '{{ __('messages.analytics.non-followers') }}'],
       datasets: [{ data: [{{ $followersRate }}, {{ $nonFollowersRate }}], backgroundColor: ['#F1BDB2', '#9F6B46'] }]
     },
     options: { cutout: '60%', plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
@@ -175,7 +234,7 @@
   new Chart(document.getElementById('interactionsDonutChart'), {
     type: 'doughnut',
     data: {
-      labels: ['Followers', 'Non-followers'],
+      labels: ['{{ __('messages.analytics.followers') }}', '{{ __('messages.analytics.non-followers') }}'],
       datasets: [{ data: [{{ $interactionFollowersRate }}, {{ $interactionNonFollowersRate }}], backgroundColor: ['#F1BDB2', '#9F6B46'] }]
     },
     options: { cutout: '60%', plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }

@@ -84,17 +84,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return response()->json(['status' => 'unauthorized'], 401);
     })->middleware('auth')->name('notifications.readAll');
 
-    Route::post('/messages/mark-read', function () {
-        $user = auth()->user();
-        if ($user) {
-            $user->unreadMessages()->update(['read_at' => now()]);
-
-            return response()->json(['status' => 'ok']);
-        }
-
-        return response()->json(['status' => 'unauthorized'], 401);
-    })->middleware('auth')->name('messages.markRead');
-
     // Like
     Route::controller(LikeController::class)->group(function () {
         Route::post('/like/{post_id}/store', 'store')->name('like.store');
@@ -185,7 +174,6 @@ Route::middleware('auth')->group(function () {
 Route::get('auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
 
-// Translation
 Route::get('/lang/{locale}', function ($locale) {
     if (! in_array($locale, ['en', 'ja'])) {
         abort(400);

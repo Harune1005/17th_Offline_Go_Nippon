@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('content')
@@ -5,15 +6,15 @@
     <form action="{{ route('ranking.post') }}" method="get">
         <div class="row align-items-end">
             <div class="col-12 col-md-4 mb-3 mb-md-0">
-                <input type="text" name="search" class="form-control" placeholder="Search...">
+                <input type="text" name="search" class="form-control" placeholder="{{ __('messages.home.search_placeholder') }}">
             </div>
 
             <div class="col-12 col-md-8">
                 <div class="row g-2  align-items-end">
                     <div class="col-6 col-md-5 mb-3 mb-md-0">
-                        <label for="prefecture" class="form-label">Prefecture</label>
+                        <label for="prefecture" class="form-label">{{ __('messages.home.prefecture') }}</label>
                         <select name="prefecture_id" class="form-select text-muted">
-                            <option value="" selected hidden>Select</option>
+                            <option value="" selected >{{ __('messages.home.prefecture_placeholder') }}</option>
                             @foreach ($prefectures as $prefecture)
                                 <option value="{{ $prefecture->id }}">{{ $prefecture->name }}</option>
                             @endforeach
@@ -21,16 +22,16 @@
                     </div>
 
                     <div class="col-6 col-md-5 mb-3 mb-md-0">
-                        <label for="category" class="form-label">Category</label>
+                        <label for="category" class="form-label">{{ __('messages.home.category') }}</label>
                         <select name="category_id" class="form-select text-muted">
-                            <option value="" selected hidden>Select</option>
+                            <option value="" selected>{{ __('messages.home.category_placeholder') }}</option>
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-12 col-md-2 d-grid">
-                        <button type="submit" class="btn btn-outline w-100">Search</button>
+                        <button type="submit" class="btn btn-outline w-100">{{ __('messages.home.search') }}</button>
                     </div>
                 </div>
             </div>
@@ -41,13 +42,13 @@
         <div class="row">
             {{-- sidebar --}}
             <div class="col-12 col-md-4 mb-5">
-                <div class="card shadow-sm border-0">
+                <div class="card shadow border-0">
                     <div id="carouselRanking" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             {{-- Category Ranking --}}
                             <div class="carousel-item active">
-                                <div class="card-header border0 " style="background:#fbefe5; ">
-                                    <h5 class="mb-0 fw-bold text-center">Category Ranking</h5>
+                                <div class="card-header border0 ">
+                                    <h5 class="mb-0 fw-bold text-center">{{ __('messages.home.category_ranking_title') }}</h5>
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     @forelse ($categoryRanked as $item)
@@ -74,8 +75,8 @@
 
                             {{-- Prefecture Ranking --}}
                             <div class="carousel-item">
-                                <div class="card-header border-0" style="background:#fbefe5;">
-                                    <h5 class="mb-0 fw-bold text-center">Prefecture Ranking</h5>
+                                <div class="card-header border-0">
+                                    <h5 class="mb-0 fw-bold text-center">{{ __('messages.home.prefecture_ranking_title') }}</h5>
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     @forelse ($prefectureRanked as $item)
@@ -120,17 +121,22 @@
                             <ul class="nav nav-tabs d-flex flex-nowrap custom-tabs text-center">
                                 <li class="nav-item tab-item">
                                     <a href="{{ route('home', ['order' => 'newest']) }}" class="tab-btn {{ request('order') === 'newest' || !request()->has('order') ? 'active' : '' }}">
-                                        Newest
+                                        {{ __('messages.home.sort_1') }}
                                     </a>
                                 </li>
                                 <li class="nav-item tab-item">
                                     <a href="{{ route('home', ['order' => 'most_liked']) }}" class="tab-btn {{ request('order') === 'most_liked' ? 'active' : '' }}">
-                                        Most liked
+                                        {{ __('messages.home.sort_2') }}
                                     </a>
                                 </li>
                                 <li class="nav-item tab-item">
                                     <a href="{{ route('home', ['order' => 'recommend']) }}" class="tab-btn {{ request('order') === 'recommend' ? 'active' : '' }}">
-                                        Recommend
+                                        {{ __('messages.home.sort_3') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item tab-item">
+                                    <a href="{{ route('home', ['order' => 'followers']) }}" class="tab-btn {{ request('order') === 'followers' ? 'active' : '' }}">
+                                        {{ __('messages.home.sort_4') }}
                                     </a>
                                 </li>
                             </ul>
@@ -143,23 +149,36 @@
                                 <div class="card border-0 shadow-sm w-100">
                                     <div class="card-body p-0">
                                         @php
-                                            $images = $post->images->pluck('image')->take(3)->toArray();
+                                            $mediaItems = $post->media->take(3);
                                         @endphp
 
-                                        @if (count($images) > 0)
+                                        @if ($mediaItems->count() > 0)
                                             {{-- 画像が2枚以上 → カルーセル --}}
-                                            @if (count($images) > 1)
+                                            @if ($mediaItems->count() > 1)
                                                 <div id="carouselPost{{ $post->id }}" class="carousel slide" data-bs-ride="carousel">
                                                     <div class="carousel-inner">
-                                                        @foreach ($images as $index => $image)
+                                                        @foreach ($mediaItems as $index => $item)
                                                             <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                                                                 <a href="{{ route('post.show', $post->id) }}">
                                                                     <div class="ratio ratio-1x1">
-                                                                        <img 
-                                                                            src="{{ asset('storage/' . $image) }}" 
+                                                                        {{-- Image --}}
+                                                                        @if ($item->type === 'image')
+                                                                            <img 
+                                                                            src="{{ asset('storage/' . $item->path) }}" 
                                                                             class="d-block w-100 h-100"
                                                                             style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
-                                                                            alt="Post Image {{ $index + 1 }}">
+                                                                            alt="Post Media {{ $index + 1 }}">
+                                                                        @endif
+                                                                        {{-- Video --}}
+                                                                        @if ($item->type === 'video')
+                                                                            <video 
+                                                                                src="{{ asset('storage/' . $item->path) }}"
+                                                                                class="d-block w-100 h-100"
+                                                                                style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
+                                                                                muted autoplay playsinline loop>
+                                                                            </video>
+                                                                        @endif
+                                                                        
                                                                     </div>
                                                                 </a>
                                                             </div>
@@ -181,14 +200,29 @@
                                                 </div>
 
                                             {{-- 1枚のみ --}}
-                                            @elseif(count($images) === 1)
+                                            @elseif($mediaItems->count() === 1)
+                                                @php
+                                                    $item = $mediaItems->first();
+                                                @endphp
                                                 <a href="{{ route('post.show', $post->id) }}">
                                                     <div class="ratio ratio-1x1">
-                                                        <img 
-                                                            src="{{ asset('storage/' . $images[0]) }}"
+                                                        {{-- Image --}}
+                                                        @if ($item->type === 'image')
+                                                            <img 
+                                                            src="{{ asset('storage/' . $item->path) }}"
                                                             class="d-block w-100 h-100"
                                                             style="object-fit: cover; border-top-left-radius: 5px; border-top-right-radius: 5px;"
                                                             alt="Post Image">
+                                                        @endif
+                                                        {{-- Vedeo --}}
+                                                        @if ($item->type === 'video')
+                                                            <video 
+                                                                src="{{ asset('storage/' . $item->path) }}"
+                                                                class="d-block w-100 h-100"
+                                                                style="object-fit: cover; border-radius: 5px;"
+                                                                muted autoplay playsinline loop>
+                                                            </video>
+                                                        @endif
                                                     </div>
                                                 </a>
                                             @endif
@@ -234,7 +268,7 @@
                         @empty
                             <div class="text-center py-5 text-muted">
                                 <h5>No posts available</h5>
-                                <a href="{{ route('post.create') }}" class="text-decoration-none"> Share your first photo!</a>
+                                <a href="{{ route('profile.followers', $user->id) }}" class="text-decoration-none"> Connect with friends and check out their posts!</a>
                             </div>
                         @endforelse
                     </div>
@@ -349,4 +383,5 @@
         });
     });
 </script>
+
 @endsection

@@ -8,13 +8,19 @@
   {{-- Navigation --}}
   <div class="row nav nav-underline text-center">
     <div class="col-auto">
-      <a class="nav-link px-3" href="{{ route('admin.users') }}">User</a>
+      <a class="nav-link px-3" href="{{ route('admin.users') }}">
+        {{ __('messages.user.user') }}
+      </a>
     </div>
     <div class="col-auto">
-      <a class="nav-link px-3 active" href="{{ route('admin.posts') }}">Post</a>
+      <a class="nav-link px-3 active" href="{{ route('admin.posts') }}">
+        {{ __('messages.user.post') }}
+      </a>
     </div>
     <div class="col-auto">
-      <a class="nav-link" href="{{ route('admin.categories') }}">Category</a>
+      <a class="nav-link" href="{{ route('admin.categories') }}">
+        {{ __('messages.user.category') }}
+      </a>
     </div>
   </div>
 
@@ -25,9 +31,13 @@
       <form method="GET" action="{{ route('admin.posts') }}" class="d-flex justify-content-center gap-3">
         <!-- Category -->
         <div class="w-25">
-          <label for="category" class="form-label">Category</label>
+          <label for="category" class="form-label">
+            {{ __('messages.post.category_label') }}
+          </label>
           <select name="category" id="category" class="form-select">
-            <option value="">All</option>
+            <option value="">
+              {{ __('messages.post.search_placeholder') }}
+            </option>
             @foreach ($categories as $category)
               <option value="{{ $category->id }}" {{ $selectedCategory == $category->id ? 'selected' : '' }}>
                 {{ $category->name }}
@@ -38,9 +48,13 @@
 
         <!-- Prefecture -->
         <div class="w-25">
-          <label for="prefecture" class="form-label">Prefecture</label>
+          <label for="prefecture" class="form-label">
+            {{ __('messages.post.prefecture') }}
+          </label>
           <select name="prefecture" id="prefecture" class="form-select">
-            <option value="">All</option>
+            <option value="">
+              {{ __('messages.post.search_placeholder') }}
+            </option>
             @foreach ($prefectures as $prefecture)
               <option value="{{ $prefecture->id }}" {{ $selectedPrefecture == $prefecture->id ? 'selected' : '' }}>
                 {{ $prefecture->name }}
@@ -52,7 +66,7 @@
         <!-- Button -->
         <div class="align-self-end">
           <button type="submit" class="btn btn-outline">
-            <i class="fa-solid fa-magnifying-glass"></i> Search
+            <i class="fa-solid fa-magnifying-glass"></i> {{ __('messages.post.search') }}
           </button>
         </div>
       </form>
@@ -64,11 +78,11 @@
       <thead>
         <tr class="fs-5">
           <th>#</th>
-          <th>POST</th>
-          <th>CATEGORY</th>
-          <th>PREFECTURE</th>
-          <th>OWNER</th>
-          <th>STATUS</th>
+          <th>{{ __('messages.post.post') }}</th>
+          <th>{{ __('messages.post.category') }}</th>
+          <th>{{ __('messages.post.prefecture') }}</th>
+          <th>{{ __('messages.post.owner') }}</th>
+          <th>{{ __('messages.post.status') }}</th>
           <th></th>
         </tr>
       </thead>
@@ -78,29 +92,41 @@
             <td>{{ $post->id }}</td>
             <td>
               @php
-                  $firstImage = $post->images->first();
+                  $firstMedia = $post->media->first();
               @endphp
-              @if ($firstImage)
+              @if ($firstMedia)
                   {{-- post has image --}}
                   @if ($post->trashed())
-                      <img src="{{ asset('storage/' . $firstImage->image) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
+                      {{-- image --}}
+                      @if ($firstMedia->type === 'image')
+                          <img src="{{ asset('storage/' . $firstMedia->path) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
+                      {{-- video --}}
+                      @elseif($firstMedia->type === 'video')
+                          <video src="{{ asset('storage/' . $firstMedia->path) }}"
+                                class="img-thumbnail mx-auto"
+                                style="width:110px; height:110px; object-fit:cover;"
+                                muted playsinline>
+                          </video>
+                      @endif
                   @else
                       <a href="{{ route('post.show', $post->id) }}">
-                          <img src="{{ asset('storage/' . $firstImage->image) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover; max-width: none;">
+                          {{-- image --}}
+                          @if ($firstMedia->type === 'image')
+                              <img src="{{ asset('storage/' . $firstMedia->path) }}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover; max-width: none;">
+                          {{-- video --}}
+                          @elseif($firstMedia->type === 'video')
+                              <video src="{{ asset('storage/' . $firstMedia->path) }}"
+                                    class="img-thumbnail mx-auto"
+                                    style="width:110px; height:110px; object-fit:cover;"
+                                    muted playsinline>
+                              </video>
+                          @endif
                       </a>
                   @endif
               @else
                   {{-- no image --}}
                   <div class="text-muted">No Image</div>
               @endif
-              {{-- @if ($post->trashed())
-                <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover;">
-              @else
-                <a href="{{ route('post.show', $post->id) }}">
-                  <img src="{{ asset ('storage/' .  $post->images->first()->image )}}" class="img-thumbnail mx-auto" style="width:110px; height:110px; object-fit: cover; max-width: none;">
-                </a>
-              @endif --}}
-
             </td>
             <td>
               <div class="col">
@@ -115,9 +141,9 @@
             <td>{{ $post->user->name }}</td>
             <td>
               @if ($post->trashed())
-                <i class="fa-solid fa-circle text-secondary"></i>&nbsp; Hide
+                <i class="fa-solid fa-circle text-secondary"></i>&nbsp; {{ __('messages.post.hide') }}
               @else
-                <i class="fa-solid fa-circle text-success"></i>&nbsp; Visible
+                <i class="fa-solid fa-circle text-success"></i>&nbsp; {{ __('messages.post.visible') }}
               @endif
             </td>
             <td>
@@ -128,11 +154,11 @@
                 <div class="dropdown-menu admin-dropdown-menu">
                     @if ($post->trashed())
                         <button class="dropdown-item admin-dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
-                            <i class="fa-solid fa-check-to-slot"></i>&nbsp; Visible
+                            <i class="fa-solid fa-check-to-slot"></i>&nbsp; {{ __('messages.post.visible') }}
                         </button>
                     @else
                     <button class="dropdown-item admin-dropdown-item text-center" data-bs-toggle="modal" data-bs-target="#activate-post-{{ $post->id }}">
-                        <i class="fa-solid fa-ban"></i>&nbsp; Hide
+                        <i class="fa-solid fa-ban"></i>&nbsp; {{ __('messages.post.hide') }}
                     </button>
                     @endif
                 </div>
