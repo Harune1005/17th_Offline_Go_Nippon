@@ -192,6 +192,23 @@
         document.querySelector("#media-upload-area").appendChild(slot);
     }
 
+const costSlider = document.getElementById('cost-slider');
+const costDisplay = document.getElementById('cost-current');
+costSlider?.addEventListener('input', () => {
+    if (costSlider.value == 10000) {
+        costDisplay.textContent = '¥10000~';
+    } else {
+        costDisplay.textContent = '¥' + costSlider.value;
+    }
+});
+
+
+document.querySelectorAll('.category-checkbox').forEach(cb => {
+    cb.addEventListener('change', function() {
+        if (document.querySelectorAll('.category-checkbox:checked').length > 3) {
+            this.checked = false;
+            alert('You can select up to 3 categories.');
+        }
     /* ===============================
     MOV / QuickTime 判定
     =============================== */

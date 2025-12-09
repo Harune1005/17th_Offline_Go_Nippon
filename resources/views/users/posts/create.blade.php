@@ -142,6 +142,101 @@
             });
         }
     });
+
+    let newImageIndex = 0;
+
+    function getCurrentImageCount() {
+        return document.querySelectorAll('.new-image-slot').length;
+    }
+
+    function updateAddSlotVisibility() {
+        const addSlot = document.getElementById('add-slot');
+        if (addSlot) {
+            getCurrentImageCount() >= 3 ? addSlot.classList.add('d-none') : addSlot.classList.remove('d-none');
+        }
+    }
+
+    window.previewNewImage = function(input) {
+        const file = input.files[0];
+        const addSlot = input.closest('.add-new-slot');
+        if (!file || !addSlot) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            addSlot.classList.remove('add-new-slot');
+            addSlot.classList.add('new-image-slot');
+            addSlot.style.position = 'relative';
+            addSlot.innerHTML = `
+                <img src="${e.target.result}" alt="new image">
+                <button type="button" class="delete-new-image position-absolute"
+                    style="top:4px; right:4px; width:20px; height:20px; font-size:0.8rem; border:none; border-radius:50%; background-color:#9F6B46; color:white; cursor:pointer;"
+                    onclick="deleteNewImage(this)">&times;</button>
+                <input type="file" class="d-none new-image-input" name="image[]" accept="image/*">
+            `;
+
+            const newFileInput = addSlot.querySelector('input[type="file"]');
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            newFileInput.files = dt.files;
+
+            addSlot.removeAttribute('id');
+
+            if (getCurrentImageCount() < 3) {
+                newImageIndex++;
+                const newAddSlot = document.createElement('div');
+                newAddSlot.className = 'image-slot add-new-slot';
+                newAddSlot.id = 'add-slot';
+                newAddSlot.style.cssText = 'width:100px; height:100px;';
+                newAddSlot.innerHTML = `<label for="new_image_file_${newImageIndex}">+ Add</label>
+                    <input type="file" class="d-none new-image-input" name="image[]" id="new_image_file_${newImageIndex}" onchange="previewNewImage(this)" accept="image/*">`;
+                document.getElementById('image-upload-area').appendChild(newAddSlot);
+            }
+
+            updateAddSlotVisibility();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    window.deleteNewImage = function(button) {
+        const slot = button.closest('.image-slot');
+        slot.remove();
+        if (!document.querySelector('.add-new-slot')) {
+            newImageIndex++;
+            const newAddSlot = document.createElement('div');
+            newAddSlot.className = 'image-slot add-new-slot';
+            newAddSlot.id = 'add-slot';
+            newAddSlot.style.cssText = 'width:100px; height:100px;';
+            newAddSlot.innerHTML = `<label for="new_image_file_${newImageIndex}">+ Add</label>
+                <input type="file" class="d-none new-image-input" name="image[]" id="new_image_file_${newImageIndex}" onchange="previewNewImage(this)" accept="image/*">`;
+            document.getElementById('image-upload-area').appendChild(newAddSlot);
+        }
+        updateAddSlotVisibility();
+    }
+
+    // Cost slider
+    const costSlider = document.getElementById('cost-slider');
+    const costDisplay = document.getElementById('cost-current');
+   costSlider?.addEventListener('input', () => {
+    if (costSlider.value == 10000) {
+        costDisplay.textContent = '¥10000~';
+    } else {
+        costDisplay.textContent = '¥' + costSlider.value;
+    }
+});
+
+
+    // Categories max 3
+    const checkboxes = document.querySelectorAll('.category-checkbox');
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', function() {
+            const checked = document.querySelectorAll('.category-checkbox:checked');
+            if (checked.length > 3) {
+                this.checked = false;
+                alert('Up to 3 categories allowed.');
+            }
+        });
+    });
+});
 </script>
 
 {{-- for media slot --}}
